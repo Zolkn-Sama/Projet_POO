@@ -6,9 +6,13 @@ import java.util.List;
 
 import Projet_POO.Domain.Enums.StatutContrat;
 
+@Entity
 public class ContratLocation {
 
-    private int id;
+        @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
     private String lieuPrise;
@@ -111,3 +115,4 @@ public class ContratLocation {
                 '}';
     }
 }
+
