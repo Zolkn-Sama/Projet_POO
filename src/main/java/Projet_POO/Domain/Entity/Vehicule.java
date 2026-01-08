@@ -11,6 +11,10 @@ import jakarta.persistence.*;
 public class Vehicule {
 
     // ---- attributs du diagramme ----
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+    
     private String immatriculation;              // UML : UUID -> ici String (plus simple pour une plaque)
     private String villeDisponibilite;
     private boolean deposeDifferenteAutorisee;
@@ -32,6 +36,8 @@ public class Vehicule {
         this.options = new ArrayList<>();
         this.periodesDisponibilite = new ArrayList<>();
         this.notes = new ArrayList<>();
+        this.contrats = new ArrayList<>();
+
     }
 
     public Vehicule(String immatriculation,
@@ -108,6 +114,11 @@ public class Vehicule {
         return new ArrayList<>(periodesDisponibilite);
     }
 
+    public Long getId() {
+    return id;
+}
+
+
     public List<Note> getNotes() {
         return new ArrayList<>(notes);
     }
@@ -179,4 +190,5 @@ public class Vehicule {
                 '}';
     }
 }
+
 
