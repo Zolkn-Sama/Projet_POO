@@ -28,6 +28,7 @@ public class Vehicule {
         this.options = new ArrayList<>();
         this.periodesDisponibilite = new ArrayList<>();
         this.notes = new ArrayList<>();
+        this.contrats = new ArrayList<>();
     }
 
     public Vehicule(String immatriculation,
@@ -175,3 +176,4 @@ public class Vehicule {
                 '}';
     }
 }
+
