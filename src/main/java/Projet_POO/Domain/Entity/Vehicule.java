@@ -1,177 +1,83 @@
 package Projet_POO.Domain.Entity;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import Projet_POO.Domain.Enums.CodeOption;
 
+@Entity
+@Table(name = "vehicule")
 public class Vehicule {
 
-    // ---- attributs du diagramme ----
-    private String immatriculation;              // UML : UUID -> ici String (plus simple pour une plaque)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable=false, unique=true)
+    private String immatriculation;
+
+    @Column(nullable=false)
     private String villeDisponibilite;
+
     private boolean deposeDifferenteAutorisee;
 
-    // compositions / associations
-    private TypeVehicule typeVehicule;
-    private SystemePropulsion systemePropulsion;
-    private CaracteristiquesVehicule caracteristiques;
+    // Pour rester simple au début : on met typeVehicule en String OU on fera entity après.
+    private String typeVehiculeLibelle;
 
-    private List<OptionVehicule> options;
-    private List<PeriodeDisponibilite> periodesDisponibilite;
-    private List<Note> notes;   // notes sur ce véhicule
-    
-    private List<ContratLocation> contrats;
+    // note globale stockée (utile pour affichage US.V.1)
+    private double noteMoyenne;
 
-    // ---- constructeurs ----
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name="vehicule_options", joinColumns=@JoinColumn(name="vehicule_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name="code_option")
+    private Set<CodeOption> options = new HashSet<>();
 
-    public Vehicule() {
-        this.options = new ArrayList<>();
-        this.periodesDisponibilite = new ArrayList<>();
-        this.notes = new ArrayList<>();
-    }
+    @OneToMany(mappedBy="vehicule", cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<PeriodeDisponibilite> periodesDisponibilite = new ArrayList<>();
 
-    public Vehicule(String immatriculation,
-                    String villeDisponibilite,
-                    boolean deposeDifferenteAutorisee,
-                    TypeVehicule typeVehicule,
-                    SystemePropulsion systemePropulsion,
-                    CaracteristiquesVehicule caracteristiques) {
+    public Vehicule() {}
 
-        this();
+    public Vehicule(String immatriculation, String villeDisponibilite, boolean deposeDifferenteAutorisee,
+                    String typeVehiculeLibelle) {
         this.immatriculation = immatriculation;
         this.villeDisponibilite = villeDisponibilite;
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
-        this.typeVehicule = typeVehicule;
-        this.systemePropulsion = systemePropulsion;
-        this.caracteristiques = caracteristiques;
+        this.typeVehiculeLibelle = typeVehiculeLibelle;
+        this.noteMoyenne = 0.0;
     }
 
-    // ---- getters / setters ----
-
-    public String getImmatriculation() {
-        return immatriculation;
-    }
-
-    public void setImmatriculation(String immatriculation) {
-        this.immatriculation = immatriculation;
-    }
-
-    public String getVilleDisponibilite() {
-        return villeDisponibilite;
-    }
-
-    public void setVilleDisponibilite(String villeDisponibilite) {
-        this.villeDisponibilite = villeDisponibilite;
-    }
-
-    public boolean isDeposeDifferenteAutorisee() {
-        return deposeDifferenteAutorisee;
-    }
-
-    public void setDeposeDifferenteAutorisee(boolean deposeDifferenteAutorisee) {
-        this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
-    }
-
-    public TypeVehicule getTypeVehicule() {
-        return typeVehicule;
-    }
-
-    public void setTypeVehicule(TypeVehicule typeVehicule) {
-        this.typeVehicule = typeVehicule;
-    }
-
-    public SystemePropulsion getSystemePropulsion() {
-        return systemePropulsion;
-    }
-
-    public void setSystemePropulsion(SystemePropulsion systemePropulsion) {
-        this.systemePropulsion = systemePropulsion;
-    }
-
-    public CaracteristiquesVehicule getCaracteristiques() {
-        return caracteristiques;
-    }
-
-    public void setCaracteristiques(CaracteristiquesVehicule caracteristiques) {
-        this.caracteristiques = caracteristiques;
-    }
-
-    public List<OptionVehicule> getOptions() {
-        return new ArrayList<>(options);
-    }
-
-    public List<PeriodeDisponibilite> getPeriodesDisponibilite() {
-        return new ArrayList<>(periodesDisponibilite);
-    }
-
-    public List<Note> getNotes() {
-        return new ArrayList<>(notes);
-    }
-
-    // ---- méthodes de gestion des listes ----
-    
-    public void ajouterContrat(ContratLocation contrat) {
-        if (contrat != null && !contrats.contains(contrat)) {
-            contrats.add(contrat);
-        }
-    }
-
-    public List<ContratLocation> getContrats() {
-        return new ArrayList<>(contrats);
-    }
-
-    public void ajouterOption(OptionVehicule option) {
-        if (option != null && !options.contains(option)) {
-            options.add(option);
-        }
-    }
-
+    // helpers
     public void ajouterPeriodeDisponibilite(PeriodeDisponibilite periode) {
-        if (periode != null) {
-            periodesDisponibilite.add(periode);
-        }
+        if (periode == null) return;
+        periode.setVehicule(this);
+        periodesDisponibilite.add(periode);
     }
 
-    /** méthode demandée : ajouterNote(Note) */
-    public void ajouterNote(Note note) {
-        if (note != null) {
-            notes.add(note);
-        }
+    public void ajouterOption(CodeOption option) {
+        if (option != null) options.add(option);
     }
 
-    // ---- méthodes UML : noteMoyenne, estDisponible ----
+    // getters/setters
+    public Long getId() { return id; }
 
-    /** noteMoyenne(): double */
-    public double noteMoyenne() {
-        if (notes.isEmpty()) {
-            return 0.0;
-        }
-        double somme = 0.0;
-        for (Note n : notes) {
-            somme += n.noteGlobale();   // on suppose que Note a bien noteGlobale()
-        }
-        return somme / notes.size();
-    }
+    public String getImmatriculation() { return immatriculation; }
+    public void setImmatriculation(String immatriculation) { this.immatriculation = immatriculation; }
 
-    public boolean estDisponible(LocalDateTime debut, LocalDateTime fin) {
-        if (debut == null || fin == null || !debut.isBefore(fin)) {
-            return false;
-        }
+    public String getVilleDisponibilite() { return villeDisponibilite; }
+    public void setVilleDisponibilite(String villeDisponibilite) { this.villeDisponibilite = villeDisponibilite; }
 
-        for (PeriodeDisponibilite p : periodesDisponibilite) {
-            if (!debut.isBefore(p.getDebut()) && !fin.isAfter(p.getFin())) {
-                return true;
-            }
-        }
-        return false;
-    }
+    public boolean isDeposeDifferenteAutorisee() { return deposeDifferenteAutorisee; }
+    public void setDeposeDifferenteAutorisee(boolean deposeDifferenteAutorisee) { this.deposeDifferenteAutorisee = deposeDifferenteAutorisee; }
 
-    @Override
-    public String toString() {
-        return "Vehicule{" +
-                "immatriculation='" + immatriculation + '\'' +
-                ", villeDisponibilite='" + villeDisponibilite + '\'' +
-                ", type=" + (typeVehicule != null ? typeVehicule.getLibelle() : "N/A") +
-                '}';
-    }
+    public String getTypeVehiculeLibelle() { return typeVehiculeLibelle; }
+    public void setTypeVehiculeLibelle(String typeVehiculeLibelle) { this.typeVehiculeLibelle = typeVehiculeLibelle; }
+
+    public double getNoteMoyenne() { return noteMoyenne; }
+    public void setNoteMoyenne(double noteMoyenne) { this.noteMoyenne = noteMoyenne; }
+
+    public Set<CodeOption> getOptions() { return options; }
+    public List<PeriodeDisponibilite> getPeriodesDisponibilite() { return periodesDisponibilite; }
 }
