@@ -3,6 +3,10 @@ package Projet_POO.Domain.Entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="vehicule")
 
 public class Vehicule {
 
@@ -175,3 +179,4 @@ public class Vehicule {
                 '}';
     }
 }
+
