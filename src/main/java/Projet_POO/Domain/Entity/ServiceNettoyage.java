@@ -6,7 +6,7 @@ public class ServiceNettoyage extends ServiceOptionnel {
 
     public ServiceNettoyage() { }
 
-    public ServiceNettoyage(int id, String nom, double prix, String typeService) {
+    public ServiceNettoyage(long id, String nom, double prix, String typeService) {
         super(id, nom, prix);
         this.typeService = typeService;
     }
