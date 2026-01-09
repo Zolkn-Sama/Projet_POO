@@ -1,26 +1,29 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "loueur")
+
 public class Loueur extends Utilisateur {
 
-    // Les contrats de location de ce loueur
-    private List<ContratLocation> locations;
+    @Transient
+    private List<ContratLocation> locations = new ArrayList<>();
 
-    // Les notes que le loueur reçoit (noté par les agents)
-    private List<Note> notesRecues;
-
-    // --------- CONSTRUCTEURS ---------
+    @Transient
+    private List<Note> notesRecues = new ArrayList<>();
 
     public Loueur() {
         super();
-        this.locations = new ArrayList<>();
-        this.notesRecues = new ArrayList<>();
     }
 
-    public Loueur(int id,
+    public Loueur(Long id,
                   String nom,
                   String prenom,
                   String password,
@@ -33,40 +36,21 @@ public class Loueur extends Utilisateur {
                   String numeroPermis,
                   LocalDate dateObtentionPermis) {
 
-        // on réutilise le constructeur complet d'Utilisateur
         super(id, nom, prenom, password, email,
-              telephone, rue, ville, pays,
-              dateNaissance, numeroPermis, dateObtentionPermis);
-
-        this.locations = new ArrayList<>();
-        this.notesRecues = new ArrayList<>();
+                telephone, rue, ville, pays,
+                dateNaissance, numeroPermis, dateObtentionPermis);
     }
 
-    // --------- MÉTHODES DU LOUeur (liées au métier) ---------
+    // --------- MÉTHODES MÉTIER ---------
 
-    /**
-     * Ajouter un contrat à la liste des locations du loueur.
-     * À appeler quand un nouveau contrat est créé pour ce loueur.
-     */
     public void ajouterLocation(ContratLocation contrat) {
-        if (contrat != null) {
-            locations.add(contrat);
-        }
+        if (contrat != null) locations.add(contrat);
     }
 
-    /**
-     * consulterLocations() : renvoie la liste des contrats de ce loueur.
-     * (copie de la liste interne pour éviter de la modifier de l’extérieur)
-     */
     public List<ContratLocation> consulterLocations() {
         return new ArrayList<>(locations);
     }
 
-    /**
-     * modifierProfil(p : Utilisateur)
-     * Met à jour les infos du loueur à partir d'un autre objet Utilisateur.
-     * On NE change pas l'id ni le mot de passe ici.
-     */
     public void modifierProfil(Utilisateur p) {
         if (p == null) return;
 
@@ -82,33 +66,18 @@ public class Loueur extends Utilisateur {
         this.setDateObtentionPermis(p.getDateObtentionPermis());
     }
 
-    /**
-     * noterVehicule(v : Vehicule, note : Note)
-     * Le loueur laisse une note à un véhicule.
-     * On délègue au véhicule qui garde la liste de ses notes.
-     */
     public void noterVehicule(Vehicule v, Note note) {
         if (v == null || note == null) return;
         v.ajouterNote(note);
     }
 
-    /**
-     * noterAgent(a : Agent, note : Note)
-     * Le loueur laisse une note à un agent.
-     * On délègue à l'agent qui garde ses notes reçues.
-     */
     public void noterAgent(Agent a, Note note) {
         if (a == null || note == null) return;
         a.ajouterNote(note);
     }
 
-    /**
-     * Ajouter une note reçue par ce loueur (quand un agent le note).
-     */
     public void ajouterNoteRecue(Note note) {
-        if (note != null) {
-            notesRecues.add(note);
-        }
+        if (note != null) notesRecues.add(note);
     }
 
     public List<Note> getNotesRecues() {
@@ -122,8 +91,6 @@ public class Loueur extends Utilisateur {
                 ", nom='" + getNom() + '\'' +
                 ", prenom='" + getPrenom() + '\'' +
                 ", email='" + getEmail() + '\'' +
-                ", nbLocations=" + locations.size() +
-                ", nbNotesRecues=" + notesRecues.size() +
                 '}';
     }
 }

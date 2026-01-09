@@ -1,23 +1,35 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "agent")
 public class Agent extends Utilisateur {
 
     private boolean estProfessionnel;
+
+    // Tant que ConditionsAgent n’est pas une @Entity ou @Embeddable, on la met en Transient
+    @Transient
     private ConditionsAgent conditions;
-    private List<Vehicule> vehicules;
-    private List<Note> notesRecues;  // ⬅ notes que l’agent reçoit
+
+    // Tant que Vehicule et Note ne sont pas reliés via @OneToMany/@ManyToMany, on laisse Transient
+    @Transient
+    private List<Vehicule> vehicules = new ArrayList<>();
+
+    @Transient
+    private List<Note> notesRecues = new ArrayList<>();
 
     public Agent() {
         super();
-        this.vehicules = new ArrayList<>();
-        this.notesRecues = new ArrayList<>();
     }
 
-    public Agent(int id,
+    public Agent(Long id,
                  String nom,
                  String prenom,
                  String password,
@@ -33,31 +45,76 @@ public class Agent extends Utilisateur {
                  ConditionsAgent conditions) {
 
         super(id, nom, prenom, password, email,
-              telephone, rue, ville, pays,
-              dateNaissance, numeroPermis, dateObtentionPermis);
+                telephone, rue, ville, pays,
+                dateNaissance, numeroPermis, dateObtentionPermis);
 
         this.estProfessionnel = estProfessionnel;
         this.conditions = conditions;
-        this.vehicules = new ArrayList<>();
-        this.notesRecues = new ArrayList<>();
     }
 
+    // ----- getters / setters -----
 
-    /* Méthode appelée par Loueur.noterAgent */
+    public boolean isEstProfessionnel() {
+        return estProfessionnel;
+    }
+
+    public void setEstProfessionnel(boolean estProfessionnel) {
+        this.estProfessionnel = estProfessionnel;
+    }
+
+    public ConditionsAgent getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(ConditionsAgent conditions) {
+        this.conditions = conditions;
+    }
+
+    public List<Vehicule> getVehicules() {
+        return new ArrayList<>(vehicules);
+    }
+
+    public List<Note> getNotesRecues() {
+        return new ArrayList<>(notesRecues);
+    }
+
+    // ----- méthodes métier importantes -----
+
+    public void ajouterVehicule(Vehicule v) {
+        if (v != null && !vehicules.contains(v)) {
+            vehicules.add(v);
+        }
+    }
+
+    public void retirerVehicule(Vehicule v) {
+        if (v != null) {
+            vehicules.remove(v);
+        }
+    }
+
+    /** Méthode appelée par Loueur.noterAgent */
     public void ajouterNote(Note note) {
         if (note != null) {
             notesRecues.add(note);
         }
     }
 
-    public List<Note> getNotesRecues() {
-        return new ArrayList<>(notesRecues);
-    }
     public HistoriqueVehicule consulterHistorique(Vehicule v) {
         if (v == null || !vehicules.contains(v)) {
-            return null; 
+            return null;
         }
+        // Attention: v.getContrats() doit exister dans Vehicule (version d’hier OK)
         return new HistoriqueVehicule(v, v.getContrats());
     }
 
+    @Override
+    public String toString() {
+        return "Agent{" +
+                "id=" + getId() +
+                ", nom='" + getNom() + '\'' +
+                ", prenom='" + getPrenom() + '\'' +
+                ", email='" + getEmail() + '\'' +
+                ", estProfessionnel=" + estProfessionnel +
+                '}';
+    }
 }

@@ -1,10 +1,19 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.MappedSuperclass;
+
 import java.time.LocalDate;
 
+@MappedSuperclass
 public class Utilisateur {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String nom;
     private String prenom;
     private String password;
@@ -19,11 +28,9 @@ public class Utilisateur {
 
     // --------- CONSTRUCTEURS ---------
 
-    // constructeur vide (utile pour certains frameworks / tests)
-    public Utilisateur() { }
+    public Utilisateur() {}
 
-    // constructeur COMPLET avec tous les attributs
-    public Utilisateur(int id,
+    public Utilisateur(Long id,
                        String nom,
                        String prenom,
                        String password,
@@ -52,103 +59,50 @@ public class Utilisateur {
 
     // --------- GETTERS / SETTERS ---------
 
-    public int getId() { 
-        return id; 
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
+
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getTelephone() { return telephone; }
+    public void setTelephone(String telephone) { this.telephone = telephone; }
+
+    public String getRue() { return rue; }
+    public void setRue(String rue) { this.rue = rue; }
+
+    public String getVille() { return ville; }
+    public void setVille(String ville) { this.ville = ville; }
+
+    public String getPays() { return pays; }
+    public void setPays(String pays) { this.pays = pays; }
+
+    public LocalDate getDateNaissance() { return dateNaissance; }
+    public void setDateNaissance(LocalDate dateNaissance) {
+        this.dateNaissance = dateNaissance;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getNumeroPermis() { return numeroPermis; }
+    public void setNumeroPermis(String numeroPermis) {
+        this.numeroPermis = numeroPermis;
     }
 
-    public String getNom() { 
-        return nom; 
-    }
-
-    public void setNom(String nom) { 
-        this.nom = nom; 
-    }
-
-    public String getPrenom() { 
-        return prenom; 
-    }
-
-    public void setPrenom(String prenom) { 
-        this.prenom = prenom; 
-    }
-
-    public String getPassword() { 
-        return password; 
-    }
-
-    public void setPassword(String password) { 
-        this.password = password; 
-    }
-
-    public String getEmail() { 
-        return email; 
-    }
-
-    public void setEmail(String email) { 
-        this.email = email; 
-    }
-
-    public String getTelephone() { 
-        return telephone; 
-    }
-
-    public void setTelephone(String telephone) { 
-        this.telephone = telephone; 
-    }
-
-    public String getRue() { 
-        return rue; 
-    }
-
-    public void setRue(String rue) { 
-        this.rue = rue; 
-    }
-
-    public String getVille() { 
-        return ville; 
-    }
-
-    public void setVille(String ville) { 
-        this.ville = ville; 
-    }
-
-    public String getPays() { 
-        return pays; 
-    }
-
-    public void setPays(String pays) { 
-        this.pays = pays; 
-    }
-
-    public LocalDate getDateNaissance() { 
-        return dateNaissance; 
-    }
-
-    public void setDateNaissance(LocalDate dateNaissance) { 
-        this.dateNaissance = dateNaissance; 
-    }
-
-    public String getNumeroPermis() { 
-        return numeroPermis; 
-    }
-
-    public void setNumeroPermis(String numeroPermis) { 
-        this.numeroPermis = numeroPermis; 
-    }
-
-    public LocalDate getDateObtentionPermis() { 
-        return dateObtentionPermis; 
+    public LocalDate getDateObtentionPermis() {
+        return dateObtentionPermis;
     }
 
     public void setDateObtentionPermis(LocalDate dateObtentionPermis) {
         this.dateObtentionPermis = dateObtentionPermis;
     }
-
-    // --------- TO STRING ---------
 
     @Override
     public String toString() {
