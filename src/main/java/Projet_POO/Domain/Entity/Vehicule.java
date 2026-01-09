@@ -1,30 +1,58 @@
 package Projet_POO.Domain.Entity;
-
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import Projet_POO.Domain.Enums.CodeOption;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="vehicule")
 
 @Entity
 @Table(name = "vehicule")
 public class Vehicule {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable=false, unique=true)
-    private String immatriculation;
-
-    @Column(nullable=false)
+// ---- attributs du diagramme ----
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+    
+    private String immatriculation;              // UML : UUID -> ici String (plus simple pour une plaque)
     private String villeDisponibilite;
+    private boolean deposeDifferenteAutorisee;
+
+    // compositions / associations
+    @Transient
+    private TypeVehicule typeVehicule;
+
+    @Transient
+    private SystemePropulsion systemePropulsion;
+
+    @Transient
+    private CaracteristiquesVehicule caracteristiques;
+
+    @Transient
+    private List<OptionVehicule> options = new ArrayList<>();
+
+    @Transient
+    private List<PeriodeDisponibilite> periodesDisponibilite = new ArrayList<>();
+
+    @Transient
+    private List<Note> notes = new ArrayList<>();
+
+    @Transient
+    private List<ContratLocation> contrats = new ArrayList<>();
+
 
     private boolean deposeDifferenteAutorisee;
 
-    // Pour rester simple au début : on met typeVehicule en String OU on fera entity après.
-    private String typeVehiculeLibelle;
+    public Vehicule() {
+        this.options = new ArrayList<>();
+        this.periodesDisponibilite = new ArrayList<>();
+        this.notes = new ArrayList<>();
+        this.contrats = new ArrayList<>();
+
+    }
 
     // note globale stockée (utile pour affichage US.V.1)
     private double noteMoyenne;
@@ -49,11 +77,45 @@ public class Vehicule {
         this.noteMoyenne = 0.0;
     }
 
-    // helpers
-    public void ajouterPeriodeDisponibilite(PeriodeDisponibilite periode) {
-        if (periode == null) return;
-        periode.setVehicule(this);
-        periodesDisponibilite.add(periode);
+    public TypeVehicule getTypeVehicule() {
+        return typeVehicule;
+    }
+
+    public void setTypeVehicule(TypeVehicule typeVehicule) {
+        this.typeVehicule = typeVehicule;
+    }
+
+    public SystemePropulsion getSystemePropulsion() {
+        return systemePropulsion;
+    }
+
+    public void setSystemePropulsion(SystemePropulsion systemePropulsion) {
+        this.systemePropulsion = systemePropulsion;
+    }
+
+    public CaracteristiquesVehicule getCaracteristiques() {
+        return caracteristiques;
+    }
+
+    public void setCaracteristiques(CaracteristiquesVehicule caracteristiques) {
+        this.caracteristiques = caracteristiques;
+    }
+
+    public List<OptionVehicule> getOptions() {
+        return new ArrayList<>(options);
+    }
+
+    public List<PeriodeDisponibilite> getPeriodesDisponibilite() {
+        return new ArrayList<>(periodesDisponibilite);
+    }
+
+    public Long getId() {
+    return id;
+}
+
+
+    public List<Note> getNotes() {
+        return new ArrayList<>(notes);
     }
 
     public void ajouterOption(CodeOption option) {
@@ -81,3 +143,5 @@ public class Vehicule {
     public Set<CodeOption> getOptions() { return options; }
     public List<PeriodeDisponibilite> getPeriodesDisponibilite() { return periodesDisponibilite; }
 }
+
+

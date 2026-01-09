@@ -5,29 +5,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Projet_POO.Domain.Enums.StatutContrat;
+import jakarta.persistence.*;
 
+@Entity
 public class ContratLocation {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
     private String lieuPrise;
     private String lieuDepose;
+
+    @Enumerated(EnumType.STRING)
     private StatutContrat statut;
+
     private double montantTotal;
 
-    // 🔴 NOUVEAU :
-    private Loueur loueur;
-    private Vehicule vehicule;
-    private Assurance assurance;
-    private List<ServiceOptionnel> services;
+    @Transient private Loueur loueur;
+    @Transient private Vehicule vehicule;
+    @Transient private Assurance assurance;
+
+    @Transient
+    private List<ServiceOptionnel> services = new ArrayList<>();
 
     public ContratLocation() {
         this.services = new ArrayList<>();
     }
 
-    public ContratLocation(int id,
-                           LocalDateTime dateDebut,
+    public ContratLocation(LocalDateTime dateDebut,
                            LocalDateTime dateFin,
                            String lieuPrise,
                            String lieuDepose,
@@ -38,7 +46,6 @@ public class ContratLocation {
                            Assurance assurance) {
 
         this();
-        this.id = id;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.lieuPrise = lieuPrise;
@@ -50,10 +57,7 @@ public class ContratLocation {
         this.assurance = assurance;
     }
 
-    // ---------- getters / setters classiques ----------
-
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Long getId() { return id; }
 
     public LocalDateTime getDateDebut() { return dateDebut; }
     public void setDateDebut(LocalDateTime dateDebut) { this.dateDebut = dateDebut; }
@@ -82,20 +86,10 @@ public class ContratLocation {
     public Assurance getAssurance() { return assurance; }
     public void setAssurance(Assurance assurance) { this.assurance = assurance; }
 
-    public List<ServiceOptionnel> getServices() {
-        return new ArrayList<>(services);
-    }
+    public List<ServiceOptionnel> getServices() { return new ArrayList<>(services); }
 
     public void ajouterService(ServiceOptionnel service) {
-        if (service != null) {
-            services.add(service);
-        }
-    }
-
-    // ---------- méthode métier ----------
-
-    public double montantTotal() {
-        return montantTotal;
+        if (service != null) services.add(service);
     }
 
     @Override

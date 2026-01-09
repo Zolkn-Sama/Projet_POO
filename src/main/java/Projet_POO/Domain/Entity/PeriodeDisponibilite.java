@@ -3,8 +3,13 @@ package Projet_POO.Domain.Entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+//  IMPORTS JPA OBLIGATOIRES
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
 @Entity
-@Table(name="periode_disponibilite")
 public class PeriodeDisponibilite {
 
     @Id
@@ -14,25 +19,32 @@ public class PeriodeDisponibilite {
     private LocalDateTime debut;
     private LocalDateTime fin;
 
-    @ManyToOne
-    @JoinColumn(name="vehicule_id", nullable=false)
-    private Vehicule vehicule;
-
-    public PeriodeDisponibilite() {}
+    // ✅ CONSTRUCTEUR VIDE OBLIGATOIRE POUR JPA
+    public PeriodeDisponibilite() {
+    }
 
     public PeriodeDisponibilite(LocalDateTime debut, LocalDateTime fin) {
         this.debut = debut;
         this.fin = fin;
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDateTime getDebut() { return debut; }
-    public void setDebut(LocalDateTime debut) { this.debut = debut; }
+    public LocalDateTime getDebut() {
+        return debut;
+    }
 
-    public LocalDateTime getFin() { return fin; }
-    public void setFin(LocalDateTime fin) { this.fin = fin; }
+    public void setDebut(LocalDateTime debut) {
+        this.debut = debut;
+    }
 
-    public Vehicule getVehicule() { return vehicule; }
-    public void setVehicule(Vehicule vehicule) { this.vehicule = vehicule; }
+    public LocalDateTime getFin() {
+        return fin;
+    }
+
+    public void setFin(LocalDateTime fin) {
+        this.fin = fin;
+    }
 }
