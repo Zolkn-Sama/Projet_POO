@@ -4,9 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Projet_POO.Domain.Enums.CodeOption;
+import jakarta.persistence.*;
 
+
+@Entity
+@Table(name = "cataloguevehicules")
 public class CatalogueVehicules {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
+
+    @Transient
     private List<Vehicule> vehicules;
 
     public CatalogueVehicules() {
