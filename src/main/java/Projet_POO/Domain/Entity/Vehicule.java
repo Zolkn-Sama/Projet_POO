@@ -1,23 +1,27 @@
 package Projet_POO.Domain.Entity;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import jakarta.persistence.*;
+import java.util.Set;
 
-@Entity
-@Table(name="vehicule")
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "vehicule")
 public class Vehicule {
 
-// ---- attributs du diagramme ----
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
-    
-    private String immatriculation;              // UML : UUID -> ici String (plus simple pour une plaque)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String immatriculation;
     private String villeDisponibilite;
     private boolean deposeDifferenteAutorisee;
 
@@ -35,7 +39,7 @@ private Long id;
     private List<OptionVehicule> options = new ArrayList<>();
 
     @Transient
-    private List<PeriodeDisponibilite> periodesDisponibilite = new ArrayList<>();
+    private List<Disponibilite> disponibilites = new ArrayList<>();
 
     @Transient
     private List<Note> notes = new ArrayList<>();
@@ -44,85 +48,17 @@ private Long id;
     private List<ContratLocation> contrats = new ArrayList<>();
 
 
-    private boolean deposeDifferenteAutorisee;
-
     public Vehicule() {
-        this.options = new ArrayList<>();
-        this.periodesDisponibilite = new ArrayList<>();
-        this.notes = new ArrayList<>();
-        this.contrats = new ArrayList<>();
-
     }
 
-    // note globale stockée (utile pour affichage US.V.1)
-    private double noteMoyenne;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="vehicule_options", joinColumns=@JoinColumn(name="vehicule_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name="code_option")
-    private Set<CodeOption> options = new HashSet<>();
-
-    @OneToMany(mappedBy="vehicule", cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<PeriodeDisponibilite> periodesDisponibilite = new ArrayList<>();
-
-    public Vehicule() {}
-
-    public Vehicule(String immatriculation, String villeDisponibilite, boolean deposeDifferenteAutorisee,
-                    String typeVehiculeLibelle) {
+    public Vehicule(String immatriculation, String villeDisponibilite, boolean deposeDifferenteAutorisee, TypeVehicule typeVehicule) {
         this.immatriculation = immatriculation;
         this.villeDisponibilite = villeDisponibilite;
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
-        this.typeVehiculeLibelle = typeVehiculeLibelle;
-        this.noteMoyenne = 0.0;
-    }
-
-    public TypeVehicule getTypeVehicule() {
-        return typeVehicule;
-    }
-
-    public void setTypeVehicule(TypeVehicule typeVehicule) {
         this.typeVehicule = typeVehicule;
     }
 
-    public SystemePropulsion getSystemePropulsion() {
-        return systemePropulsion;
-    }
-
-    public void setSystemePropulsion(SystemePropulsion systemePropulsion) {
-        this.systemePropulsion = systemePropulsion;
-    }
-
-    public CaracteristiquesVehicule getCaracteristiques() {
-        return caracteristiques;
-    }
-
-    public void setCaracteristiques(CaracteristiquesVehicule caracteristiques) {
-        this.caracteristiques = caracteristiques;
-    }
-
-    public List<OptionVehicule> getOptions() {
-        return new ArrayList<>(options);
-    }
-
-    public List<PeriodeDisponibilite> getPeriodesDisponibilite() {
-        return new ArrayList<>(periodesDisponibilite);
-    }
-
-    public Long getId() {
-    return id;
-}
-
-
-    public List<Note> getNotes() {
-        return new ArrayList<>(notes);
-    }
-
-    public void ajouterOption(CodeOption option) {
-        if (option != null) options.add(option);
-    }
-
-    // getters/setters
+    // --- Getters / Setters ---
     public Long getId() { return id; }
 
     public String getImmatriculation() { return immatriculation; }
@@ -132,16 +68,77 @@ private Long id;
     public void setVilleDisponibilite(String villeDisponibilite) { this.villeDisponibilite = villeDisponibilite; }
 
     public boolean isDeposeDifferenteAutorisee() { return deposeDifferenteAutorisee; }
-    public void setDeposeDifferenteAutorisee(boolean deposeDifferenteAutorisee) { this.deposeDifferenteAutorisee = deposeDifferenteAutorisee; }
+    public void setDeposeDifferenteAutorisee(boolean deposeDifferenteAutorisee) {
+        this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
+    }
 
-    public String getTypeVehiculeLibelle() { return typeVehiculeLibelle; }
-    public void setTypeVehiculeLibelle(String typeVehiculeLibelle) { this.typeVehiculeLibelle = typeVehiculeLibelle; }
+    public TypeVehicule getTypeVehicule() { return typeVehicule; }
+    public void setTypeVehicule(TypeVehicule typeVehicule) { this.typeVehicule = typeVehicule; }
 
-    public double getNoteMoyenne() { return noteMoyenne; }
-    public void setNoteMoyenne(double noteMoyenne) { this.noteMoyenne = noteMoyenne; }
+    public List<Disponibilite> getDisponibilites() {
+        return new ArrayList<>(disponibilites);
+    }
 
-    public Set<CodeOption> getOptions() { return options; }
-    public List<PeriodeDisponibilite> getPeriodesDisponibilite() { return periodesDisponibilite; }
+    public Set<OptionVehicule> getOptions() {
+        return new HashSet<>(options);
+    }
+
+    public List<ContratLocation> getContrats() {
+        return new ArrayList<>(contrats);
+    }
+
+    public List<Note> getNotes() {
+        return new ArrayList<>(notes);
+    }
+
+    // --- Méthodes métier attendues par ton Service/Catalogue/Loueur ---
+
+    public void ajouterOption(OptionVehicule option) {
+        if (option != null) options.add(option);
+    }
+
+    public void ajouterDisponibilite(Disponibilite periode) {
+        if (periode != null) disponibilites.add(periode);
+    }
+
+    public void ajouterNote(Note note) {
+        if (note != null) notes.add(note);
+    }
+
+    public void ajouterContrat(ContratLocation contrat) {
+        if (contrat != null && !contrats.contains(contrat)) contrats.add(contrat);
+    }
+
+    public double getNoteMoyenne() {
+        if (notes.isEmpty()) return 0.0;
+        double somme = 0.0;
+        for (Note n : notes) {
+            somme += n.noteGlobale(); // il faut que Note ait noteGlobale()
+        }
+        return somme / notes.size();
+    }
+
+    public boolean estDisponible(LocalDateTime debut, LocalDateTime fin) {
+        if (debut == null || fin == null || !debut.isBefore(fin)) return false;
+
+        // dispo si au moins une période couvre totalement [debut, fin]
+        for (Disponibilite p : disponibilites) {
+            if (p != null && p.getDebut() != null && p.getFin() != null) {
+                boolean couvre = !debut.isBefore(p.getDebut()) && !fin.isAfter(p.getFin());
+                if (couvre) return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicule{" +
+                "id=" + id +
+                ", immatriculation='" + immatriculation + '\'' +
+                ", villeDisponibilite='" + villeDisponibilite + '\'' +
+                ", deposeDifferenteAutorisee=" + deposeDifferenteAutorisee +
+                ", typeVehicule='" + typeVehicule + '\'' +
+                '}';
+    }
 }
-
-
