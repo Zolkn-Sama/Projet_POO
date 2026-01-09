@@ -7,7 +7,7 @@ public class ServiceDepotVehicule extends ServiceOptionnel {
 
     public ServiceDepotVehicule() { }
 
-    public ServiceDepotVehicule(int id, String nom, double prix,
+    public ServiceDepotVehicule(long id, String nom, double prix,
                                 String localisation, String horaires) {
         super(id, nom, prix);
         this.localisation = localisation;

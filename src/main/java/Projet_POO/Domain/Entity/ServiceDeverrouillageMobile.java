@@ -6,7 +6,7 @@ public class ServiceDeverrouillageMobile extends ServiceOptionnel {
 
     public ServiceDeverrouillageMobile() { }
 
-    public ServiceDeverrouillageMobile(int id, String nom, double prix,
+    public ServiceDeverrouillageMobile(long id, String nom, double prix,
                                        String fournisseur) {
         super(id, nom, prix);
         this.fournisseur = fournisseur;
