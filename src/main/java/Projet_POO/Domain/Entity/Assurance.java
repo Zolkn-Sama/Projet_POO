@@ -1,15 +1,27 @@
 package Projet_POO.Domain.Entity;
 
+
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Entity
+@Table(name = "assurance")
 public class Assurance {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nom;
     private boolean estParDefaut;
 
+
+    @Transient
     private List<ConditionAssurance> conditions;
+
+    @Transient
     private List<CouvertureAssurance> couvertures;
 
     public Assurance() {

@@ -1,0 +1,10 @@
+package Projet_POO.Repository;
+
+import Projet_POO.Domain.Entity.ConditionAssurance;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ConditionAssuranceRepository extends JpaRepository<ConditionAssurance, Long> {
+    // Vous pouvez ajouter des méthodes personnalisées ici
+}
