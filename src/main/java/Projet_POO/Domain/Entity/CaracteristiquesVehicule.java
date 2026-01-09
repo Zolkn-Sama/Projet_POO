@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 
 @Entity
+@Table(name = "caracteristiquesvehicule")
 public class CaracteristiquesVehicule {
 
 
