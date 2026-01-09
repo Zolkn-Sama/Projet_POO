@@ -1,6 +1,13 @@
 package Projet_POO.Domain.Entity;
 
+
+import jakarta.persistence.*;
+
+@Entity
 public class CouvertureAssurance {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private int id;
     private String libelle;
