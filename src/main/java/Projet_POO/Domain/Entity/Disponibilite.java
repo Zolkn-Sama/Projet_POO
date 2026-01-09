@@ -1,16 +1,14 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-//  IMPORTS JPA OBLIGATOIRES
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
-public class PeriodeDisponibilite {
+public class Disponibilite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +18,10 @@ public class PeriodeDisponibilite {
     private LocalDateTime fin;
 
     // ✅ CONSTRUCTEUR VIDE OBLIGATOIRE POUR JPA
-    public PeriodeDisponibilite() {
+    public Disponibilite() {
     }
 
-    public PeriodeDisponibilite(LocalDateTime debut, LocalDateTime fin) {
+    public Disponibilite(LocalDateTime debut, LocalDateTime fin) {
         this.debut = debut;
         this.fin = fin;
     }

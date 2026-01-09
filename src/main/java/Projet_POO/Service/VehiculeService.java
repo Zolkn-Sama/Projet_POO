@@ -1,15 +1,16 @@
 package Projet_POO.Service;
 
 
-import Projet_POO.Domain.Entity.Vehicule;
-import Projet_POO.Domain.Entity.PeriodeDisponibilite;
-import Projet_POO.Domain.Entity.FiltreRecherche;
-import Projet_POO.Repository.VehiculeRepository;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import Projet_POO.Domain.Entity.Disponibilite;
+import Projet_POO.Domain.Entity.FiltreRecherche;
+import Projet_POO.Domain.Entity.Vehicule;
+import Projet_POO.Repository.VehiculeRepository;
 
 @Service
 public class VehiculeService {
@@ -33,12 +34,12 @@ public class VehiculeService {
 
         for (Vehicule v : base) {
 
-            if (f.getNoteMin() > 0 && v.noteMoyenne() < f.getNoteMin()) continue;
+            if (f.getNoteMin() > 0 && v.getNoteMoyenne() < f.getNoteMin()) continue;
 
             if (!f.getOptionsRequises().isEmpty() && !v.getOptions().containsAll(f.getOptionsRequises())) continue;
 
             if (f.getDateDebut() != null && f.getDateFin() != null) {
-                if (!dispo(v.getPeriodesDisponibilite(), f.getDateDebut(), f.getDateFin())) continue;
+                if (!dispo(v.getDisponibilites(), f.getDateDebut(), f.getDateFin())) continue;
             }
 
             // type/domaine/propulsion : si tu les stockes plus tard en DB, tu filtreras ici.
@@ -47,10 +48,10 @@ public class VehiculeService {
         return res;
     }
 
-    private boolean dispo(List<PeriodeDisponibilite> periodes, LocalDateTime debut, LocalDateTime fin) {
+    private boolean dispo(List<Disponibilite> periodes, LocalDateTime debut, LocalDateTime fin) {
         if (debut == null || fin == null || !debut.isBefore(fin)) return false;
 
-        for (PeriodeDisponibilite p : periodes) {
+        for (Disponibilite p : periodes) {
             if (p.getDebut() == null || p.getFin() == null) continue;
             boolean couvre = !debut.isBefore(p.getDebut()) && !fin.isAfter(p.getFin());
             if (couvre) return true;
