@@ -46,7 +46,7 @@ public class CatalogueVehicules {
 
             // note minimale
             if (f.getNoteMin() > 0 &&
-                v.noteMoyenne() < f.getNoteMin()) {
+                v.getNoteMoyenne() < f.getNoteMin()) {
                 continue;
             }
 
