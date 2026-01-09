@@ -1,15 +1,18 @@
 package Projet_POO.Domain.Entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name="vehicule")
 
+@Entity
+@Table(name = "vehicule")
 public class Vehicule {
 
-    // ---- attributs du diagramme ----
+// ---- attributs du diagramme ----
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Long id;
@@ -41,7 +44,7 @@ private Long id;
     private List<ContratLocation> contrats = new ArrayList<>();
 
 
-    // ---- constructeurs ----
+    private boolean deposeDifferenteAutorisee;
 
     public Vehicule() {
         this.options = new ArrayList<>();
@@ -51,46 +54,27 @@ private Long id;
 
     }
 
-    public Vehicule(String immatriculation,
-                    String villeDisponibilite,
-                    boolean deposeDifferenteAutorisee,
-                    TypeVehicule typeVehicule,
-                    SystemePropulsion systemePropulsion,
-                    CaracteristiquesVehicule caracteristiques) {
+    // note globale stockée (utile pour affichage US.V.1)
+    private double noteMoyenne;
 
-        this();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name="vehicule_options", joinColumns=@JoinColumn(name="vehicule_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name="code_option")
+    private Set<CodeOption> options = new HashSet<>();
+
+    @OneToMany(mappedBy="vehicule", cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<PeriodeDisponibilite> periodesDisponibilite = new ArrayList<>();
+
+    public Vehicule() {}
+
+    public Vehicule(String immatriculation, String villeDisponibilite, boolean deposeDifferenteAutorisee,
+                    String typeVehiculeLibelle) {
         this.immatriculation = immatriculation;
         this.villeDisponibilite = villeDisponibilite;
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
-        this.typeVehicule = typeVehicule;
-        this.systemePropulsion = systemePropulsion;
-        this.caracteristiques = caracteristiques;
-    }
-
-    // ---- getters / setters ----
-
-    public String getImmatriculation() {
-        return immatriculation;
-    }
-
-    public void setImmatriculation(String immatriculation) {
-        this.immatriculation = immatriculation;
-    }
-
-    public String getVilleDisponibilite() {
-        return villeDisponibilite;
-    }
-
-    public void setVilleDisponibilite(String villeDisponibilite) {
-        this.villeDisponibilite = villeDisponibilite;
-    }
-
-    public boolean isDeposeDifferenteAutorisee() {
-        return deposeDifferenteAutorisee;
-    }
-
-    public void setDeposeDifferenteAutorisee(boolean deposeDifferenteAutorisee) {
-        this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
+        this.typeVehiculeLibelle = typeVehiculeLibelle;
+        this.noteMoyenne = 0.0;
     }
 
     public TypeVehicule getTypeVehicule() {
@@ -134,72 +118,30 @@ private Long id;
         return new ArrayList<>(notes);
     }
 
-    // ---- méthodes de gestion des listes ----
-    
-    public void ajouterContrat(ContratLocation contrat) {
-        if (contrat != null && !contrats.contains(contrat)) {
-            contrats.add(contrat);
-        }
+    public void ajouterOption(CodeOption option) {
+        if (option != null) options.add(option);
     }
 
-    public List<ContratLocation> getContrats() {
-        return new ArrayList<>(contrats);
-    }
+    // getters/setters
+    public Long getId() { return id; }
 
-    public void ajouterOption(OptionVehicule option) {
-        if (option != null && !options.contains(option)) {
-            options.add(option);
-        }
-    }
+    public String getImmatriculation() { return immatriculation; }
+    public void setImmatriculation(String immatriculation) { this.immatriculation = immatriculation; }
 
-    public void ajouterPeriodeDisponibilite(PeriodeDisponibilite periode) {
-        if (periode != null) {
-            periodesDisponibilite.add(periode);
-        }
-    }
+    public String getVilleDisponibilite() { return villeDisponibilite; }
+    public void setVilleDisponibilite(String villeDisponibilite) { this.villeDisponibilite = villeDisponibilite; }
 
-    /** méthode demandée : ajouterNote(Note) */
-    public void ajouterNote(Note note) {
-        if (note != null) {
-            notes.add(note);
-        }
-    }
+    public boolean isDeposeDifferenteAutorisee() { return deposeDifferenteAutorisee; }
+    public void setDeposeDifferenteAutorisee(boolean deposeDifferenteAutorisee) { this.deposeDifferenteAutorisee = deposeDifferenteAutorisee; }
 
-    // ---- méthodes UML : noteMoyenne, estDisponible ----
+    public String getTypeVehiculeLibelle() { return typeVehiculeLibelle; }
+    public void setTypeVehiculeLibelle(String typeVehiculeLibelle) { this.typeVehiculeLibelle = typeVehiculeLibelle; }
 
-    /** noteMoyenne(): double */
-    public double noteMoyenne() {
-        if (notes.isEmpty()) {
-            return 0.0;
-        }
-        double somme = 0.0;
-        for (Note n : notes) {
-            somme += n.noteGlobale();   // on suppose que Note a bien noteGlobale()
-        }
-        return somme / notes.size();
-    }
+    public double getNoteMoyenne() { return noteMoyenne; }
+    public void setNoteMoyenne(double noteMoyenne) { this.noteMoyenne = noteMoyenne; }
 
-    public boolean estDisponible(LocalDateTime debut, LocalDateTime fin) {
-        if (debut == null || fin == null || !debut.isBefore(fin)) {
-            return false;
-        }
-
-        for (PeriodeDisponibilite p : periodesDisponibilite) {
-            if (!debut.isBefore(p.getDebut()) && !fin.isAfter(p.getFin())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        return "Vehicule{" +
-                "immatriculation='" + immatriculation + '\'' +
-                ", villeDisponibilite='" + villeDisponibilite + '\'' +
-                ", type=" + (typeVehicule != null ? typeVehicule.getLibelle() : "N/A") +
-                '}';
-    }
+    public Set<CodeOption> getOptions() { return options; }
+    public List<PeriodeDisponibilite> getPeriodesDisponibilite() { return periodesDisponibilite; }
 }
 
 

@@ -1,5 +1,6 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 //  IMPORTS JPA OBLIGATOIRES
