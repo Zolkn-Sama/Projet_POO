@@ -1,5 +1,4 @@
 package Projet_POO.Domain.Entity;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +19,27 @@ private Long id;
     private boolean deposeDifferenteAutorisee;
 
     // compositions / associations
+    @Transient
     private TypeVehicule typeVehicule;
+
+    @Transient
     private SystemePropulsion systemePropulsion;
+
+    @Transient
     private CaracteristiquesVehicule caracteristiques;
 
-    private List<OptionVehicule> options;
-    private List<PeriodeDisponibilite> periodesDisponibilite;
-    private List<Note> notes;   // notes sur ce véhicule
-    
-    private List<ContratLocation> contrats;
+    @Transient
+    private List<OptionVehicule> options = new ArrayList<>();
+
+    @Transient
+    private List<PeriodeDisponibilite> periodesDisponibilite = new ArrayList<>();
+
+    @Transient
+    private List<Note> notes = new ArrayList<>();
+
+    @Transient
+    private List<ContratLocation> contrats = new ArrayList<>();
+
 
     // ---- constructeurs ----
 

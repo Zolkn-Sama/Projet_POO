@@ -1,6 +1,5 @@
 package Projet_POO.Repository;
 
-
 import Projet_POO.Domain.Entity.Vehicule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
