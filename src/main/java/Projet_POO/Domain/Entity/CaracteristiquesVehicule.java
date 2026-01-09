@@ -1,6 +1,15 @@
 package Projet_POO.Domain.Entity;
 
+
+import jakarta.persistence.*;
+
+
+@Entity
 public class CaracteristiquesVehicule {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String marque;
     private String modele;
