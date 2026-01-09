@@ -1,13 +1,12 @@
 package Projet_POO.Domain.Entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import Projet_POO.Domain.Enums.StatutContrat;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "contrat_location")
 public class ContratLocation {
 
     @Id
@@ -16,6 +15,7 @@ public class ContratLocation {
 
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
+
     private String lieuPrise;
     private String lieuDepose;
 
@@ -24,37 +24,26 @@ public class ContratLocation {
 
     private double montantTotal;
 
-    @Transient private Loueur loueur;
-    @Transient private Vehicule vehicule;
-    @Transient private Assurance assurance;
+    // --- version simple: on stocke des IDs ---
+    private Long loueurId;
+    private Long vehiculeId;
+    private Long assuranceId;
 
-    @Transient
-    private List<ServiceOptionnel> services = new ArrayList<>();
+    public ContratLocation() { }
 
-    public ContratLocation() {
-        this.services = new ArrayList<>();
-    }
-
-    public ContratLocation(LocalDateTime dateDebut,
-                           LocalDateTime dateFin,
-                           String lieuPrise,
-                           String lieuDepose,
-                           StatutContrat statut,
-                           double montantTotal,
-                           Loueur loueur,
-                           Vehicule vehicule,
-                           Assurance assurance) {
-
-        this();
+    public ContratLocation(LocalDateTime dateDebut, LocalDateTime dateFin,
+                           String lieuPrise, String lieuDepose,
+                           StatutContrat statut, double montantTotal,
+                           Long loueurId, Long vehiculeId, Long assuranceId) {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.lieuPrise = lieuPrise;
         this.lieuDepose = lieuDepose;
         this.statut = statut;
         this.montantTotal = montantTotal;
-        this.loueur = loueur;
-        this.vehicule = vehicule;
-        this.assurance = assurance;
+        this.loueurId = loueurId;
+        this.vehiculeId = vehiculeId;
+        this.assuranceId = assuranceId;
     }
 
     public Long getId() { return id; }
@@ -77,20 +66,14 @@ public class ContratLocation {
     public double getMontantTotal() { return montantTotal; }
     public void setMontantTotal(double montantTotal) { this.montantTotal = montantTotal; }
 
-    public Loueur getLoueur() { return loueur; }
-    public void setLoueur(Loueur loueur) { this.loueur = loueur; }
+    public Long getLoueurId() { return loueurId; }
+    public void setLoueurId(Long loueurId) { this.loueurId = loueurId; }
 
-    public Vehicule getVehicule() { return vehicule; }
-    public void setVehicule(Vehicule vehicule) { this.vehicule = vehicule; }
+    public Long getVehiculeId() { return vehiculeId; }
+    public void setVehiculeId(Long vehiculeId) { this.vehiculeId = vehiculeId; }
 
-    public Assurance getAssurance() { return assurance; }
-    public void setAssurance(Assurance assurance) { this.assurance = assurance; }
-
-    public List<ServiceOptionnel> getServices() { return new ArrayList<>(services); }
-
-    public void ajouterService(ServiceOptionnel service) {
-        if (service != null) services.add(service);
-    }
+    public Long getAssuranceId() { return assuranceId; }
+    public void setAssuranceId(Long assuranceId) { this.assuranceId = assuranceId; }
 
     @Override
     public String toString() {
@@ -102,6 +85,9 @@ public class ContratLocation {
                 ", lieuDepose='" + lieuDepose + '\'' +
                 ", statut=" + statut +
                 ", montantTotal=" + montantTotal +
+                ", loueurId=" + loueurId +
+                ", vehiculeId=" + vehiculeId +
+                ", assuranceId=" + assuranceId +
                 '}';
     }
 }
