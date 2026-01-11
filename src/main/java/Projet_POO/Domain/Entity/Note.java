@@ -1,60 +1,65 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+@Entity
+@Table(name = "note")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Note {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDateTime date;
+
+    @Column(length = 1000)
     private String commentaire;
-    private List<NoteCritere> criteres;
 
-    public Note(int id, LocalDateTime date ,String commentaire) {
-        this.id = id;
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NoteCritere> criteres = new ArrayList<>();
+
+    public Note() {
         this.date = LocalDateTime.now();
-        this.commentaire = commentaire;
-        this.criteres = new ArrayList<>();
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public String getCommentaire() {
-        return commentaire;
-    }
-
-    public void setCommentaire(String commentaire) {
+    public Note(String commentaire) {
+        this();
         this.commentaire = commentaire;
     }
 
-    public void ajouterCritere(NoteCritere critere) {
-        if (critere != null) {
-            criteres.add(critere);
-        }
-    }
+    public Long getId() { return id; }
+
+    public LocalDateTime getDate() { return date; }
+
+    public String getCommentaire() { return commentaire; }
+    public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
 
     public List<NoteCritere> getCriteres() {
         return new ArrayList<>(criteres);
     }
 
-    /**
-     * noteGlobale(): moyenne des valeurs des critères.
-     * Si aucun critère, on retourne 0.0.
-     */
+    public void ajouterCritere(NoteCritere critere) {
+        if (critere == null) return;
+        critere.setNote(this);          // ✅ lien inverse obligatoire
+        criteres.add(critere);
+    }
+
+    public void supprimerCritere(NoteCritere critere) {
+        if (critere == null) return;
+        criteres.remove(critere);
+        critere.setNote(null);
+    }
+
+    @Transient
     public double noteGlobale() {
-        if (criteres.isEmpty()) {
-            return 0.0;
-        }
+        if (criteres.isEmpty()) return 0.0;
         double somme = 0.0;
-        for (NoteCritere c : criteres) {
-            somme += c.getValeur();
-        }
+        for (NoteCritere c : criteres) somme += c.getValeur();
         return somme / criteres.size();
     }
 
@@ -67,4 +72,13 @@ public class Note {
                 ", noteGlobale=" + noteGlobale() +
                 '}';
     }
+
+    public void setCriteres(List<NoteCritere> criteres) {
+        this.criteres.clear();
+        if (criteres == null) return;
+        for (NoteCritere c : criteres) {
+            this.ajouterCritere(c); // remet le lien note_id
+        }
+    }
+
 }

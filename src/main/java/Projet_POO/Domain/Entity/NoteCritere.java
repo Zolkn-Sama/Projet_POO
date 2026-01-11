@@ -1,35 +1,37 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "note_critere")
 public class NoteCritere {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String nom;
-    private int valeur;  // par ex. de 1 à 5
+    private int valeur; // 1..5
 
-    public NoteCritere(int id, String nom, int valeur) {
-        this.id = id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "note_id")
+    private Note note;
+
+    public NoteCritere() {}
+
+    public NoteCritere(String nom, int valeur) {
         this.nom = nom;
         this.valeur = valeur;
     }
 
-    public int getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getNom() {
-        return nom;
-    }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+    public int getValeur() { return valeur; }
+    public void setValeur(int valeur) { this.valeur = valeur; }
 
-    public int getValeur() {
-        return valeur;
-    }
-
-    public void setValeur(int valeur) {
-        this.valeur = valeur;
-    }
+    public Note getNote() { return note; }
+    public void setNote(Note note) { this.note = note; }
 }
