@@ -3,6 +3,9 @@ package Projet_POO.Domain.Entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "agent")
+
 public class Agent extends Utilisateur {
 
     private boolean estProfessionnel;

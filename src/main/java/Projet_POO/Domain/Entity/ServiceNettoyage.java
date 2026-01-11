@@ -1,27 +1,26 @@
 package Projet_POO.Domain.Entity;
 
+import Projet_POO.Domain.Entity.ServiceOptionnel;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "service_nettoyage")
+@PrimaryKeyJoinColumn(name = "id")
 public class ServiceNettoyage extends ServiceOptionnel {
 
-    private String typeService; // ex : "Intérieur", "Extérieur", "Complet"
+    @Column(name = "type_service")
+    private String typeService;
 
-    public ServiceNettoyage() { }
+    public ServiceNettoyage() { super(); }
 
-    public ServiceNettoyage(long id, String nom, double prix, String typeService) {
-        super(id, nom, prix);
+    public ServiceNettoyage(String nom, double prix, String typeService) {
+        super(nom, prix);
         this.typeService = typeService;
     }
 
     public String getTypeService() { return typeService; }
-
     public void setTypeService(String typeService) { this.typeService = typeService; }
-
-    @Override
-    public String toString() {
-        return "ServiceNettoyage{" +
-                "id=" + getId() +
-                ", nom='" + getNom() + '\'' +
-                ", prix=" + getPrix() +
-                ", typeService='" + typeService + '\'' +
-                '}';
-    }
 }

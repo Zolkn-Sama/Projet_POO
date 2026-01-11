@@ -15,8 +15,8 @@ public class ServiceOptionnelService {
         this.repo = repo;
     }
 
-    public ServiceOptionnel creer(ServiceOptionnel service) {
-        return repo.save(service);
+    public ServiceOptionnel creer(ServiceOptionnel s) {
+        return repo.save(s);
     }
 
     public List<ServiceOptionnel> tous() {
