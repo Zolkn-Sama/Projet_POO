@@ -1,8 +1,6 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.Assurance;
 import Projet_POO.Domain.Entity.CouvertureAssurance;
-import Projet_POO.Repository.AssuranceRepository;
 import Projet_POO.Repository.CouvertureAssuranceRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,22 +9,21 @@ import java.util.List;
 @Service
 public class CouvertureAssuranceService {
 
-    private final CouvertureAssuranceRepository repo;
-    private final AssuranceRepository assuranceRepo;
+    private final CouvertureAssuranceRepository couvertureRepository;
 
-    public CouvertureAssuranceService(CouvertureAssuranceRepository repo, AssuranceRepository assuranceRepo) {
-        this.repo = repo;
-        this.assuranceRepo = assuranceRepo;
+    public CouvertureAssuranceService(CouvertureAssuranceRepository couvertureRepository) {
+        this.couvertureRepository = couvertureRepository;
     }
 
-    public CouvertureAssurance creerPourAssurance(Long assuranceId, CouvertureAssurance c) {
-        Assurance a = assuranceRepo.findById(assuranceId)
-                .orElseThrow(() -> new RuntimeException("Assurance introuvable: " + assuranceId));
-        c.setAssurance(a);
-        return repo.save(c);
+    public CouvertureAssurance creer(CouvertureAssurance couvertureAssurance) {
+        return couvertureRepository.save(couvertureAssurance);
     }
 
-    public List<CouvertureAssurance> parAssurance(Long assuranceId) {
-        return repo.findByAssuranceId(assuranceId);
+    public List<CouvertureAssurance> toutes() {
+        return couvertureRepository.findAll();
+    }
+
+    public CouvertureAssurance trouverParId(Long id) {
+        return couvertureRepository.findById(id).orElseThrow(() -> new RuntimeException("Couverture d'assurance introuvable"));
     }
 }

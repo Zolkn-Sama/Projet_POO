@@ -16,13 +16,18 @@ public class ConditionAssuranceController {
         this.service = service;
     }
 
-    @PostMapping("/assurance/{assuranceId}")
-    public ConditionAssurance creer(@PathVariable Long assuranceId, @RequestBody ConditionAssurance c) {
-        return service.creerPourAssurance(assuranceId, c);
+    @PostMapping
+    public ConditionAssurance creer(@RequestBody ConditionAssurance conditionAssurance) {
+        return service.creer(conditionAssurance);
     }
 
-    @GetMapping("/assurance/{assuranceId}")
-    public List<ConditionAssurance> parAssurance(@PathVariable Long assuranceId) {
-        return service.parAssurance(assuranceId);
+    @GetMapping
+    public List<ConditionAssurance> toutes() {
+        return service.toutes();
+    }
+
+    @GetMapping("/{id}")
+    public ConditionAssurance trouverParId(@PathVariable Long id) {
+        return service.trouverParId(id);
     }
 }

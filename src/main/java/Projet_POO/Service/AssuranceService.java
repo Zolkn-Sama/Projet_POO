@@ -22,8 +22,4 @@ public class AssuranceService {
     public List<Assurance> toutes() {
         return repo.findAll();
     }
-
-    public Assurance getOrThrow(Long id) {
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Assurance introuvable: " + id));
-    }
 }

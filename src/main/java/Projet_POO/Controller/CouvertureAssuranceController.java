@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/couvertures")
+@RequestMapping("/couvertures-assurance")
 public class CouvertureAssuranceController {
 
     private final CouvertureAssuranceService service;
@@ -16,13 +16,18 @@ public class CouvertureAssuranceController {
         this.service = service;
     }
 
-    @PostMapping("/assurance/{assuranceId}")
-    public CouvertureAssurance creer(@PathVariable Long assuranceId, @RequestBody CouvertureAssurance c) {
-        return service.creerPourAssurance(assuranceId, c);
+    @PostMapping
+    public CouvertureAssurance creer(@RequestBody CouvertureAssurance couvertureAssurance) {
+        return service.creer(couvertureAssurance);
     }
 
-    @GetMapping("/assurance/{assuranceId}")
-    public List<CouvertureAssurance> parAssurance(@PathVariable Long assuranceId) {
-        return service.parAssurance(assuranceId);
+    @GetMapping
+    public List<CouvertureAssurance> toutes() {
+        return service.toutes();
+    }
+
+    @GetMapping("/{id}")
+    public CouvertureAssurance trouverParId(@PathVariable Long id) {
+        return service.trouverParId(id);
     }
 }

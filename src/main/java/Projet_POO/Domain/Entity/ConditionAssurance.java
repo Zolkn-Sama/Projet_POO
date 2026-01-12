@@ -1,62 +1,67 @@
 package Projet_POO.Domain.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
-@Table(name = "condition_assurance")
+@Table(name = "conditionassurance")
 public class ConditionAssurance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    private int id;
     private int ageMin;
     private int anciennetePermisMinAnnees;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "condition_assurance_restriction",
-            joinColumns = @JoinColumn(name = "condition_id")
-    )
-    @Column(name = "restriction_geo")
-    private List<String> restrictionsGeo = new ArrayList<>();
+    @Transient
+    private List<String> restrictionsGeo;
 
-    @JsonBackReference
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "assurance_id")
-    private Assurance assurance;
+    public ConditionAssurance() {
+        this.restrictionsGeo = new ArrayList<>();
+    }
 
-    public ConditionAssurance() {}
-
-    public ConditionAssurance(int ageMin, int anciennetePermisMinAnnees) {
+    public ConditionAssurance(int id, int ageMin, int anciennetePermisMinAnnees) {
+        this();
+        this.id = id;
         this.ageMin = ageMin;
         this.anciennetePermisMinAnnees = anciennetePermisMinAnnees;
     }
 
-    public Long getId() { return id; }
+    // getters / setters
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public int getAgeMin() { return ageMin; }
+
     public void setAgeMin(int ageMin) { this.ageMin = ageMin; }
 
     public int getAnciennetePermisMinAnnees() { return anciennetePermisMinAnnees; }
+
     public void setAnciennetePermisMinAnnees(int anciennetePermisMinAnnees) {
         this.anciennetePermisMinAnnees = anciennetePermisMinAnnees;
     }
 
-    public List<String> getRestrictionsGeo() { return restrictionsGeo; }
-    public void setRestrictionsGeo(List<String> restrictionsGeo) {
-        this.restrictionsGeo = (restrictionsGeo == null) ? new ArrayList<>() : restrictionsGeo;
+    public List<String> getRestrictionsGeo() {
+        return new ArrayList<>(restrictionsGeo);
     }
 
-    public Assurance getAssurance() { return assurance; }
-    public void setAssurance(Assurance assurance) { this.assurance = assurance; }
+    public void ajouterRestrictionGeo(String paysOuVille) {
+        if (paysOuVille != null && !paysOuVille.isBlank()) {
+            restrictionsGeo.add(paysOuVille);
+        }
+    }
 
+    /** Vérifie si le loueur respecte les conditions. */
     public boolean estEligible(int ageLoueur, int anciennetePermisLoueur) {
         if (ageLoueur < ageMin) return false;
         if (anciennetePermisLoueur < anciennetePermisMinAnnees) return false;
+        // on ignore les restrictionsGeo ici pour simplifier
         return true;
     }
 }
