@@ -1,9 +1,9 @@
 package Projet_POO.Domain.Entity;
 
-import Projet_POO.Domain.Enums.CodeOption;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import Projet_POO.Domain.Enums.CodeOption;
 
 public class CatalogueVehicules {
 
@@ -73,7 +73,7 @@ public class CatalogueVehicules {
     private boolean vehiculePossedeOptions(Vehicule v, java.util.Set<CodeOption> optionsRequises) {
         java.util.Set<CodeOption> codesVehicule = new java.util.HashSet<>();
         for (OptionVehicule opt : v.getOptions()) {
-            codesVehicule.add(opt.getNom());
+            codesVehicule.add(opt.getCode());
         }
         return codesVehicule.containsAll(optionsRequises);
     }
