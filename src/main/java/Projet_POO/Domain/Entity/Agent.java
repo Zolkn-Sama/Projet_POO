@@ -1,5 +1,6 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -14,12 +15,14 @@ import java.util.List;
 @Entity
 @Table(name = "agent")
 
+
 public class Agent extends Utilisateur {
 
     private boolean estProfessionnel;
 
     // Tant que ConditionsAgent n’est pas une @Entity ou @Embeddable, on la met en Transient
-    @Transient
+
+    @Embedded
     private ConditionsAgent conditions;
 
     // Tant que Vehicule et Note ne sont pas reliés via @OneToMany/@ManyToMany, on laisse Transient
