@@ -6,12 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "vehicule")
@@ -25,6 +21,15 @@ public class Vehicule {
     private String villeDisponibilite;
     private boolean deposeDifferenteAutorisee;
 
+    @ManyToMany
+    @JoinTable(
+            name = "vehicule_option",
+            joinColumns = @JoinColumn(name = "vehicule_id"),
+            inverseJoinColumns = @JoinColumn(name = "option_id")
+    )
+    private Set<OptionVehicule> options = new HashSet<>();
+
+
     // compositions / associations
     @Transient
     private TypeVehicule typeVehicule;
@@ -35,8 +40,6 @@ public class Vehicule {
     @Transient
     private CaracteristiquesVehicule caracteristiques;
 
-    @Transient
-    private List<OptionVehicule> options = new ArrayList<>();
 
     @Transient
     private List<Disponibilite> disponibilites = new ArrayList<>();
@@ -57,6 +60,8 @@ public class Vehicule {
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
         this.typeVehicule = typeVehicule;
     }
+
+
 
     // --- Getters / Setters ---
     public Long getId() { return id; }
@@ -80,7 +85,7 @@ public class Vehicule {
     }
 
     public Set<OptionVehicule> getOptions() {
-        return new HashSet<>(options);
+        return options;
     }
 
     public List<ContratLocation> getContrats() {
@@ -94,7 +99,9 @@ public class Vehicule {
     // --- Méthodes métier attendues par ton Service/Catalogue/Loueur ---
 
     public void ajouterOption(OptionVehicule option) {
-        if (option != null) options.add(option);
+        if (option != null) {
+            options.add(option);
+        }
     }
 
     public void ajouterDisponibilite(Disponibilite periode) {
