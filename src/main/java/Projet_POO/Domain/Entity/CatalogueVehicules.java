@@ -73,7 +73,7 @@ public class CatalogueVehicules {
     private boolean vehiculePossedeOptions(Vehicule v, java.util.Set<CodeOption> optionsRequises) {
         java.util.Set<CodeOption> codesVehicule = new java.util.HashSet<>();
         for (OptionVehicule opt : v.getOptions()) {
-            codesVehicule.add(opt.getCode());
+            codesVehicule.add(opt.getNom());
         }
         return codesVehicule.containsAll(optionsRequises);
     }
