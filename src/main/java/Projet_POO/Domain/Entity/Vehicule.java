@@ -141,4 +141,12 @@ public class Vehicule {
                 ", typeVehicule='" + typeVehicule + '\'' +
                 '}';
     }
+
+    public CaracteristiquesVehicule getCaracteristiques() {
+        return caracteristiques;
+    }
+
+    public void setCaracteristiques(CaracteristiquesVehicule caracteristiques) {
+        this.caracteristiques = caracteristiques;
+    }
 }
