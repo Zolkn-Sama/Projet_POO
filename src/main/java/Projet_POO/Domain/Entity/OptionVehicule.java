@@ -1,6 +1,6 @@
 package Projet_POO.Domain.Entity;
 
-import Projet_POO.Domain.Enums.NomOption;
+import Projet_POO.Domain.Enums.CodeOption;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,21 +13,21 @@ public class OptionVehicule {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private NomOption nom;
+    private CodeOption code;
 
     public OptionVehicule() {}
 
-    public OptionVehicule(NomOption nom) {
-        this.nom = nom;
+    public OptionVehicule(CodeOption code) {
+        this.code = code;
     }
 
     public Long getId() { return id; }
 
-    public NomOption getNom() { return nom; }
-    public void setNom(NomOption nom) { this.nom = nom; }
+    public CodeOption getCode() { return code; }
+    public void setCode(CodeOption code) { this.code = code; }
 
     @Override
     public String toString() {
-        return nom.name();
+        return code.name();
     }
 }
