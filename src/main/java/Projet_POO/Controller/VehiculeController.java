@@ -32,6 +32,7 @@ public class VehiculeController {
 
 
 
+
     @GetMapping("/disponibles")
     public List<Vehicule> disponibles(
             @RequestParam(required = false) String ville,
