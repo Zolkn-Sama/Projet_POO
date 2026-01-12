@@ -1,10 +1,10 @@
 package Projet_POO.Controller;
 
 
+import Projet_POO.Domain.Enums.CodeOption;
 import Projet_POO.Service.VehiculeService;
 import Projet_POO.Domain.Entity.FiltreRecherche;
 import Projet_POO.Domain.Entity.Vehicule;
-import Projet_POO.Domain.Enums.CodeOption;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +20,7 @@ public class VehiculeController {
     public VehiculeController(VehiculeService vehiculeService) {
         this.vehiculeService = vehiculeService;
     }
+
 
     @GetMapping("/disponibles")
     public List<Vehicule> disponibles(
