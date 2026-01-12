@@ -1,25 +1,19 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.CatalogueVehicules;
-import Projet_POO.Repository.CatalogueVehiculesRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class CatalogueVehiculesService {
+import Projet_POO.Domain.Entity.Vehicule;
+import Projet_POO.Domain.Entity.FiltreRecherche;
 
-    private final CatalogueVehiculesRepository catalogueRepository;
+public interface CatalogueVehiculesService {
 
-    public CatalogueVehiculesService(CatalogueVehiculesRepository catalogueRepository) {
-        this.catalogueRepository = catalogueRepository;
-    }
+    Vehicule ajouterVehiculeAuCatalogue(Long vehiculeId);
 
-    public CatalogueVehicules creer(CatalogueVehicules catalogue) {
-        return catalogueRepository.save(catalogue);
-    }
+    List<Vehicule> getVehiculesCatalogue();
 
-    public List<CatalogueVehicules> toutes() {
-        return catalogueRepository.findAll();
-    }
+    List<Vehicule> listerDisponibles(FiltreRecherche filtre);
+
+    void supprimerVehiculeDuCatalogue(Long vehiculeId);
+
+    void viderCatalogue();
 }
