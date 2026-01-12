@@ -1,25 +1,21 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.Agent;
-import Projet_POO.Repository.AgentRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class AgentService {
+import Projet_POO.Domain.Entity.Agent;
 
-    private final AgentRepository repo;
+public interface AgentService {
 
-    public AgentService(AgentRepository repo) {
-        this.repo = repo;
-    }
+    List<Agent> findAll();
 
-    public Agent creer(Agent agent) {
-        return repo.save(agent);
-    }
+    Agent findById(Long id);
 
-    public List<Agent> tous() {
-        return repo.findAll();
-    }
+    Agent findByEmail(String email);
+
+    Agent create(Agent agent);
+
+    Agent update(Long id, Agent agent);
+
+    void delete(Long id);
 }
+

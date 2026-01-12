@@ -1,11 +1,11 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.Id;
+import java.time.LocalDate;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-
-import java.time.LocalDate;
 
 @MappedSuperclass
 public class Utilisateur {
