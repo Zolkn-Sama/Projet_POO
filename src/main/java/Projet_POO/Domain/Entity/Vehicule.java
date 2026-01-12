@@ -2,9 +2,9 @@ package Projet_POO.Domain.Entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,7 +35,7 @@ public class Vehicule {
             joinColumns = @JoinColumn(name = "vehicule_id"),
             inverseJoinColumns = @JoinColumn(name = "option_id")
     )
-    private Set<OptionVehicule> options = new HashSet<>();
+    private java.util.Set<OptionVehicule> options = new java.util.HashSet<>();
 
 
     // compositions / associations
@@ -91,6 +91,9 @@ public class Vehicule {
     public List<Disponibilite> getDisponibilites() {
         return new ArrayList<>(disponibilites);
     }
+
+    public CaracteristiquesVehicule getCaracteristiques() { return caracteristiques; }
+    public void setCaracteristiques(CaracteristiquesVehicule caracteristiques) { this.caracteristiques = caracteristiques; }
 
     public Set<OptionVehicule> getOptions() {
         return options;

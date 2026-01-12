@@ -1,9 +1,9 @@
 package Projet_POO.Domain.Entity;
 
+import Projet_POO.Domain.Enums.CodeOption;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import Projet_POO.Domain.Enums.CodeOption;
 
 public class CatalogueVehicules {
 

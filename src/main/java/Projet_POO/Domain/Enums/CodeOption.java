@@ -1,12 +1,13 @@
 package Projet_POO.Domain.Enums;
 
 public enum CodeOption {
-    CLIMATISATION,
-    AUTORADIO,
-    BLUETOOTH,
-    VITRES_ELECTRIQUES,
-    DIRECTION_ASSISTEE,
     GPS,
+    SIEGE_BEBE,
+    CLIMATISATION,
+    BLUETOOTH,
+    CAMERA_RECUL,
+    AUTORADIO,
     REGULATEUR,
     LIMITEUR
+
 }
