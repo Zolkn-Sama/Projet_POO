@@ -1,11 +1,22 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "couverture_assurance")
 public class CouvertureAssurance {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String libelle;
-    private double plafond;   // Money simplifié en double
-    private double franchise; // idem
+    private double plafond;
+    private double franchise;
 
     public CouvertureAssurance() { }
 
@@ -16,20 +27,17 @@ public class CouvertureAssurance {
         this.franchise = franchise;
     }
 
+    // Getters et Setters
     public int getId() { return id; }
-
     public void setId(int id) { this.id = id; }
 
     public String getLibelle() { return libelle; }
-
     public void setLibelle(String libelle) { this.libelle = libelle; }
 
     public double getPlafond() { return plafond; }
-
     public void setPlafond(double plafond) { this.plafond = plafond; }
 
     public double getFranchise() { return franchise; }
-
     public void setFranchise(double franchise) { this.franchise = franchise; }
 
     @Override
