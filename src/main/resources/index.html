@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Recherche Véhicules</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; }
+        .card { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+        .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        label { display:block; font-size: 12px; color:#444; margin-bottom: 4px; }
+        input { width: 100%; padding: 8px; border:1px solid #ccc; border-radius: 8px; }
+        button { padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; }
+        .actions { display:flex; gap:10px; margin-top: 12px; }
+        pre { background:#f7f7f7; padding: 10px; border-radius: 10px; overflow:auto; }
+    </style>
+</head>
+<body>
+
+<h1>Recherche de véhicules</h1>
+
+<div class="grid">
+    <div>
+        <label>Ville</label>
+        <input id="ville" placeholder="Paris" />
+    </div>
+    <div>
+        <label>Marque</label>
+        <input id="marque" placeholder="Renault" />
+    </div>
+    <div>
+        <label>Modèle</label>
+        <input id="modele" placeholder="Clio" />
+    </div>
+    <div>
+        <label>Couleur</label>
+        <input id="couleur" placeholder="Noir" />
+    </div>
+    <div>
+        <label>Note minimale</label>
+        <input id="noteMin" type="number" step="0.1" placeholder="4" />
+    </div>
+    <div>
+        <label>Options requises (CodeOption) – séparées par virgules</label>
+        <input id="options" placeholder="GPS,SIEGE_ENFANT" />
+    </div>
+
+    <div>
+        <label>Date début (ISO)</label>
+        <input id="dateDebut" placeholder="2026-01-20T10:00:00" />
+    </div>
+    <div>
+        <label>Date fin (ISO)</label>
+        <input id="dateFin" placeholder="2026-01-22T18:00:00" />
+    </div>
+</div>
+
+<div class="actions">
+    <button onclick="rechercher()">Rechercher</button>
+    <button onclick="chargerTous()">Charger tous (GET /vehicules)</button>
+</div>
+
+<h2>Résultats</h2>
+<div id="resultats"></div>
+
+<h2>Debug (payload envoyé)</h2>
+<pre id="debug"></pre>
+
+<script>
+    function toOptionsSet(str) {
+        if (!str) return [];
+        return str.split(",")
+            .map(s => s.trim())
+            .filter(Boolean);
+    }
+
+    async function rechercher() {
+        const filtre = {
+            ville: document.getElementById("ville").value || null,
+            marque: document.getElementById("marque").value || null,
+            modele: document.getElementById("modele").value || null,
+            couleur: document.getElementById("couleur").value || null,
+            noteMin: parseFloat(document.getElementById("noteMin").value || "0"),
+            optionsRequises: toOptionsSet(document.getElementById("options").value),
+            dateDebut: document.getElementById("dateDebut").value || null,
+            dateFin: document.getElementById("dateFin").value || null
+        };
+
+        document.getElementById("debug").textContent = JSON.stringify(filtre, null, 2);
+
+        const res = await fetch("/recherche/vehicules", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(filtre)
+        });
+
+        if (!res.ok) {
+            const txt = await res.text();
+            alert("Erreur: " + res.status + "\n" + txt);
+            return;
+        }
+
+        const data = await res.json();
+        afficher(data);
+    }
+
+    async function chargerTous() {
+        const res = await fetch("/vehicules");
+        if (!res.ok) {
+            const txt = await res.text();
+            alert("Erreur: " + res.status + "\n" + txt);
+            return;
+        }
+        const data = await res.json();
+        document.getElementById("debug").textContent = "GET /vehicules";
+        afficher(data);
+    }
+
+    function afficher(vehicules) {
+        const root = document.getElementById("resultats");
+        root.innerHTML = "";
+
+        if (!vehicules || vehicules.length === 0) {
+            root.innerHTML = "<p>Aucun véhicule trouvé.</p>";
+            return;
+        }
+
+        vehicules.forEach(v => {
+            const opts = (v.options || []).map(o => o.code).filter(Boolean).join(", ");
+            const marque = v.caracteristiques?.marque ?? "(marque ?)";
+            const modele = v.caracteristiques?.modele ?? "(modele ?)";
+            const couleur = v.caracteristiques?.couleur ?? "(couleur ?)";
+
+            const div = document.createElement("div");
+            div.className = "card";
+            div.innerHTML = `
+        <b>Véhicule #${v.id}</b><br/>
+        Immatriculation: ${v.immatriculation ?? "-"}<br/>
+        Ville: ${v.villeDisponibilite ?? "-"}<br/>
+        Marque/Modèle/Couleur: ${marque} / ${modele} / ${couleur}<br/>
+        Options: ${opts || "-"}<br/>
+      `;
+            root.appendChild(div);
+        });
+    }
+</script>
+
+</body>
+</html>

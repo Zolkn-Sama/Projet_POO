@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import Projet_POO.Domain.Entity.OptionVehicule;
+import Projet_POO.Repository.OptionVehiculeRepository;
 import org.springframework.stereotype.Service;
 
 import Projet_POO.Domain.Entity.Disponibilite;
@@ -16,9 +18,12 @@ import Projet_POO.Repository.VehiculeRepository;
 public class VehiculeService {
 
     private final VehiculeRepository vehiculeRepository;
+    private final OptionVehiculeRepository optionVehiculeRepository;
 
-    public VehiculeService(VehiculeRepository vehiculeRepository) {
+    public VehiculeService(VehiculeRepository vehiculeRepository,
+                           OptionVehiculeRepository optionVehiculeRepository) {
         this.vehiculeRepository = vehiculeRepository;
+        this.optionVehiculeRepository = optionVehiculeRepository;
     }
 
     public Vehicule creer(Vehicule v) {
@@ -36,16 +41,33 @@ public class VehiculeService {
 
             if (f.getNoteMin() > 0 && v.getNoteMoyenne() < f.getNoteMin()) continue;
 
-            if (!f.getOptionsRequises().isEmpty() && !v.getOptions().containsAll(f.getOptionsRequises())) continue;
+            // ⚠️ correction: optionsRequises = Set<CodeOption> (enum), options = Set<OptionVehicule>
+            if (!f.getOptionsRequises().isEmpty()) {
+                var codesVehicule = v.getOptions().stream()
+                        .map(OptionVehicule::getCode)
+                        .collect(java.util.stream.Collectors.toSet());
+
+                if (!codesVehicule.containsAll(f.getOptionsRequises())) continue;
+            }
 
             if (f.getDateDebut() != null && f.getDateFin() != null) {
                 if (!dispo(v.getDisponibilites(), f.getDateDebut(), f.getDateFin())) continue;
             }
 
-            // type/domaine/propulsion : si tu les stockes plus tard en DB, tu filtreras ici.
             res.add(v);
         }
         return res;
+    }
+
+    public Vehicule ajouterOption(Long vehiculeId, Long optionId) {
+        Vehicule v = vehiculeRepository.findById(vehiculeId)
+                .orElseThrow(() -> new RuntimeException("Vehicule introuvable"));
+
+        OptionVehicule opt = optionVehiculeRepository.findById(optionId)
+                .orElseThrow(() -> new RuntimeException("Option introuvable"));
+
+        v.getOptions().add(opt);
+        return vehiculeRepository.save(v);
     }
 
     private boolean dispo(List<Disponibilite> periodes, LocalDateTime debut, LocalDateTime fin) {
