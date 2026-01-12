@@ -20,6 +20,17 @@ public class VehiculeController {
     public VehiculeController(VehiculeService vehiculeService) {
         this.vehiculeService = vehiculeService;
     }
+    @PostMapping
+    public Vehicule creer(@RequestBody Vehicule v) {
+        return vehiculeService.creer(v);
+    }
+    @PutMapping("/{vehiculeId}/options/{optionId}")
+    public Vehicule ajouterOption(@PathVariable Long vehiculeId,
+                                  @PathVariable Long optionId) {
+        return vehiculeService.ajouterOption(vehiculeId, optionId);
+    }
+
+
 
 
     @GetMapping("/disponibles")
