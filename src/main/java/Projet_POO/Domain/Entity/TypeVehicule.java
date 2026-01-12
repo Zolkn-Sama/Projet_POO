@@ -1,26 +1,30 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "type_vehicule")
 public class TypeVehicule {
 
-    private int id;
-    private String libelle; // ex : Voiture, Bateau, Avion...
-    private String domaine; // DomaineDeplacement en simple String ici
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public TypeVehicule(int id, String libelle, String domaine) {
-        this.id = id;
+    private String libelle;   // Voiture, Moto...
+    private String domaine;   // DomaineDeplacement en String (ok pour le moment)
+
+    public TypeVehicule() {}
+
+    public TypeVehicule(String libelle, String domaine) {
         this.libelle = libelle;
         this.domaine = domaine;
     }
 
-    public int getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public String getLibelle() {
-        return libelle;
-    }
+    public String getLibelle() { return libelle; }
+    public void setLibelle(String libelle) { this.libelle = libelle; }
 
-    public String getDomaine() {
-        return domaine;
-    }
+    public String getDomaine() { return domaine; }
+    public void setDomaine(String domaine) { this.domaine = domaine; }
 }
