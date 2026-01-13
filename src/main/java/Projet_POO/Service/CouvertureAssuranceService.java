@@ -1,32 +1,20 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.Assurance;
-import Projet_POO.Domain.Entity.CouvertureAssurance;
-import Projet_POO.Repository.AssuranceRepository;
-import Projet_POO.Repository.CouvertureAssuranceRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class CouvertureAssuranceService {
+import Projet_POO.Domain.Entity.CouvertureAssurance;
 
-    private final CouvertureAssuranceRepository repo;
-    private final AssuranceRepository assuranceRepo;
+public interface CouvertureAssuranceService {
 
-    public CouvertureAssuranceService(CouvertureAssuranceRepository repo, AssuranceRepository assuranceRepo) {
-        this.repo = repo;
-        this.assuranceRepo = assuranceRepo;
-    }
+    List<CouvertureAssurance> findAll();
 
-    public CouvertureAssurance creerPourAssurance(Long assuranceId, CouvertureAssurance c) {
-        Assurance a = assuranceRepo.findById(assuranceId)
-                .orElseThrow(() -> new RuntimeException("Assurance introuvable: " + assuranceId));
-        c.setAssurance(a);
-        return repo.save(c);
-    }
+    CouvertureAssurance findById(Long id);
 
-    public List<CouvertureAssurance> parAssurance(Long assuranceId) {
-        return repo.findByAssuranceId(assuranceId);
-    }
+    List<CouvertureAssurance> findByAssurance(Long assuranceId);
+
+    CouvertureAssurance createForAssurance(Long assuranceId, CouvertureAssurance couverture);
+
+    CouvertureAssurance update(Long id, CouvertureAssurance couverture);
+
+    void delete(Long id);
 }

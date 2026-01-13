@@ -1,29 +1,21 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.Assurance;
-import Projet_POO.Repository.AssuranceRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class AssuranceService {
+import Projet_POO.Domain.Entity.Assurance;
 
-    private final AssuranceRepository repo;
+public interface AssuranceService {
 
-    public AssuranceService(AssuranceRepository repo) {
-        this.repo = repo;
-    }
+    List<Assurance> findAll();
 
-    public Assurance creer(Assurance assurance) {
-        return repo.save(assurance);
-    }
+    Assurance findById(Long id);
 
-    public List<Assurance> toutes() {
-        return repo.findAll();
-    }
+    // optionnel si tu gardes findByNom au repo
+    Assurance findByNom(String nom);
 
-    public Assurance getOrThrow(Long id) {
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Assurance introuvable: " + id));
-    }
+    Assurance create(Assurance assurance);
+
+    Assurance update(Long id, Assurance assurance);
+
+    void delete(Long id);
 }

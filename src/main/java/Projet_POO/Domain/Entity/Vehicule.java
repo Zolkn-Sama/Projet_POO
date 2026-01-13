@@ -149,4 +149,6 @@ public class Vehicule {
     public void setCaracteristiques(CaracteristiquesVehicule caracteristiques) {
         this.caracteristiques = caracteristiques;
     }
+
+
 }
