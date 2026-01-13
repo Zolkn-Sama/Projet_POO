@@ -2,6 +2,7 @@ package Projet_POO.Controller;
 
 import Projet_POO.Domain.Entity.Note;
 import Projet_POO.Service.NoteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,19 +11,18 @@ import java.util.List;
 @RequestMapping("/notes")
 public class NoteController {
 
-    private final NoteService service;
-
-    public NoteController(NoteService service) {
-        this.service = service;
-    }
+    // On injecte l'interface NoteService
+    @Autowired
+    private NoteService noteService;
 
     @PostMapping
-    public Note creer(@RequestBody Note note) {
-        return service.creer(note);
+    public Note create(@RequestBody Note note) {
+        // Appelle la logique métier de l'implémentation
+        return noteService.creer(note);
     }
 
     @GetMapping
-    public List<Note> toutes() {
-        return service.toutes();
+    public List<Note> getAll() {
+        return noteService.toutes();
     }
 }
