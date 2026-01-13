@@ -1,5 +1,8 @@
 package Projet_POO.Domain.Entity;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class Localisation {
 
     private String rue;

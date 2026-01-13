@@ -1,6 +1,5 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -15,8 +14,8 @@ public class ServiceDepotVehicule extends ServiceOptionnel {
 
     public ServiceDepotVehicule() { super(); }
 
-    public ServiceDepotVehicule(String nom, double prix, String localisation, String horaires) {
-        super(nom, prix);
+    public ServiceDepotVehicule(Long id, String nom, double prix, String localisation, String horaires) {
+        super(id, nom, prix);
         this.localisation = localisation;
         this.horaires = horaires;
     }

@@ -1,6 +1,5 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -14,8 +13,8 @@ public class ServiceDeverrouillageMobile extends ServiceOptionnel {
 
     public ServiceDeverrouillageMobile() { super(); }
 
-    public ServiceDeverrouillageMobile(String nom, double prix, String fournisseur) {
-        super(nom, prix);
+    public ServiceDeverrouillageMobile(Long id, String nom, double prix, String fournisseur) {
+        super(id, nom, prix);
         this.fournisseur = fournisseur;
     }
 

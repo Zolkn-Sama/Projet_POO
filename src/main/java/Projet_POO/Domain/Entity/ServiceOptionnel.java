@@ -1,23 +1,30 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "service_optionnel")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
-public class ServiceOptionnel {
+public abstract class ServiceOptionnel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nom;
     private double prix;
 
     public ServiceOptionnel() {}
 
-    public ServiceOptionnel(String nom, double prix) {
+    public ServiceOptionnel(Long id, String nom, double prix) {
+        this.id = id;
         this.nom = nom;
         this.prix = prix;
     }

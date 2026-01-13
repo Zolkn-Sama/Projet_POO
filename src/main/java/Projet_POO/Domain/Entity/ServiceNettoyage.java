@@ -1,6 +1,4 @@
 package Projet_POO.Domain.Entity;
-
-import Projet_POO.Domain.Entity.ServiceOptionnel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -16,8 +14,8 @@ public class ServiceNettoyage extends ServiceOptionnel {
 
     public ServiceNettoyage() { super(); }
 
-    public ServiceNettoyage(String nom, double prix, String typeService) {
-        super(nom, prix);
+    public ServiceNettoyage(Long id, String nom, double prix, String typeService) {
+        super(id, nom, prix);
         this.typeService = typeService;
     }
 
