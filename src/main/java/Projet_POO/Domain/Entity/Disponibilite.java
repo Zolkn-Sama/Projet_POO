@@ -2,18 +2,10 @@ package Projet_POO.Domain.Entity;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.Embeddable;
 
-@Entity
+@Embeddable
 public class Disponibilite {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private LocalDateTime debut;
     private LocalDateTime fin;
 
@@ -24,10 +16,6 @@ public class Disponibilite {
     public Disponibilite(LocalDateTime debut, LocalDateTime fin) {
         this.debut = debut;
         this.fin = fin;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public LocalDateTime getDebut() {
