@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finaliser ma réservation - LocAuto</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/reservation.css}">
+</head>
+<body class="min-h-screen bg-base-200">
+
+<div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+    <div class="flex-1 px-4">
+        <a th:href="@{/}" class="brand" style="text-decoration: none; color: inherit;">🚗 LocAuto</a>
+    </div>
+</div>
+
+<main class="container py-8">
+    <h1 class="hero-title text-3xl mb-8">Finaliser votre réservation</h1>
+
+    <div class="layout gap-8">
+        <section class="space-y-6">
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4">1. Choisissez votre assurance</h2>
+                <div class="space-y-3">
+                    <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-blue-50 transition-colors">
+                        <input type="radio" name="assurance" class="radio radio-primary mr-4" checked />
+                        <div class="flex-1">
+                            <p class="font-bold">Assurance AZA (Par défaut)</p>
+                            <p class="text-xs opacity-60">Couverture standard incluse.</p>
+                        </div>
+                        <span class="badge badge-success">Inclus</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-lg font-bold mb-2">2. Signature du contrat </h2>
+                <p class="text-[10px] mb-3 opacity-70">Signature électronique requise pour valider le contrat[cite: 396].</p>
+
+                <div class="flex flex-col items-center">
+                    <canvas id="signature-canvas" class="signature-pad"></canvas>
+                    <div class="flex justify-between w-full max-w-[400px] mt-2 px-1">
+                        <button class="btn btn-ghost btn-xs text-error" onclick="clearSignature()">Effacer</button>
+                        <span class="text-[10px] italic opacity-50">Signez ici</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="space-y-6">
+            <div class="card">
+                <h2 class="text-lg font-bold mb-4">Récapitulatif</h2>
+                <div class="price-breakdown space-y-2">
+                    <div class="price-row"><span>Location</span><span>90.00 €</span></div>
+                    <div class="price-row"><span>Commission (10%)</span><span>9.00 €</span></div>
+                    <div class="price-row"><span>Frais fixes (2€/j)</span><span>6.00 €</span></div>
+                    <div class="price-row font-bold border-t pt-4"><span>Total</span><span class="price-total">105.00 €</span></div>
+                </div>
+                <button class="btn btn-primary w-full mt-6" onclick="validerReservation()">Confirmer la location</button>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<script>
+    const canvas = document.getElementById('signature-canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    // Ajustement de la résolution interne du canvas à sa taille d'affichage CSS
+    function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('load', resizeCanvas);
+    window.addEventListener('resize', resizeCanvas);
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    window.addEventListener('mouseup', () => {
+        drawing = false;
+        ctx.beginPath(); // Réinitialise le tracé pour éviter les lignes continues
+    });
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+        if (!drawing) return;
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#1e293b'; // Couleur d'encre sombre
+
+        // Calcul des coordonnées relatives au canvas
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+    }
+
+    function validerReservation() {
+        // Logique de validation [cite: 396, 397]
+        alert("Contrat signé électroniquement avec succès !");
+        window.location.href = "/profil-loueur";
+    }
+</script>
+</body>
+</html>
