@@ -51,7 +51,7 @@ public class Vehicule {
     }
 
     public Vehicule(String immatriculation, Localisation localisationVehicule, boolean deposeDifferenteAutorisee,
-            TypeVehicule typeVehicule) {
+                    TypeVehicule typeVehicule) {
         this.immatriculation = immatriculation;
         this.localisationVehicule = localisationVehicule;
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
