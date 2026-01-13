@@ -22,20 +22,19 @@
 <body class="min-h-screen bg-base-200">
 
     <!-- NAVBAR -->
-    <div class="navbar bg-base-100 shadow-sm">
+    <div class="navbar bg-base-100 shadow-sm px-4">
         <div class="flex-1">
-            <a th:href="@{/}" class="btn btn-ghost text-xl font-bold normal-case">
-                🚗 LocAuto
-            </a>
+            <a th:href="@{/}" class="btn btn-ghost text-xl font-bold">🚗 LocAuto</a>
         </div>
-        <div class="flex-none gap-2">
-            <!-- Connexions rapides -->
-            <a th:href="@{/login(agent=true)}" href="/login?role=AGENT" class="btn btn-ghost btn-sm">
-                Espace agent
+        <div class="flex-none gap-4">
+            <a th:href="@{/login}" class="btn btn-ghost border-primary text-primary hover:bg-primary hover:text-white btn-sm rounded-full px-6">
+                Se connecter
             </a>
-            <a th:href="@{/login(loueur=true)}" href="/login?role=LOUEUR" class="btn btn-primary btn-sm">
-                Espace loueur
-            </a>
+
+            <div class="divider divider-horizontal mx-0"></div>
+
+            <a th:href="@{/dashboard-agent}" class="btn btn-ghost btn-sm">Espace agent</a>
+            <a th:href="@{/dashboard-loueur}" class="btn btn-primary btn-sm">Espace loueur</a>
         </div>
     </div>
 
@@ -76,13 +75,11 @@
                                 Accède à ton espace pour gérer tes locations.
                             </p>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                                <a th:href="@{/login(agent=true)}" href="/login?role=AGENT"
-                                    class="btn btn-outline btn-sm justify-between">
+                                <a th:href="@{/dashboard-agent}" class="btn btn-outline btn-sm justify-between">
                                     <span>Agent</span>
                                     <span class="badge badge-sm badge-info">Back-office</span>
                                 </a>
-                                <a th:href="@{/login(loueur=true)}" href="/login?role=LOUEUR"
-                                    class="btn btn-primary btn-sm justify-between">
+                                <a th:href="@{/dashboard-loueur}" class="btn btn-primary btn-sm justify-between">
                                     <span>Loueur</span>
                                     <span class="badge badge-sm badge-accent">Client</span>
                                 </a>
@@ -291,30 +288,22 @@
                 const prix = v.prixParJour ?? 'N/A';
                 const note = v.noteMoyenne ?? 'N/A';
 
+                // Remplacez la génération de la carte par celle-ci pour rendre le véhicule cliquable
                 html += `
-                    <div class="card bg-base-200 border border-base-300 hover:border-primary transition-all">
-                        <div class="card-body py-3 px-4 gap-2">
-                            <div class="flex items-start justify-between gap-2">
-                                <div>
-                                    <h3 class="font-semibold text-sm">
-                                        ${marque} ${modele}
-                                    </h3>
-                                    <p class="text-xs text-base-content/60">
-                                        Ville : <span class="font-medium">${ville}</span>
-                                    </p>
-                                </div>
-                                <div class="flex flex-col items-end gap-1">
-                                    <span class="badge badge-primary badge-sm">
-                                        ${prix} €/jour
-                                    </span>
-                                    <span class="badge badge-ghost badge-sm">
-                                        ⭐ ${note}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+    <a href="/vehicule-detail" class="card bg-base-200 border border-base-300 hover:border-primary transition-all cursor-pointer text-current no-underline">
+        <div class="card-body py-3 px-4 gap-2">
+            <div class="flex items-start justify-between gap-2">
+                <div>
+                    <h3 class="font-semibold text-sm">${marque} ${modele}</h3>
+                    <p class="text-xs text-base-content/60">Ville : ${ville}</p>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                    <span class="badge badge-primary badge-sm">${prix} €/jour</span>
+                </div>
+            </div>
+        </div>
+    </a>
+`;
             });
 
             html += '</div>';
