@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/notes-vehicule")
+@RequestMapping("/notes-vehicule")
 public class NoteVehiculeController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class NoteVehiculeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public NoteVehicule create(@RequestBody NoteVehicule note) {
-        return noteVehiculeService.creer(note);
+        return noteVehiculeService.create(note);
     }
 
     /**
@@ -29,7 +29,7 @@ public class NoteVehiculeController {
      */
     @GetMapping
     public List<NoteVehicule> getAll() {
-        return noteVehiculeService.toutes();
+        return noteVehiculeService.getAll();
     }
 
     /**
@@ -37,7 +37,7 @@ public class NoteVehiculeController {
      * La gestion d'erreur (404) est déléguée à la couche Service.
      */
     @GetMapping("/vehicule/{vehiculeId}")
-    public List<NoteVehicule> getByVehicule(@PathVariable Long vehiculeId) {
-        return noteVehiculeService.parVehicule(vehiculeId);
+    public List<NoteVehicule> getByVehiculeId(@PathVariable Long vehiculeId) {
+        return noteVehiculeService.getByVehiculeId(vehiculeId);
     }
 }

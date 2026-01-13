@@ -11,28 +11,28 @@ import Projet_POO.Service.NoteVehiculeService;
 @Service
 public class NoteVehiculeServiceImpl implements NoteVehiculeService {
 
-    private final NoteVehiculeRepository repo;
+    private final NoteVehiculeRepository noteVehiculeRepository;
 
-    public NoteVehiculeServiceImpl(NoteVehiculeRepository repo) {
-        this.repo = repo;
+    public NoteVehiculeServiceImpl(NoteVehiculeRepository notevehiculerepository) {
+        this.noteVehiculeRepository = notevehiculerepository;
     }
 
     @Override
-    public NoteVehicule creer(NoteVehicule note) {
+    public List<NoteVehicule> getAll() {
+        return noteVehiculeRepository.findAll();
+    }
+
+    @Override
+    public NoteVehicule create(NoteVehicule note) {
         // Forcer l'ID à null pour assurer l'insertion SQL
         note.setId(null);
-        return repo.save(note);
+        return noteVehiculeRepository.save(note);
     }
 
     @Override
-    public List<NoteVehicule> toutes() {
-        return repo.findAll();
-    }
-
-    @Override
-    public List<NoteVehicule> parVehicule(Long vehiculeId) {
+    public List<NoteVehicule> getByVehiculeId(Long id) {
         // Lève une exception 404 si la liste est vide (modèle AgentServiceImpl)
-        List<NoteVehicule> notes = repo.findByVehiculeId(vehiculeId);
+        List<NoteVehicule> notes = noteVehiculeRepository.findByVehiculeId(id);
         if (notes.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucune évaluation trouvée pour ce véhicule");
         }

@@ -24,17 +24,17 @@ public class Loueur extends Utilisateur {
     }
 
     public Loueur(Long id,
-                  String nom,
-                  String prenom,
-                  String password,
-                  String email,
-                  String telephone,
-                  String rue,
-                  String ville,
-                  String pays,
-                  LocalDate dateNaissance,
-                  String numeroPermis,
-                  LocalDate dateObtentionPermis) {
+            String nom,
+            String prenom,
+            String password,
+            String email,
+            String telephone,
+            String rue,
+            String ville,
+            String pays,
+            LocalDate dateNaissance,
+            String numeroPermis,
+            LocalDate dateObtentionPermis) {
 
         super(id, nom, prenom, password, email,
                 telephone, rue, ville, pays,
@@ -44,7 +44,8 @@ public class Loueur extends Utilisateur {
     // --------- MÉTHODES MÉTIER ---------
 
     public void ajouterLocation(ContratLocation contrat) {
-        if (contrat != null) locations.add(contrat);
+        if (contrat != null)
+            locations.add(contrat);
     }
 
     public List<ContratLocation> consulterLocations() {
@@ -52,7 +53,8 @@ public class Loueur extends Utilisateur {
     }
 
     public void modifierProfil(Utilisateur p) {
-        if (p == null) return;
+        if (p == null)
+            return;
 
         this.setNom(p.getNom());
         this.setPrenom(p.getPrenom());
@@ -66,18 +68,15 @@ public class Loueur extends Utilisateur {
         this.setDateObtentionPermis(p.getDateObtentionPermis());
     }
 
-    public void noterVehicule(Vehicule v, Note note) {
-        if (v == null || note == null) return;
-        v.ajouterNote(note);
-    }
-
     public void noterAgent(Agent a, Note note) {
-        if (a == null || note == null) return;
+        if (a == null || note == null)
+            return;
         a.ajouterNote(note);
     }
 
     public void ajouterNoteRecue(Note note) {
-        if (note != null) notesRecues.add(note);
+        if (note != null)
+            notesRecues.add(note);
     }
 
     public List<Note> getNotesRecues() {

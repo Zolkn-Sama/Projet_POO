@@ -1,15 +1,18 @@
 package Projet_POO.Controller;
 
-
-import Projet_POO.Domain.Enums.CodeOption;
-import Projet_POO.Service.VehiculeService;
-import Projet_POO.Domain.Entity.FiltreRecherche;
-import Projet_POO.Domain.Entity.Vehicule;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import Projet_POO.Domain.Entity.Vehicule;
+import Projet_POO.Service.VehiculeService;
 
 @RestController
 @RequestMapping("/vehicules")
@@ -20,37 +23,35 @@ public class VehiculeController {
     public VehiculeController(VehiculeService vehiculeService) {
         this.vehiculeService = vehiculeService;
     }
+
+    @GetMapping
+    public List<Vehicule> getAll() {
+        return vehiculeService.findAll();
+    }
+
+    @GetMapping("/ById/{id}")
+    public Vehicule getById(@PathVariable int id) {
+        return vehiculeService.findById(id);
+    }
+
+    @GetMapping("/ByImmatriculation/{immatriculation}")
+    public Vehicule getByImmatriculation(@PathVariable String immatriculation) {
+        return vehiculeService.findByImmatriculation(immatriculation);
+    }
+
     @PostMapping
-    public Vehicule creer(@RequestBody Vehicule v) {
-        return vehiculeService.creer(v);
-    }
-    @PutMapping("/{vehiculeId}/options/{optionId}")
-    public Vehicule ajouterOption(@PathVariable Long vehiculeId,
-                                  @PathVariable Long optionId) {
-        return vehiculeService.ajouterOption(vehiculeId, optionId);
+    public Vehicule create(@RequestBody Vehicule vehicule) {
+        return vehiculeService.create(vehicule);
     }
 
+    @PutMapping("/{id}")
+    public Vehicule update(@PathVariable Long id,
+            @RequestBody Vehicule vehicule) {
+        return vehiculeService.update(id, vehicule);
+    }
 
-
-
-    @GetMapping("/disponibles")
-    public List<Vehicule> disponibles(
-            @RequestParam(required = false) String ville,
-            @RequestParam(required = false, defaultValue = "0") double noteMin,
-            @RequestParam(required = false) List<CodeOption> options,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateDebut,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFin
-    ) {
-        FiltreRecherche f = new FiltreRecherche();
-        f.setVille(ville);
-        f.setNoteMin(noteMin);
-        f.setDateDebut(dateDebut);
-        f.setDateFin(dateFin);
-
-        if (options != null) {
-            for (CodeOption o : options) f.ajouterOptionRequise(o);
-        }
-
-        return vehiculeService.listerDisponibles(f);
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        vehiculeService.delete(id);
     }
 }

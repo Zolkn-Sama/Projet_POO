@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Contrôleur principal gérant l'accès à la page d'accueil de l'application.
  * <p>
- * Ce contrôleur répond aux requêtes sur la racine du site et sert de point d'entrée 
+ * Ce contrôleur répond aux requêtes sur la racine du site et sert de point
+ * d'entrée
  * pour les visiteurs non authentifiés ou les utilisateurs redirigés.
  * </p>
  */
@@ -22,9 +23,10 @@ public class HomeController {
     /**
      * Dirige l'utilisateur vers la page d'accueil.
      * <p>
-     * Cette méthode fait le lien avec le moteur de template (Thymeleaf) pour 
+     * Cette méthode fait le lien avec le moteur de template (Thymeleaf) pour
      * afficher le fichier 'home.html'.
      * </p>
+     * 
      * @return Le nom logique de la vue (home).
      */
     @GetMapping("/")
@@ -32,8 +34,8 @@ public class HomeController {
         return "home"; // Cherchera src/main/resources/templates/home.html
     }
 
-    @GetMapping("/vehicules")
-    public String rechercherVehicules(
+    @GetMapping("/FilterVehicules")
+    public String filterVehicules(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin,
             @RequestParam(required = false) String categorie,
@@ -41,8 +43,7 @@ public class HomeController {
             @RequestParam(required = false) BigDecimal prixMin,
             @RequestParam(required = false) BigDecimal prixMax,
             @RequestParam(required = false, defaultValue = "false") boolean disponible,
-            Model model
-    ) {
+            Model model) {
         // TODO : utiliser ton DataRepository pour filtrer les véhicules disponibles
         // List<Vehicule> results = vehiculeRepository.findDisponibles(...);
         // model.addAttribute("vehicules", results);

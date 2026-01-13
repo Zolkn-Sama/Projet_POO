@@ -215,7 +215,6 @@
         </footer>
     </main>
 
-    <!-- SCRIPT DE RECHERCHE -->
     <script>
         const form = document.getElementById('search-form');
         const resultsDiv = document.getElementById('results');
@@ -225,10 +224,30 @@
             event.preventDefault();
 
             const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
 
-            // Appel à ton controller Spring : /vehicules/disponibles
-            fetch('/vehicules/disponibles?' + params.toString())
+            // Construction du JSON FiltreRecherche
+            const ville = formData.get('Localisation').get('ville') || null;
+            const noteMinStr = formData.get('noteMin');
+            const noteMin = noteMinStr ? parseFloat(noteMinStr) : null;
+            const dateDebut = formData.get('dateDebut') || null;
+            const dateFin = formData.get('dateFin') || null;
+            const optionsRequises = formData.getAll('options'); // ["GPS","CLIM",...]
+
+            const filtre = {
+                ville: ville,
+                noteMin: noteMin,
+                dateDebut: dateDebut,
+                dateFin: dateFin,
+                optionsRequises: optionsRequises
+            };
+
+            fetch('/recherche', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(filtre)
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Erreur HTTP : ' + response.status);
@@ -242,10 +261,10 @@
                     console.error(error);
                     resultCount.textContent = 'Erreur lors du chargement.';
                     resultsDiv.innerHTML = `
-                            <div class="alert alert-error">
-                                <span>Une erreur est survenue lors du chargement des véhicules.</span>
-                            </div>
-                        `;
+                        <div class="alert alert-error">
+                            <span>Une erreur est survenue lors du chargement des véhicules.</span>
+                        </div>
+                    `;
                 });
         });
 
@@ -253,50 +272,49 @@
             if (!vehicules || vehicules.length === 0) {
                 resultCount.textContent = '0 véhicule trouvé.';
                 resultsDiv.innerHTML = `
-                        <div class="alert alert-warning">
-                            <span>Aucun véhicule trouvé pour ces critères.</span>
-                        </div>
-                    `;
+                    <div class="alert alert-warning">
+                        <span>Aucun véhicule trouvé pour ces critères.</span>
+                    </div>
+                `;
                 return;
             }
 
             resultCount.textContent = vehicules.length + ' véhicule(s) trouvé(s).';
 
             // ⚠️ Adapte les noms de propriétés selon ta classe Vehicule
-            // Exemple supposé : marque, modele, ville, prixParJour, noteMoyenne
             let html = '<div class="grid gap-3 md:grid-cols-2">';
 
             vehicules.forEach(v => {
                 const marque = v.marque ?? '';
                 const modele = v.modele ?? '';
-                const ville = v.ville ?? 'N/A';
+                const ville = (v.loueur && v.loueur.ville) ? v.loueur.ville : (v.ville ?? 'N/A');
                 const prix = v.prixParJour ?? 'N/A';
                 const note = v.noteMoyenne ?? 'N/A';
 
                 html += `
-                        <div class="card bg-base-200 border border-base-300 hover:border-primary transition-all">
-                            <div class="card-body py-3 px-4 gap-2">
-                                <div class="flex items-start justify-between gap-2">
-                                    <div>
-                                        <h3 class="font-semibold text-sm">
-                                            ${marque} ${modele}
-                                        </h3>
-                                        <p class="text-xs text-base-content/60">
-                                            Ville : <span class="font-medium">${ville}</span>
-                                        </p>
-                                    </div>
-                                    <div class="flex flex-col items-end gap-1">
-                                        <span class="badge badge-primary badge-sm">
-                                            ${prix} €/jour
-                                        </span>
-                                        <span class="badge badge-ghost badge-sm">
-                                            ⭐ ${note}
-                                        </span>
-                                    </div>
+                    <div class="card bg-base-200 border border-base-300 hover:border-primary transition-all">
+                        <div class="card-body py-3 px-4 gap-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <h3 class="font-semibold text-sm">
+                                        ${marque} ${modele}
+                                    </h3>
+                                    <p class="text-xs text-base-content/60">
+                                        Ville : <span class="font-medium">${ville}</span>
+                                    </p>
+                                </div>
+                                <div class="flex flex-col items-end gap-1">
+                                    <span class="badge badge-primary badge-sm">
+                                        ${prix} €/jour
+                                    </span>
+                                    <span class="badge badge-ghost badge-sm">
+                                        ⭐ ${note}
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                    `;
+                    </div>
+                `;
             });
 
             html += '</div>';

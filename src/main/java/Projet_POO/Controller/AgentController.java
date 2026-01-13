@@ -29,12 +29,12 @@ public class AgentController {
         return agentService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/ById/{id}")
     public Agent getById(@PathVariable Long id) {
         return agentService.findById(id);
     }
 
-     @GetMapping("/{email}")
+    @GetMapping("/ByEmail/{email}")
     public Agent getByEmail(@PathVariable String email) {
         return agentService.findByEmail(email);
     }

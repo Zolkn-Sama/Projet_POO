@@ -16,44 +16,47 @@ import Projet_POO.Repository.VehiculeRepository;
 @RequestMapping("/recherche")
 public class RechercheController {
 
-    private final VehiculeRepository vehiculeRepo;
+        private final VehiculeRepository vehiculeRepository;
 
-    public RechercheController(VehiculeRepository vehiculeRepo) {
-        this.vehiculeRepo = vehiculeRepo;
-    }
+        public RechercheController(VehiculeRepository vehiculeRepository) {
+                this.vehiculeRepository = vehiculeRepository;
+        }
 
-    @PostMapping("/vehicules")
-    public List<Vehicule> rechercher(@RequestBody FiltreRecherche filtre) {
+        @PostMapping("/FilterVehicules")
+        public List<Vehicule> rechercher(@RequestBody FiltreRecherche filtre) {
 
-        List<Vehicule> tout = vehiculeRepo.findAll();
+                List<Vehicule> vehicules = vehiculeRepository.findAll();
 
-        return tout.stream()
-                .filter(v -> filtre.getMarque() == null
-                        || (v.getCaracteristiques() != null
-                        && filtre.getMarque().equalsIgnoreCase(v.getCaracteristiques().getMarque())))
+                return vehicules.stream()
+                                .filter(v -> filtre.getMarque() == null
+                                                || (v.getCaracteristiques() != null
+                                                                && filtre.getMarque().equalsIgnoreCase(
+                                                                                v.getCaracteristiques().getMarque())))
 
-                .filter(v -> filtre.getModele() == null
-                        || (v.getCaracteristiques() != null
-                        && filtre.getModele().equalsIgnoreCase(v.getCaracteristiques().getModele())))
+                                .filter(v -> filtre.getModele() == null
+                                                || (v.getCaracteristiques() != null
+                                                                && filtre.getModele().equalsIgnoreCase(
+                                                                                v.getCaracteristiques().getModele())))
 
-                .filter(v -> filtre.getCouleur() == null
-                        || (v.getCaracteristiques() != null
-                        && filtre.getCouleur().equalsIgnoreCase(v.getCaracteristiques().getCouleur())))
+                                .filter(v -> filtre.getCouleur() == null
+                                                || (v.getCaracteristiques() != null
+                                                                && filtre.getCouleur().equalsIgnoreCase(
+                                                                                v.getCaracteristiques().getCouleur())))
 
-                .filter(v -> filtre.getVille() == null
-                        || filtre.getVille().equalsIgnoreCase(v.getVilleDisponibilite()))
-                .filter(v -> filtre.getNoteMin() <= 0
-                        || v.getNoteMoyenne() >= filtre.getNoteMin())
-                // options (si tu as bien OptionVehicule en @Entity + ManyToMany)
-                .filter(v -> filtre.getOptionsRequises() == null || filtre.getOptionsRequises().isEmpty()
-                        || v.getOptions().stream().map(OptionVehicule::getCode).collect(java.util.stream.Collectors.toSet())
-                        .containsAll(filtre.getOptionsRequises()))
-                // dispo
-                .filter(v -> filtre.getDateDebut() == null || filtre.getDateFin() == null
-                        || v.estDisponible(filtre.getDateDebut(), filtre.getDateFin()))
-                .toList();
+                                .filter(v -> filtre.getLocalisation() == null
+                                                || filtre.getLocalisation().equals(v.getLocalisationVehicule()))
+                                .filter(v -> filtre.getNoteMin() <= 0
+                                                || v.getNoteMoyenne() >= filtre.getNoteMin())
+                                // options (si tu as bien OptionVehicule en @Entity + ManyToMany)
+                                .filter(v -> filtre.getOptionsRequises() == null
+                                                || filtre.getOptionsRequises().isEmpty()
+                                                || v.getOptions().stream().map(OptionVehicule::getCode)
+                                                                .collect(java.util.stream.Collectors.toSet())
+                                                                .containsAll(filtre.getOptionsRequises()))
+                                // dispo
+                                .filter(v -> filtre.getDateDebut() == null || filtre.getDateFin() == null
+                                                || v.estDisponible(filtre.getDateDebut(), filtre.getDateFin()))
+                                .toList();
 
-
-    }
+        }
 }
-
