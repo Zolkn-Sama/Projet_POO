@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "service_nettoyage")
 @PrimaryKeyJoinColumn(name = "id")
-public class ServiceNettoyage extends ServiceOptionnel {
+public class ServiceNettoyage extends Service {
 
     @Column(name = "type_service")
     private String typeService;

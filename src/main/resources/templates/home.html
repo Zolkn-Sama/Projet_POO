@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location de véhicules</title>
+
+    <!-- Tailwind CSS + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+        /* Optionnel : police un peu plus propre */
+        * {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-base-200">
+
+    <!-- NAVBAR -->
+    <div class="navbar bg-base-100 shadow-sm">
+        <div class="flex-1">
+            <a th:href="@{/}" class="btn btn-ghost text-xl font-bold normal-case">
+                🚗 LocAuto
+            </a>
+        </div>
+        <div class="flex-none gap-2">
+            <!-- Connexions rapides -->
+            <a th:href="@{/login(agent=true)}" href="/login?role=AGENT" class="btn btn-ghost btn-sm">
+                Espace agent
+            </a>
+            <a th:href="@{/login(loueur=true)}" href="/login?role=LOUEUR" class="btn btn-primary btn-sm">
+                Espace loueur
+            </a>
+        </div>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+
+        <!-- HERO -->
+        <section class="hero bg-base-100 rounded-2xl shadow-xl border border-base-300">
+            <div class="hero-content flex-col lg:flex-row gap-8">
+                <div class="flex-1">
+                    <h1 class="text-3xl lg:text-4xl font-extrabold">
+                        Trouve le véhicule idéal en quelques secondes
+                    </h1>
+                    <p class="py-4 text-base-content/70">
+                        Choisis ta ville, tes dates et tes préférences. Nous t’affichons
+                        uniquement les véhicules <span class="font-semibold text-primary">disponibles</span>.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 text-sm">
+                        <div class="badge badge-primary gap-1">
+                            🔍 Recherche filtrée
+                        </div>
+                        <div class="badge badge-secondary gap-1">
+                            ✅ Disponibilité en temps réel
+                        </div>
+                        <div class="badge badge-outline gap-1">
+                            👤 Agent & Loueur
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="card bg-base-200 shadow-inner">
+                        <div class="card-body">
+                            <h2 class="card-title text-sm font-semibold text-base-content/70">
+                                Connexion rapide
+                            </h2>
+                            <p class="text-sm text-base-content/60">
+                                Accède à ton espace pour gérer tes locations.
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                                <a th:href="@{/login(agent=true)}" href="/login?role=AGENT"
+                                    class="btn btn-outline btn-sm justify-between">
+                                    <span>Agent</span>
+                                    <span class="badge badge-sm badge-info">Back-office</span>
+                                </a>
+                                <a th:href="@{/login(loueur=true)}" href="/login?role=LOUEUR"
+                                    class="btn btn-primary btn-sm justify-between">
+                                    <span>Loueur</span>
+                                    <span class="badge badge-sm badge-accent">Client</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GRILLE : FORMULAIRE + RÉSULTATS -->
+        <section class="grid gap-6 lg:grid-cols-3 items-start">
+
+            <!-- FORMULAIRE DE RECHERCHE -->
+            <section class="lg:col-span-1">
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body space-y-4">
+                        <h2 class="card-title text-lg">
+                            Rechercher un véhicule
+                        </h2>
+                        <p class="text-sm text-base-content/60">
+                            Remplis les filtres ci-dessous, puis lance la recherche.
+                        </p>
+
+                        <form id="search-form" class="space-y-4">
+
+                            <div class="form-control">
+                                <label for="ville" class="label">
+                                    <span class="label-text">Ville</span>
+                                </label>
+                                <input id="ville" name="ville" type="text" placeholder="Ex : Lyon"
+                                    class="input input-bordered input-sm w-full">
+                            </div>
+
+                            <div class="form-control">
+                                <label for="noteMin" class="label">
+                                    <span class="label-text">Note minimum</span>
+                                    <span class="label-text-alt text-xs text-base-content/60">
+                                        de 0 à 5
+                                    </span>
+                                </label>
+                                <input id="noteMin" name="noteMin" type="number" min="0" max="5" step="0.1"
+                                    placeholder="Ex : 4.0" class="input input-bordered input-sm w-full">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="form-control">
+                                    <label for="dateDebut" class="label">
+                                        <span class="label-text">Date de début</span>
+                                    </label>
+                                    <input id="dateDebut" name="dateDebut" type="datetime-local"
+                                        class="input input-bordered input-sm w-full">
+                                </div>
+
+                                <div class="form-control">
+                                    <label for="dateFin" class="label">
+                                        <span class="label-text">Date de fin</span>
+                                    </label>
+                                    <input id="dateFin" name="dateFin" type="datetime-local"
+                                        class="input input-bordered input-sm w-full">
+                                </div>
+                            </div>
+
+                            <!-- Options de CodeOption -->
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Options</span>
+                                    <span class="label-text-alt text-xs text-base-content/60">
+                                        (CodeOption)
+                                    </span>
+                                </label>
+                                <div class="flex flex-wrap gap-2 text-sm">
+                                    <!-- ⚠️ adapte les value selon ton enum CodeOption -->
+                                    <label class="cursor-pointer flex items-center gap-2">
+                                        <input type="checkbox" name="options" value="GPS"
+                                            class="checkbox checkbox-xs checkbox-primary">
+                                        <span>GPS</span>
+                                    </label>
+                                    <label class="cursor-pointer flex items-center gap-2">
+                                        <input type="checkbox" name="options" value="CLIM"
+                                            class="checkbox checkbox-xs checkbox-primary">
+                                        <span>Climatisation</span>
+                                    </label>
+                                    <label class="cursor-pointer flex items-center gap-2">
+                                        <input type="checkbox" name="options" value="BOITE_AUTO"
+                                            class="checkbox checkbox-xs checkbox-primary">
+                                        <span>Boîte auto</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-control pt-2">
+                                <button type="submit" class="btn btn-primary w-full">
+                                    🔍 Rechercher les véhicules
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RÉSULTATS -->
+            <section class="lg:col-span-2">
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body space-y-4">
+                        <div class="flex items-center justify-between gap-2">
+                            <h2 class="card-title text-lg">
+                                Résultats de recherche
+                            </h2>
+                            <div id="result-count" class="text-xs text-base-content/60">
+                                Aucun résultat pour le moment.
+                            </div>
+                        </div>
+
+                        <div id="results" class="space-y-3">
+                            <div class="alert alert-info text-sm">
+                                <span>
+                                    Lance une recherche pour afficher les véhicules disponibles.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </section>
+
+        <footer class="pt-4 text-center text-xs text-base-content/50">
+            Projet Java Spring Boot – Location de véhicules
+        </footer>
+    </main>
+
+    <!-- SCRIPT DE RECHERCHE -->
+    <script>
+        const form = document.getElementById('search-form');
+        const resultsDiv = document.getElementById('results');
+        const resultCount = document.getElementById('result-count');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+
+            // Appel à ton controller Spring : /vehicules/disponibles
+            fetch('/vehicules/disponibles?' + params.toString())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur HTTP : ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(vehicules => {
+                    afficherVehicules(vehicules);
+                })
+                .catch(error => {
+                    console.error(error);
+                    resultCount.textContent = 'Erreur lors du chargement.';
+                    resultsDiv.innerHTML = `
+                            <div class="alert alert-error">
+                                <span>Une erreur est survenue lors du chargement des véhicules.</span>
+                            </div>
+                        `;
+                });
+        });
+
+        function afficherVehicules(vehicules) {
+            if (!vehicules || vehicules.length === 0) {
+                resultCount.textContent = '0 véhicule trouvé.';
+                resultsDiv.innerHTML = `
+                        <div class="alert alert-warning">
+                            <span>Aucun véhicule trouvé pour ces critères.</span>
+                        </div>
+                    `;
+                return;
+            }
+
+            resultCount.textContent = vehicules.length + ' véhicule(s) trouvé(s).';
+
+            // ⚠️ Adapte les noms de propriétés selon ta classe Vehicule
+            // Exemple supposé : marque, modele, ville, prixParJour, noteMoyenne
+            let html = '<div class="grid gap-3 md:grid-cols-2">';
+
+            vehicules.forEach(v => {
+                const marque = v.marque ?? '';
+                const modele = v.modele ?? '';
+                const ville = v.ville ?? 'N/A';
+                const prix = v.prixParJour ?? 'N/A';
+                const note = v.noteMoyenne ?? 'N/A';
+
+                html += `
+                        <div class="card bg-base-200 border border-base-300 hover:border-primary transition-all">
+                            <div class="card-body py-3 px-4 gap-2">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <h3 class="font-semibold text-sm">
+                                            ${marque} ${modele}
+                                        </h3>
+                                        <p class="text-xs text-base-content/60">
+                                            Ville : <span class="font-medium">${ville}</span>
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-col items-end gap-1">
+                                        <span class="badge badge-primary badge-sm">
+                                            ${prix} €/jour
+                                        </span>
+                                        <span class="badge badge-ghost badge-sm">
+                                            ⭐ ${note}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>
