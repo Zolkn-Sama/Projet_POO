@@ -1,29 +1,22 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.ContratLocation;
-import Projet_POO.Repository.ContratLocationRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class ContratLocationService {
+import Projet_POO.Domain.Entity.ContratLocation;
 
-    private final ContratLocationRepository repository;
+public interface ContratLocationService {
 
-    public ContratLocationService(ContratLocationRepository repository) {
-        this.repository = repository;
-    }
+    List<ContratLocation> findAll();
 
-    public ContratLocation creerContrat(ContratLocation contrat) {
-        return repository.save(contrat);
-    }
+    ContratLocation findById(Long id);
 
-    public List<ContratLocation> contratsLoueur(Long loueurId) {
-        return repository.findByLoueurId(loueurId);
-    }
+    List<ContratLocation> findByLoueur(Long loueurId);
 
-    public List<ContratLocation> tous() {
-        return repository.findAll();
-    }
+    List<ContratLocation> findByVehicule(Long vehiculeId);
+
+    ContratLocation create(ContratLocation contrat);
+
+    ContratLocation update(Long id, ContratLocation contrat);
+
+    void delete(Long id);
 }
