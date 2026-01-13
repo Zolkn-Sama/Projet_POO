@@ -81,4 +81,7 @@ public class Note {
         }
     }
 
+    public void setId(Object o) {
+        this.id = id;
+    }
 }

@@ -1,29 +1,15 @@
 package Projet_POO.Service;
 
 import Projet_POO.Domain.Entity.NoteAgent;
-import Projet_POO.Repository.NoteAgentRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class NoteAgentService {
+public interface NoteAgentService {
+    // Créer une nouvelle note pour un agent
+    NoteAgent creer(NoteAgent note);
 
-    private final NoteAgentRepository repo;
+    // Récupérer la liste de toutes les notes des agents
+    List<NoteAgent> toutes();
 
-    public NoteAgentService(NoteAgentRepository repo) {
-        this.repo = repo;
-    }
-
-    public NoteAgent creer(NoteAgent note) {
-        return repo.save(note);
-    }
-
-    public List<NoteAgent> toutes() {
-        return repo.findAll();
-    }
-
-    public List<NoteAgent> parAgent(Long agentId) {
-        return repo.findByAgentId(agentId);
-    }
+    // Filtrer les notes par l'identifiant de l'agent
+    List<NoteAgent> parAgent(Long agentId);
 }

@@ -1,29 +1,31 @@
 package Projet_POO.Service;
 
 import Projet_POO.Domain.Entity.NoteVehicule;
-import Projet_POO.Repository.NoteVehiculeRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class NoteVehiculeService {
+/**
+ * Interface pour le service de gestion des évaluations de véhicules.
+ * Définit les fonctionnalités de création et de consultation des notes.
+ */
+public interface NoteVehiculeService {
 
-    private final NoteVehiculeRepository repo;
+    /**
+     * Enregistre une nouvelle note liée à un véhicule spécifique.
+     * @param note L'entité NoteVehicule à sauvegarder.
+     * @return L'évaluation enregistrée.
+     */
+    NoteVehicule creer(NoteVehicule note);
 
-    public NoteVehiculeService(NoteVehiculeRepository repo) {
-        this.repo = repo;
-    }
+    /**
+     * Récupère toutes les notes de véhicules enregistrées en base.
+     * @return Une liste complète de NoteVehicule.
+     */
+    List<NoteVehicule> toutes();
 
-    public NoteVehicule creer(NoteVehicule note) {
-        return repo.save(note);
-    }
-
-    public List<NoteVehicule> toutes() {
-        return repo.findAll();
-    }
-
-    public List<NoteVehicule> parVehicule(Long vehiculeId) {
-        return repo.findByVehiculeId(vehiculeId);
-    }
+    /**
+     * Recherche les notes correspondant à un véhicule donné.
+     * @param vehiculeId L'identifiant technique du véhicule.
+     * @return Une liste de notes filtrées par véhicule.
+     */
+    List<NoteVehicule> parVehicule(Long vehiculeId);
 }
