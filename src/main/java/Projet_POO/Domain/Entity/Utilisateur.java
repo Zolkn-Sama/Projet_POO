@@ -25,6 +25,7 @@ public class Utilisateur {
     private LocalDate dateNaissance;
     private String numeroPermis;
     private LocalDate dateObtentionPermis;
+    private double solde;
 
     // --------- CONSTRUCTEURS ---------
 
@@ -103,6 +104,8 @@ public class Utilisateur {
     public void setDateObtentionPermis(LocalDate dateObtentionPermis) {
         this.dateObtentionPermis = dateObtentionPermis;
     }
+    public double getSolde() { return solde; }
+    public void setSolde(double solde) { this.solde = solde; }
 
     @Override
     public String toString() {
