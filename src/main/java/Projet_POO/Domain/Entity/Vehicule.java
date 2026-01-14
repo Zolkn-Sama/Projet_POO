@@ -19,6 +19,8 @@ public class Vehicule {
     private String immatriculation;
     private Localisation localisationVehicule;
     private boolean deposeDifferenteAutorisee;
+    private Long agentId;
+
 
     // compositions / associations
     @ManyToOne
@@ -63,6 +65,8 @@ public class Vehicule {
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
         this.typeVehicule = typeVehicule;
     }
+    public Long getAgentId() { return agentId; }
+    public void setAgentId(Long agentId) { this.agentId = agentId; }
 
     // --- Getters / Setters ---
     public Long getId() {
