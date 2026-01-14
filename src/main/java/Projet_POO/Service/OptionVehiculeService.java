@@ -1,19 +1,17 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.OptionVehicule;
-import Projet_POO.Repository.OptionVehiculeRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-public class OptionVehiculeService {
-    private final OptionVehiculeRepository repo;
+import Projet_POO.Domain.Entity.OptionVehicule;
+import Projet_POO.Domain.Enums.CodeOption;
 
-    public OptionVehiculeService(OptionVehiculeRepository repo) {
-        this.repo = repo;
-    }
+public interface OptionVehiculeService {
 
-    public OptionVehicule creer(OptionVehicule o) { return repo.save(o); }
-    public List<OptionVehicule> tous() { return repo.findAll(); }
+    List<OptionVehicule> findAll();
+    OptionVehicule findById(Long id);
+    OptionVehicule findByCode(CodeOption code);
+
+    OptionVehicule create(OptionVehicule optionVehicule);
+    OptionVehicule update(Long id, CodeOption code);
+    void delete(Long id);
 }

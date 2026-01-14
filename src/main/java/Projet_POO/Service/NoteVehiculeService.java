@@ -11,21 +11,24 @@ public interface NoteVehiculeService {
 
     /**
      * Enregistre une nouvelle note liée à un véhicule spécifique.
+     * 
      * @param note L'entité NoteVehicule à sauvegarder.
      * @return L'évaluation enregistrée.
      */
-    NoteVehicule creer(NoteVehicule note);
+    NoteVehicule create(NoteVehicule note);
 
     /**
      * Récupère toutes les notes de véhicules enregistrées en base.
+     * 
      * @return Une liste complète de NoteVehicule.
      */
-    List<NoteVehicule> toutes();
+    List<NoteVehicule> getAll();
 
     /**
      * Recherche les notes correspondant à un véhicule donné.
+     * 
      * @param vehiculeId L'identifiant technique du véhicule.
      * @return Une liste de notes filtrées par véhicule.
      */
-    List<NoteVehicule> parVehicule(Long vehiculeId);
+    List<NoteVehicule> getByVehiculeId(Long vehiculeId);
 }

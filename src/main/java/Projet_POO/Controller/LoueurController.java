@@ -1,4 +1,4 @@
- package Projet_POO.Controller;
+package Projet_POO.Controller;
 
 import java.util.List;
 
@@ -29,17 +29,15 @@ public class LoueurController {
         return loueurService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/ById/{id}")
     public Loueur getById(@PathVariable Long id) {
         return loueurService.findById(id);
     }
 
-
-    @GetMapping("/{email}")
+    @GetMapping("/ByEmail/{email}")
     public Loueur getByEmail(@PathVariable String email) {
         return loueurService.findByEmail(email);
     }
-
 
     @PostMapping
     public Loueur create(@RequestBody Loueur loueur) {

@@ -1,15 +1,25 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
 @Entity
 @Table(name = "note")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Note {
+public abstract class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

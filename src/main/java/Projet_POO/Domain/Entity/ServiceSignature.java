@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "service_parking")
 @PrimaryKeyJoinColumn(name = "id")
-public class ServiceSignature extends ServiceOptionnel {
+public class ServiceSignature extends Service {
 
     private String signatureElectronique;
 

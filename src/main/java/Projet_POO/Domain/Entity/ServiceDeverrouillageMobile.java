@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "service_deverrouillage")
 @PrimaryKeyJoinColumn(name = "id")
-public class ServiceDeverrouillageMobile extends ServiceOptionnel {
+public class ServiceDeverrouillageMobile extends Service {
 
     private String fournisseur;
 

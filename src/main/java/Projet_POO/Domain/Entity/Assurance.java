@@ -1,9 +1,17 @@
 package Projet_POO.Domain.Entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "assurance")
@@ -42,16 +50,4 @@ public class Assurance {
     public List<CouvertureAssurance> getCouvertures() { return couvertures; }
     public List<ConditionAssurance> getConditions() { return conditions; }
 
-    // Helpers (important pour garder la cohérence)
-    public void ajouterCouverture(CouvertureAssurance c) {
-        if (c == null) return;
-        c.setAssurance(this);
-        couvertures.add(c);
-    }
-
-    public void ajouterCondition(ConditionAssurance c) {
-        if (c == null) return;
-        c.setAssurance(this);
-        conditions.add(c);
-    }
 }

@@ -10,7 +10,7 @@ import Projet_POO.Domain.Enums.TypePropulsion;
 
 public class FiltreRecherche {
 
-    private String ville;
+    private Localisation localisation;
     private TypeVehicule typeVehicule;
     private DomaineDeplacement domaine;
     private TypePropulsion propulsion;
@@ -28,38 +28,92 @@ public class FiltreRecherche {
 
     // getters / setters
 
-    public String getVille() { return ville; }
-    public void setVille(String ville) { this.ville = ville; }
+    public Localisation getLocalisation() {
+        return localisation;
+    }
 
-    public TypeVehicule getTypeVehicule() { return typeVehicule; }
-    public void setTypeVehicule(TypeVehicule typeVehicule) { this.typeVehicule = typeVehicule; }
+    public void setLocalisation(Localisation localisation) {
+        this.localisation = localisation;
+    }
 
-    public DomaineDeplacement getDomaine() { return domaine; }
-    public void setDomaine(DomaineDeplacement domaine) { this.domaine = domaine; }
+    public TypeVehicule getTypeVehicule() {
+        return typeVehicule;
+    }
 
-    public TypePropulsion getPropulsion() { return propulsion; }
-    public void setPropulsion(TypePropulsion propulsion) { this.propulsion = propulsion; }
+    public void setTypeVehicule(TypeVehicule typeVehicule) {
+        this.typeVehicule = typeVehicule;
+    }
 
-    public String getMarque() { return marque; }
-    public void setMarque(String marque) { this.marque = marque; }
+    public DomaineDeplacement getDomaine() {
+        return domaine;
+    }
 
-    public String getModele() { return modele; }
-    public void setModele(String modele) { this.modele = modele; }
+    public void setDomaine(DomaineDeplacement domaine) {
+        this.domaine = domaine;
+    }
 
-    public String getCouleur() { return couleur; }
-    public void setCouleur(String couleur) { this.couleur = couleur; }
+    public TypePropulsion getPropulsion() {
+        return propulsion;
+    }
 
-    public LocalDateTime getDateDebut() { return dateDebut; }
-    public void setDateDebut(LocalDateTime dateDebut) { this.dateDebut = dateDebut; }
+    public void setPropulsion(TypePropulsion propulsion) {
+        this.propulsion = propulsion;
+    }
 
-    public LocalDateTime getDateFin() { return dateFin; }
-    public void setDateFin(LocalDateTime dateFin) { this.dateFin = dateFin; }
+    public String getMarque() {
+        return marque;
+    }
 
-    public double getNoteMin() { return noteMin; }
-    public void setNoteMin(double noteMin) { this.noteMin = noteMin; }
+    public void setMarque(String marque) {
+        this.marque = marque;
+    }
 
-    public Set<CodeOption> getOptionsRequises() { return optionsRequises; }
+    public String getModele() {
+        return modele;
+    }
+
+    public void setModele(String modele) {
+        this.modele = modele;
+    }
+
+    public String getCouleur() {
+        return couleur;
+    }
+
+    public void setCouleur(String couleur) {
+        this.couleur = couleur;
+    }
+
+    public LocalDateTime getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(LocalDateTime dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public LocalDateTime getDateFin() {
+        return dateFin;
+    }
+
+    public void setDateFin(LocalDateTime dateFin) {
+        this.dateFin = dateFin;
+    }
+
+    public double getNoteMin() {
+        return noteMin;
+    }
+
+    public void setNoteMin(double noteMin) {
+        this.noteMin = noteMin;
+    }
+
+    public Set<CodeOption> getOptionsRequises() {
+        return optionsRequises;
+    }
+
     public void ajouterOptionRequise(CodeOption code) {
-        if (code != null) optionsRequises.add(code);
+        if (code != null)
+            optionsRequises.add(code);
     }
 }

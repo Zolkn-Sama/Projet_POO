@@ -1,7 +1,13 @@
 package Projet_POO.Domain.Entity;
 
 import Projet_POO.Domain.Enums.TypePropulsion;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "systeme_propulsion")
@@ -19,6 +25,7 @@ public class SystemePropulsion {
     public SystemePropulsion() {} // Requis par JPA
 
     public SystemePropulsion(TypePropulsion type, String energie) {
+
         this.type = type;
         this.energie = energie;
     }
