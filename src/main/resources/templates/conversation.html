@@ -38,7 +38,7 @@
                     <div
                         class="bg-primary text-primary-content rounded-full w-9 flex items-center justify-center font-bold text-sm">
                         <span
-                            th:text="${currentUser != null} ? #strings.substring(currentUser.nom,0,1) + #strings.substring(currentUser.prenom,0,1) : 'JD'">
+                            th:text="${currentUser == null ? 'JD' : #strings.concat(#strings.substring(currentUser.nom,0,1), #strings.substring(currentUser.prenom,0,1))}">
                             JD </span>
                     </div>
                 </div>
@@ -168,7 +168,8 @@
                     th:if="${activeConversation != null}">
                     <!-- Boucle sur les messages : th:each="msg : ${messages}" -->
                     <div th:each="msg : ${messages}"
-                        th:class="'chat ' + (${msg.expediteur.id} == ${currentUser.id} ? 'chat-end' : 'chat-start')">
+                        th:class="${'chat ' + ((currentUser != null and msg.expediteur.id == currentUser.id) ? 'chat-end' : 'chat-start')}">
+
 
                         <!-- Nom + heure -->
                         <div class="chat-header text-xs opacity-70">
