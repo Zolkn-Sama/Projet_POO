@@ -91,7 +91,7 @@ public abstract class Note {
         }
     }
 
-    public void setId(Object o) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

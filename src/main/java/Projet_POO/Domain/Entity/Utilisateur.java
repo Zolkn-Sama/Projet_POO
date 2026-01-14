@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class Utilisateur {
+public class  Utilisateur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
