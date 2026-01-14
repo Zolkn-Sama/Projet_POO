@@ -1,6 +1,7 @@
 package Projet_POO.Controller.HTML;
 
-import ch.qos.logback.core.model.Model;
+import org.springframework.ui.Model;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +18,20 @@ import java.time.LocalDate;
 public class HomeController {
 
     @GetMapping("/")
-    public String home() {
-        return "home"; // Affiche src/main/resources/templates/home.html
+    public String home(HttpSession session, Model model) {
+        // Récupération des attributs de session définis dans AuthController
+        String userName = (String) session.getAttribute("userName");
+        String userRole = (String) session.getAttribute("userRole");
+
+        if (userName != null) {
+            model.addAttribute("isConnected", true);
+            model.addAttribute("prenom", userName);
+            model.addAttribute("role", userRole);
+        } else {
+            model.addAttribute("isConnected", false);
+        }
+
+        return "home";
     }
 
     @GetMapping("/FilterVehicules")

@@ -16,15 +16,15 @@
             <p class="text-sm opacity-60">Connectez-vous pour gérer vos locations</p>
         </div>
 
-        <form th:action="@{/login}" method="post" class="space-y-4">
+        <form id="loginForm">
             <div class="form-control">
                 <label class="label"><span class="label-text font-bold">Email</span></label>
-                <input type="email" name="username" placeholder="votre@email.com" class="input input-bordered w-full" required />
+                <input type="email" id="username" name="username" placeholder="votre@email.com" class="input input-bordered w-full" required />
             </div>
 
             <div class="form-control">
                 <label class="label"><span class="label-text font-bold">Mot de passe</span></label>
-                <input type="password" name="password" placeholder="••••••••" class="input input-bordered w-full" required />
+                <input type="password" id="password" name="password" placeholder="••••••••" class="input input-bordered w-full" required />
                 <label class="label">
                     <a href="#" class="label-text-alt link link-hover">Mot de passe oublié ?</a>
                 </label>
@@ -44,5 +44,45 @@
     </div>
 </div>
 
+<script th:inline="javascript">
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const emailField = document.getElementById('username');
+        const passwordField = document.getElementById('password');
+
+        // Vérification de sécurité
+        if (!emailField || !passwordField) {
+            console.error("Erreur : Les champs email ou password sont introuvables dans le HTML.");
+            return;
+        }
+
+        const data = {
+            email: emailField.value,
+            password: passwordField.value
+        };
+
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Email ou mot de passe incorrect');
+            })
+            .then(result => {
+                // Redirection automatique (vers / ou /dashboard-agent selon le rôle)
+                window.location.href = result.redirect;
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    });
+</script>
 </body>
 </html>

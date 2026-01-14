@@ -34,11 +34,12 @@ public class Loueur extends Utilisateur {
             String pays,
             LocalDate dateNaissance,
             String numeroPermis,
-            LocalDate dateObtentionPermis) {
+            LocalDate dateObtentionPermis,
+                  double solde) {
 
         super(id, nom, prenom, password, email,
                 telephone, rue, ville, pays,
-                dateNaissance, numeroPermis, dateObtentionPermis);
+                dateNaissance, numeroPermis, dateObtentionPermis, solde);
     }
 
     // --------- MÉTHODES MÉTIER ---------
@@ -92,4 +93,6 @@ public class Loueur extends Utilisateur {
                 ", email='" + getEmail() + '\'' +
                 '}';
     }
+
+
 }
