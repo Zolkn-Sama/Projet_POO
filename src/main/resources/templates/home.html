@@ -27,14 +27,20 @@
             <a th:href="@{/}" class="btn btn-ghost text-xl font-bold">🚗 LocAuto</a>
         </div>
         <div class="flex-none gap-4">
-            <a th:href="@{/login}" class="btn btn-ghost border-primary text-primary hover:bg-primary hover:text-white btn-sm rounded-full px-6">
-                Se connecter
-            </a>
+            <div th:if="${isConnected}" class="flex items-center gap-4">
+                <span class="text-sm">Bienvenue, <b th:text="${prenom}" class="text-primary"></b></span>
 
-            <div class="divider divider-horizontal mx-0"></div>
+                <a th:if="${role == 'AGENT'}" th:href="@{/dashboard-agent}" class="btn btn-warning btn-sm">Espace Agent</a>
+                <a th:if="${role == 'LOUEUR'}" th:href="@{/dashboard-loueur}" class="btn btn-primary btn-sm">Mon Profil</a>
 
-            <a th:href="@{/dashboard-agent}" class="btn btn-ghost btn-sm">Espace agent</a>
-            <a th:href="@{/dashboard-loueur}" class="btn btn-primary btn-sm">Espace loueur</a>
+                <button onclick="logout()" class="btn btn-ghost btn-sm text-error">Déconnexion</button>
+            </div>
+
+            <div th:unless="${isConnected}">
+                <a th:href="@{/login}" class="btn btn-ghost border-primary text-primary hover:bg-primary hover:text-white btn-sm rounded-full px-6">
+                    Se connecter
+                </a>
+            </div>
         </div>
     </div>
 
@@ -282,6 +288,15 @@
 
             html += '</div>';
             resultsDiv.innerHTML = html;
+        }
+
+        function logout() {
+            fetch('/api/auth/logout', { method: 'POST' })
+                .then(() => {
+                    // Recharge la page pour que le contrôleur repasse isConnected à false
+                    window.location.reload();
+                })
+                .catch(err => console.error("Erreur déconnexion:", err));
         }
     </script>
 </body>
