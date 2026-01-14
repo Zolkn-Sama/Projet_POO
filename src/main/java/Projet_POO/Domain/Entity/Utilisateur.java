@@ -106,15 +106,8 @@ public class Utilisateur {
     public void setDateObtentionPermis(LocalDate dateObtentionPermis) {
         this.dateObtentionPermis = dateObtentionPermis;
     }
-
-    public double getSolde() {
-        return solde;
-    }
-
-    // Ajoutez le Setter (C'est lui qui fera disparaître le rouge dans le Controller)
-    public void setSolde(double solde) {
-        this.solde = solde;
-    }
+    public double getSolde() { return solde; }
+    public void setSolde(double solde) { this.solde = solde; }
 
     @Override
     public String toString() {

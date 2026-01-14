@@ -21,6 +21,11 @@ public class ViewController {
         return "reservation-contrat"; // Retourne templates/reservation-contrat.html
     }
 
+    @GetMapping("/conversation")
+    public String conversation() {
+        return "conversation"; // Retourne templates/conversation.html
+    }
+
     @GetMapping("/vehicule-detail")
     public String detailVehicule() {
         return "vehicule-detail"; // Retourne templates/vehicule-detail.html

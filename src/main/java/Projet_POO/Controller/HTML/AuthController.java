@@ -1,15 +1,19 @@
 package Projet_POO.Controller.HTML;
 
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import Projet_POO.Domain.DTO.LoginRequest;
 import Projet_POO.Domain.Entity.Agent;
 import Projet_POO.Domain.Entity.Loueur;
 import Projet_POO.Domain.Entity.Utilisateur;
 import Projet_POO.Service.AuthService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -49,6 +53,18 @@ public class AuthController {
         session.invalidate();
     }
 
+    /**
+     * Méthode utilitaire utilisée par Thymeleaf pour récupérer l'utilisateur connecté.
+     * On lit simplement l'attribut stocké en session au moment du login.
+     */
+    public Utilisateur getCurrentUser(HttpSession session) {
+        // ⚠️ adapte la clé "user" au nom exact que tu utilises dans ton login
+        Object u = session.getAttribute("user");
+        if (u instanceof Utilisateur utilisateur) {
+            return utilisateur;
+        }
+        return null;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, Object> data) {

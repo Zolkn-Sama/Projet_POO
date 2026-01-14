@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messagerie interne - LocAuto</title>
+
+    <!-- DaisyUI + Tailwind via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+        * {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-base-200">
+
+    <!-- NAVBAR -->
+    <div class="navbar bg-base-100 shadow-sm border-b border-base-300 sticky top-0 z-20">
+        <div class="flex-1 px-4">
+            <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
+                <span class="text-primary text-2xl">💬</span>
+                <span>Messagerie LocAuto</span>
+            </a>
+        </div>
+        <div class="flex-none gap-3 px-4 items-center">
+            <!-- Indique le rôle courant (optionnel) -->
+            <span class="badge badge-outline text-xs" th:text="${currentRole} ?: 'Loueur'">
+                Loueur
+            </span>
+
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                    <div
+                        class="bg-primary text-primary-content rounded-full w-9 flex items-center justify-center font-bold text-sm">
+                        <span
+                            th:text="${currentUser == null ? 'JD' : #strings.concat(#strings.substring(currentUser.nom,0,1), #strings.substring(currentUser.prenom,0,1))}">
+                            JD </span>
+                    </div>
+                </div>
+                <ul tabindex="0"
+                    class="mt-3 z-10 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                    <li><a th:href="@{/dashboard-loueur}">Mon espace</a></li>
+                    <li><a>Paramètres</a></li>
+                    <li><a th:href="@{/logout}">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- LAYOUT PRINCIPAL MESSAGERIE -->
+    <main class="max-w-6xl mx-auto px-4 py-4 h-[calc(100vh-4rem)]">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
+
+            <!-- LISTE DES CONVERSATIONS -->
+            <aside class="card bg-base-100 shadow-md border border-base-300 flex flex-col">
+                <div class="card-body pb-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="card-title text-base">
+                            Conversations
+                        </h2>
+                        <button class="btn btn-xs btn-ghost" title="Nouvelle conversation"
+                            th:href="@{/conversations/nouveau}">
+                            ➕
+                            <span class="hidden sm:inline">Nouveau</span>
+                        </button>
+                    </div>
+
+                    <!-- Champ de recherche de contacts/conversations -->
+                    <div class="form-control mb-3">
+                        <div class="input input-bordered input-sm flex items-center gap-2">
+                            🔍
+                            <input type="text" placeholder="Rechercher un agent / loueur"
+                                class="grow bg-transparent border-none outline-none text-sm" />
+                        </div>
+                    </div>
+
+                    <!-- Liste des conversations -->
+                    <div class="overflow-y-auto flex-1 pr-1">
+                        <ul class="menu menu-sm gap-1">
+                            <!-- Exemple de structure : th:each="conv : ${conversations}" -->
+                            <li th:each="conv : ${conversations}">
+                                <a th:href="@{/conversations/{id}(id=${conv.id})}"
+                                    class="flex items-center gap-3 rounded-lg"
+                                    th:classappend="${activeConversation != null and conv.id == activeConversation.id} ? ' bg-base-200 font-semibold'">
+                                    <div class="avatar">
+                                        <div
+                                            class="w-8 rounded-full bg-neutral text-neutral-content text-xs flex items-center justify-center font-bold">
+                                            <span th:text="${conv.otherParticipantInitials}">AG</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="truncate text-sm" th:text="${conv.otherParticipantName}">
+                                                Agent Dupont
+                                            </span>
+                                            <span class="text-[10px] opacity-60"
+                                                th:text="${#temporals.format(conv.lastMessageAt, 'HH:mm')}">
+                                                14:32
+                                            </span>
+                                        </div>
+                                        <div class="text-[11px] opacity-70 truncate"
+                                            th:text="${conv.lastMessagePreview}">
+                                            Dernier message…
+                                        </div>
+                                    </div>
+                                    <span class="badge badge-xs badge-primary" th:if="${conv.unreadCount > 0}"
+                                        th:text="${conv.unreadCount}">
+                                        2
+                                    </span>
+                                </a>
+                            </li>
+
+                            <!-- Si pas de conversation -->
+                            <li th:if="${conversations == null or #lists.isEmpty(conversations)}">
+                                <span class="text-xs text-base-content/60">
+                                    Aucune conversation pour l’instant.
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CONVERSATION ACTIVE -->
+            <section class="md:col-span-2 card bg-base-100 shadow-md border border-base-300 flex flex-col h-full">
+                <!-- En-tête de la conversation -->
+                <div class="card-body py-3 border-b border-base-300 flex flex-row items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="avatar">
+                            <div
+                                class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold text-sm">
+                                <span
+                                    th:text="${activeConversation != null ? activeConversation.otherParticipantInitials : '??'}">
+                                    AG
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="font-semibold text-sm"
+                                th:text="${activeConversation != null ? activeConversation.otherParticipantName : 'Aucune conversation sélectionnée'}">
+                                Agent Dupont
+                            </h2>
+                            <p class="text-[11px] text-base-content/60"
+                                th:text="${activeConversation != null ? activeConversation.otherParticipantRole : 'Sélectionnez une conversation à gauche'}">
+                                Agent • En ligne
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Petites actions (optionnelles) -->
+                    <div class="flex items-center gap-2 text-xs">
+                        <button class="btn btn-ghost btn-xs">
+                            ⚠︎ Signaler
+                        </button>
+                        <button class="btn btn-ghost btn-xs">
+                            Bloquer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Zone des messages -->
+                <div class="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-base-200/60"
+                    th:if="${activeConversation != null}">
+                    <!-- Boucle sur les messages : th:each="msg : ${messages}" -->
+                    <div th:each="msg : ${messages}"
+                        th:class="${'chat ' + ((currentUser != null and msg.expediteur.id == currentUser.id) ? 'chat-end' : 'chat-start')}">
+
+
+                        <!-- Nom + heure -->
+                        <div class="chat-header text-xs opacity-70">
+                            <span th:text="${msg.expediteur.nomComplet}">
+                                Vous
+                            </span>
+                            <time class="ml-1" th:text="${#temporals.format(msg.dateEnvoi, 'dd/MM HH:mm')}">
+                                10/01 14:32
+                            </time>
+                        </div>
+
+                        <!-- Bulle de message -->
+                        <div class="chat-bubble max-w-xs md:max-w-md"
+                            th:classappend="${msg.expediteur.id} == ${currentUser.id} ? ' chat-bubble-primary' : ''"
+                            th:text="${msg.contenu}">
+                            Contenu du message…
+                        </div>
+
+                        <!-- État (optionnel) -->
+                        <div class="chat-footer opacity-60 text-[10px]"
+                            th:text="${msg.expediteur.id} == ${currentUser.id} ? 'Envoyé' : ''">
+                            Envoyé
+                        </div>
+                    </div>
+
+                    <!-- Si pas encore de message -->
+                    <div th:if="${messages == null or #lists.isEmpty(messages)}"
+                        class="flex items-center justify-center h-full py-10">
+                        <div class="text-center space-y-2 text-sm text-base-content/60">
+                            <div class="text-3xl">💬</div>
+                            <p>Aucun message dans cette conversation.</p>
+                            <p>Commencez une discussion avec ce contact.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Si aucune conversation sélectionnée -->
+                <div class="flex-1 flex items-center justify-center text-center p-6"
+                    th:if="${activeConversation == null}">
+                    <div class="space-y-2 text-sm text-base-content/60">
+                        <div class="text-4xl mb-1">📨</div>
+                        <p>Sélectionnez une conversation dans la liste à gauche</p>
+                        <p class="text-xs">
+                            ou cliquez sur <span class="font-semibold">“Nouveau”</span> pour contacter un agent ou un
+                            autre loueur.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Barre de saisie du message -->
+                <div class="border-t border-base-300 bg-base-100" th:if="${activeConversation != null}">
+                    <form class="px-3 py-2 flex items-end gap-2"
+                        th:action="@{/conversations/{id}/messages(id=${activeConversation.id})}" method="post">
+                        <!-- CSRF si Spring Security -->
+                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}" />
+
+                        <textarea name="contenu" rows="1"
+                            class="textarea textarea-bordered textarea-sm w-full resize-none"
+                            placeholder="Écrire un message…"
+                            oninput="this.style.height='auto';this.style.height=(this.scrollHeight)+'px';"
+                            required></textarea>
+
+                        <button type="submit" class="btn btn-primary btn-sm px-4">
+                            ➤
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+</body>
+
+</html>
