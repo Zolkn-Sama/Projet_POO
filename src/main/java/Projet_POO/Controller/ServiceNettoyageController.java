@@ -1,6 +1,5 @@
 package Projet_POO.Controller;
 
-<<<<<<< HEAD
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,13 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Projet_POO.Domain.Entity.ServiceNettoyage;
 import Projet_POO.Service.ServiceNettoyageService;
-=======
-import Projet_POO.Domain.Entity.ServiceNettoyage;
-import Projet_POO.Service.ServiceNettoyageService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
->>>>>>> ALEX
 
 @RestController
 @RequestMapping("/services-nettoyage")
@@ -34,7 +26,6 @@ public class ServiceNettoyageController {
 
     @GetMapping
     public List<ServiceNettoyage> getAll() {
-<<<<<<< HEAD
         return service.findAll();
     }
 
@@ -58,13 +49,3 @@ public class ServiceNettoyageController {
         service.delete(id);
     }
 }
-=======
-        return service.listerTous();
-    }
-
-    @PostMapping
-    public ServiceNettoyage creer(@RequestBody ServiceNettoyage nettoyage) {
-        return service.sauvegarder(nettoyage);
-    }
-}
->>>>>>> ALEX

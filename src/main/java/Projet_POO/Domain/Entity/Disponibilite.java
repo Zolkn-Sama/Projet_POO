@@ -6,6 +6,7 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Disponibilite {
+    
     private LocalDateTime debut;
     private LocalDateTime fin;
 

@@ -1,9 +1,15 @@
 package Projet_POO.Controller;
 
-<<<<<<< HEAD
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import Projet_POO.Domain.Entity.CouvertureAssurance;
 import Projet_POO.Service.CouvertureAssuranceService;
@@ -50,31 +56,5 @@ public class CouvertureAssuranceController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         couvertureService.delete(id);
-=======
-import Projet_POO.Domain.Entity.CouvertureAssurance;
-import Projet_POO.Service.CouvertureAssuranceService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/couvertures-assurances")
-public class CouvertureAssuranceController {
-
-    private final CouvertureAssuranceService service;
-
-    public CouvertureAssuranceController(CouvertureAssuranceService service) {
-        this.service = service;
-    }
-
-    @GetMapping
-    public List<CouvertureAssurance> getAll() {
-        return service.listerToutes();
-    }
-
-    @PostMapping
-    public CouvertureAssurance creer(@RequestBody CouvertureAssurance couverture) {
-        return service.enregistrer(couverture);
->>>>>>> ALEX
     }
 }

@@ -1,6 +1,5 @@
 package Projet_POO.Controller;
 
-<<<<<<< HEAD
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,13 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Projet_POO.Domain.Entity.ServiceDepotVehicule;
 import Projet_POO.Service.ServiceDepotVehiculeService;
-=======
-import Projet_POO.Domain.Entity.ServiceDepotVehicule;
-import Projet_POO.Service.ServiceDepotVehiculeService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
->>>>>>> ALEX
 
 @RestController
 @RequestMapping("/services-depot")
@@ -34,7 +26,6 @@ public class ServiceDepotVehiculeController {
 
     @GetMapping
     public List<ServiceDepotVehicule> getAll() {
-<<<<<<< HEAD
         return service.findAll();
     }
 
@@ -58,13 +49,3 @@ public class ServiceDepotVehiculeController {
         service.delete(id);
     }
 }
-=======
-        return service.listerTous();
-    }
-
-    @PostMapping
-    public ServiceDepotVehicule creer(@RequestBody ServiceDepotVehicule serviceDepot) {
-        return service.sauvegarder(serviceDepot);
-    }
-}
->>>>>>> ALEX

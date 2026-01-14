@@ -1,6 +1,5 @@
 package Projet_POO.Repository;
 
-<<<<<<< HEAD
 import java.util.List;
 import java.util.Optional;
 
@@ -14,12 +13,3 @@ public interface ServiceDepotVehiculeRepository extends JpaRepository<ServiceDep
     List<ServiceDepotVehicule> findAll();
     Optional<ServiceDepotVehicule> findById(Long id);
 }
-=======
-import Projet_POO.Domain.Entity.ServiceDepotVehicule;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface ServiceDepotVehiculeRepository extends JpaRepository<ServiceDepotVehicule, Long> {
-}
->>>>>>> ALEX

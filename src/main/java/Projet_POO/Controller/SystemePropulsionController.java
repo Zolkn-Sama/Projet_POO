@@ -1,23 +1,21 @@
 package Projet_POO.Controller;
 
-<<<<<<< HEAD
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import Projet_POO.Domain.Entity.SystemePropulsion;
 import Projet_POO.Service.SystemePropulsionService;
 
 @RestController
-@RequestMapping("/api/propulsions")
-=======
-import Projet_POO.Domain.Entity.SystemePropulsion;
-import Projet_POO.Service.SystemePropulsionService;
-import org.springframework.web.bind.annotation.*;
+@RequestMapping("/propulsions")
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/systemes-propulsion")
->>>>>>> ALEX
 public class SystemePropulsionController {
 
     private final SystemePropulsionService service;
@@ -28,7 +26,6 @@ public class SystemePropulsionController {
 
     @GetMapping
     public List<SystemePropulsion> getAll() {
-<<<<<<< HEAD
         return service.findAll();
     }
 
@@ -42,13 +39,3 @@ public class SystemePropulsionController {
         service.delete(id);
     }
 }
-=======
-        return service.listerTous();
-    }
-
-    @PostMapping
-    public SystemePropulsion creer(@RequestBody SystemePropulsion systeme) {
-        return service.sauvegarder(systeme);
-    }
-}
->>>>>>> ALEX
