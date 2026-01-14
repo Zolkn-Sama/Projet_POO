@@ -9,35 +9,36 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/notes-vehicule")
+@RequestMapping("/api/notes-vehicule")
 public class NoteVehiculeController {
 
     @Autowired
     private NoteVehiculeService noteVehiculeService;
 
     /**
-     * Enregistre une évaluation pour un véhicule.
+     * Enregistre une nouvelle évaluation pour un véhicule spécifique.
+     * URL : POST /api/notes-vehicule/{vehiculeId}
      */
-    @PostMapping
+    @PostMapping("/{vehiculeId}") // 🟢 L'ID du véhicule est dans l'URL
     @ResponseStatus(HttpStatus.CREATED)
-    public NoteVehicule create(@RequestBody NoteVehicule note) {
-        return noteVehiculeService.create(note);
+    public NoteVehicule create(@PathVariable Long vehiculeId, @RequestBody NoteVehicule note) {
+        return noteVehiculeService.creer(note, vehiculeId);
     }
 
     /**
-     * Liste toutes les évaluations de véhicules.
+     * Liste toutes les évaluations de tous les véhicules.
      */
     @GetMapping
     public List<NoteVehicule> getAll() {
-        return noteVehiculeService.getAll();
+        return noteVehiculeService.toutes();
     }
 
     /**
-     * Récupère la liste des notes d'un véhicule par son identifiant.
-     * La gestion d'erreur (404) est déléguée à la couche Service.
+     * Récupère les notes d'un véhicule spécifique.
+     * URL : GET /api/notes-vehicule/vehicule/{vehiculeId}
      */
     @GetMapping("/vehicule/{vehiculeId}")
-    public List<NoteVehicule> getByVehiculeId(@PathVariable Long vehiculeId) {
-        return noteVehiculeService.getByVehiculeId(vehiculeId);
+    public List<NoteVehicule> getByVehicule(@PathVariable Long vehiculeId) {
+        return noteVehiculeService.parVehicule(vehiculeId);
     }
 }
