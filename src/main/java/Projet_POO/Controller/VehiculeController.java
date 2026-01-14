@@ -1,7 +1,10 @@
 package Projet_POO.Controller;
 
 import java.util.List;
+import java.util.Map;
 
+import Projet_POO.Domain.Entity.*;
+import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,18 +13,39 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import Projet_POO.Service.VehiculeService;
+import Projet_POO.Repository.AgentRepository;
+import Projet_POO.Repository.LoueurRepository;
+
+
+
+
 
 import Projet_POO.Domain.Entity.Vehicule;
-import Projet_POO.Service.VehiculeService;
 
 @RestController
 @RequestMapping("/vehicules")
 public class VehiculeController {
 
     private final VehiculeService vehiculeService;
+    private final AgentRepository agentRepository; // Nécessaire pour lier l'agent
+    private final LoueurRepository loueurRepository;
 
-    public VehiculeController(VehiculeService vehiculeService) {
+    private final jakarta.persistence.EntityManager entityManager;
+
+    public VehiculeController(VehiculeService vehiculeService,
+                              AgentRepository agentRepository,
+                              LoueurRepository loueurRepository,
+                              jakarta.persistence.EntityManager entityManager) { // AJOUT ICI
         this.vehiculeService = vehiculeService;
+        this.agentRepository = agentRepository;
+        this.loueurRepository = loueurRepository;
+        this.entityManager = entityManager; // AJOUT ICI
     }
 
     @GetMapping
@@ -50,8 +74,100 @@ public class VehiculeController {
         return vehiculeService.update(id, vehicule);
     }
 
+
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        vehiculeService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            vehiculeService.delete(id);
+            return ResponseEntity.ok(Map.of("message", "Le véhicule a été supprimé avec succès."));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la suppression : " + e.getMessage());
+        }
+    }
+
+
+    // Nouvel endpoint pour l'ajout dynamique via le Dashboard
+    @Transactional
+    @PostMapping("/add")
+    public ResponseEntity<?> addVehicule(@RequestBody Map<String, Object> data, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("Erreur : Vous devez être connecté.");
+        }
+
+        try {
+            // --- LOGIQUE DE PROMOTION (À AJOUTER) ---
+            Agent agent = agentRepository.findById(userId).orElse(null);
+
+            // Au lieu d'utiliser utilisateurRepository
+            if (agent == null) {
+                Loueur loueur = loueurRepository.findById(userId)
+                        .orElseThrow(() -> new RuntimeException("Compte loueur introuvable"));
+
+                // Utilisation d'une requête SQL native pour forcer l'insertion de l'ID
+                entityManager.createNativeQuery(
+                                "INSERT INTO agent (id, nom, prenom, email, password, telephone, ville, pays, solde, est_professionnel) " +
+                                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                        .setParameter(1, loueur.getId())
+                        .setParameter(2, loueur.getNom())
+                        .setParameter(3, loueur.getPrenom())
+                        .setParameter(4, loueur.getEmail())
+                        .setParameter(5, loueur.getPassword())
+                        .setParameter(6, loueur.getTelephone())
+                        .setParameter(7, loueur.getVille())
+                        .setParameter(8, loueur.getPays())
+                        .setParameter(9, loueur.getSolde())
+                        .setParameter(10, false)
+                        .executeUpdate();
+
+                // Maintenant on peut le récupérer proprement via JPA
+                agent = agentRepository.findById(userId).get();
+                session.setAttribute("userRole", "AGENT");
+            }
+            // ----------------------------------------
+
+            // 2. Extraire les données
+            Map<String, Object> caracMap = (Map<String, Object>) data.get("caracteristiques");
+            Map<String, Object> locMap = (Map<String, Object>) data.get("localisation");
+
+            CaracteristiquesVehicule carac = new CaracteristiquesVehicule();
+            carac.setMarque((String) caracMap.get("marque"));
+            carac.setModele((String) caracMap.get("modele"));
+            carac.setCouleur((String) caracMap.get("couleur"));
+            carac.setNbPlaces(Integer.parseInt(caracMap.get("nbPlaces").toString()));
+
+            TypeVehicule type = new TypeVehicule((String) data.get("typeLibelle"), "Route");
+
+            Localisation loc = new Localisation();
+            loc.setVille((String) locMap.get("ville"));
+            loc.setAdresse((String) locMap.get("adresse"));
+
+            // 3. Créer le véhicule
+            Vehicule vehicule = new Vehicule();
+            vehicule.setPrixJournalier(Double.parseDouble(data.get("prix").toString()));
+            vehicule.setImmatriculation((String) data.get("immatriculation"));
+            vehicule.setCaracteristiques(carac);
+            vehicule.setLocalisationVehicule(loc);
+            vehicule.setTypeVehicule(type);
+            vehicule.setAgent(agent); // Utilise l'agent trouvé ou promu
+
+            // 4. Sauvegarder
+            vehiculeService.create(vehicule);
+
+            return ResponseEntity.ok(Map.of("message", "Véhicule ajouté avec succès !"));
+        } catch (Exception e) {
+            e.printStackTrace(); // Utile pour voir les erreurs exactes dans la console
+            return ResponseEntity.status(500).body("Erreur lors de l'ajout : " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/my-vehicles")
+    public ResponseEntity<List<Vehicule>> getMyVehicles(HttpSession session) {
+        Long agentId = (Long) session.getAttribute("userId");
+        if (agentId == null) return ResponseEntity.status(401).build();
+
+        return agentRepository.findById(agentId)
+                .map(agent -> ResponseEntity.ok(agent.getVehicules()))
+                .orElse(ResponseEntity.ok(List.of())); // Liste vide plutôt que 404
     }
 }

@@ -92,12 +92,14 @@ public class ContratLocationServiceImpl implements ContratLocationService {
             }
 
             // Parrainage Agent (via vehicule.agentId)
+            // Parrainage Agent (via vehicule.agent)
             if (saved.getVehiculeId() != null) {
                 Vehicule v = vehiculeRepo.findById(saved.getVehiculeId())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Véhicule introuvable"));
 
-                if (v.getAgentId() != null) {
-                    parrainageAgentService.verifierEtCrediter(v.getAgentId());
+                // ✅ On vérifie si l'objet agent existe, puis on récupère son ID
+                if (v.getAgent() != null && v.getAgent().getId() != null) {
+                    parrainageAgentService.verifierEtCrediter(v.getAgent().getId());
                 }
             }
         }
