@@ -35,6 +35,12 @@ public class Localisation {
 
     public void setPays(String pays) { this.pays = pays; }
 
+    public void setAdresse(String adresse) {
+        this.rue = adresse; // On considère que l'adresse saisie va dans le champ 'rue'
+    }
+
+
+
     @Override
     public String toString() {
         return rue + ", " + codePostal + " " + ville + " (" + pays + ")";

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "vehicule")
@@ -20,15 +21,21 @@ public class Vehicule {
     private Localisation localisationVehicule;
     private boolean deposeDifferenteAutorisee;
 
+    private double prixJournalier;
+
+    @ManyToOne // SANS CascadeType.REMOVE ou ALL ici !
+    @JoinColumn(name = "agent_id")
+    private Agent agent; // Manquant pour setAgent
+
     // compositions / associations
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL) // AJOUTEZ CECI
     @JoinColumn(name = "type_vehicule_id")
     private TypeVehicule typeVehicule;
 
     @Transient
     private SystemePropulsion systemePropulsion;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL) // Ajoutez cascade = CascadeType.ALL ici
     @JoinColumn(name = "caracteristiques_id")
     private CaracteristiquesVehicule caracteristiques;
 
@@ -139,6 +146,27 @@ public class Vehicule {
     public void setNotes(List<NoteVehicule> notes) {
         this.notes = notes;
     }
+
+
+
+
+    public double getPrixJournalier() {
+        return prixJournalier;
+    }
+
+    public void setPrixJournalier(double prixJournalier) {
+        this.prixJournalier = prixJournalier;
+    }
+
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
+    }
+
+
     // --- Méthodes métier attendues par ton Service/Catalogue/Loueur ---
 
     public double getNoteMoyenne() {
