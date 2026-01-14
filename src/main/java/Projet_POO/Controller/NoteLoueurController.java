@@ -16,16 +16,18 @@ public class NoteLoueurController {
     private NoteLoueurService noteLoueurService;
 
     /**
-     * Enregistre une évaluation pour un Loueur.
+     * Enregistre une évaluation pour un Loueur spécifique.
+     * URL : POST /api/notes-loueur/{loueurId}
      */
-    @PostMapping
+    @PostMapping("/{loueurId}") // 🟢 CHANGEMENT : L'ID est dans l'URL
     @ResponseStatus(HttpStatus.CREATED)
-    public NoteLoueur create(@RequestBody NoteLoueur note) {
-        return noteLoueurService.creer(note);
+    public NoteLoueur create(@PathVariable Long loueurId, @RequestBody NoteLoueur note) {
+        // On passe l'ID récupéré dans l'URL + le contenu de la note (JSON) au service
+        return noteLoueurService.creer(note, loueurId);
     }
 
     /**
-     * Liste toutes les évaluations de véhicules.
+     * Liste toutes les évaluations de tous les loueurs (Optionnel).
      */
     @GetMapping
     public List<NoteLoueur> getAll() {
@@ -33,8 +35,8 @@ public class NoteLoueurController {
     }
 
     /**
-     * Récupère la liste des notes d'un véhicule par son identifiant.
-     * La gestion d'erreur (404) est déléguée à la couche Service.
+     * Récupère la liste des notes d'un loueur spécifique par son identifiant.
+     * URL : GET /api/notes-loueur/loueur/{loueurId}
      */
     @GetMapping("/loueur/{loueurId}")
     public List<NoteLoueur> getByLoueur(@PathVariable Long loueurId) {

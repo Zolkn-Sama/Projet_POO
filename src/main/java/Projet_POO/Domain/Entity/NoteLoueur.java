@@ -1,22 +1,34 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "note_loueur")
+@PrimaryKeyJoinColumn(name = "id") // Lien vers la clé primaire de la table parente 'note'
 public class NoteLoueur extends Note {
 
-    private Long agentId;
+    // 🟢 CHANGEMENT : Relation directe vers l'entité Loueur
+    @ManyToOne
+    @JoinColumn(name = "loueur_id", nullable = false)
+    @JsonIgnore // ⚠️ Empêche la récursion infinie dans le JSON
+    private Loueur loueur;
 
-    public NoteLoueur() { super(); }
-
-    public NoteLoueur(String commentaire, Long agentId) {
-        super(commentaire);
-        this.agentId = agentId;
+    public NoteLoueur() {
+        super();
     }
 
-    public Long getLoueurId() { return agentId; }
-    public void setLoueurId(Long agentId) { this.agentId = agentId; }
-}
+    public NoteLoueur(String commentaire, Loueur loueur) {
+        super(commentaire);
+        this.loueur = loueur;
+    }
 
+    // Getters et Setters typés avec Loueur
+    public Loueur getLoueur() {
+        return loueur;
+    }
+
+    public void setLoueur(Loueur loueur) {
+        this.loueur = loueur;
+    }
+}
