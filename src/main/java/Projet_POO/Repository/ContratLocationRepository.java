@@ -19,6 +19,7 @@ public interface ContratLocationRepository extends JpaRepository<ContratLocation
 
 
 
+
     Optional<ContratLocation> findById(Long id);
 
     List<ContratLocation> findByLoueurId(Long loueurId);

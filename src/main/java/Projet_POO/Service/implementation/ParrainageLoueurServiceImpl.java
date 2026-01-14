@@ -2,9 +2,9 @@ package Projet_POO.Service.implementation;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import Projet_POO.Domain.Entity.Loueur;
 import Projet_POO.Domain.Entity.ParrainageLoueur;
@@ -22,10 +22,9 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
     private final LoueurRepository loueurRepo;
     private final ContratLocationRepository contratRepo;
 
-    public ParrainageLoueurServiceImpl(
-            ParrainageLoueurRepository parrainageRepo,
-            LoueurRepository loueurRepo,
-            ContratLocationRepository contratRepo) {
+    public ParrainageLoueurServiceImpl(ParrainageLoueurRepository parrainageRepo,
+                                       LoueurRepository loueurRepo,
+                                       ContratLocationRepository contratRepo) {
         this.parrainageRepo = parrainageRepo;
         this.loueurRepo = loueurRepo;
         this.contratRepo = contratRepo;
@@ -34,12 +33,12 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
     @Override
     public ParrainageLoueur creerCode(Long parrainId) {
         Loueur parrain = loueurRepo.findById(parrainId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loueur introuvable"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loueur parrain introuvable"));
 
         ParrainageLoueur p = new ParrainageLoueur();
         p.setParrain(parrain);
         p.setCode(UUID.randomUUID().toString());
-        p.setMontantRecompense(10.0); // ex: 10€
+        p.setMontantRecompense(10.0); // 💡 à adapter
         p.setStatut(StatutParrainage.EN_ATTENTE);
 
         return parrainageRepo.save(p);
@@ -55,10 +54,14 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
         }
 
         Loueur filleul = loueurRepo.findById(filleulId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loueur introuvable"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loueur filleul introuvable"));
+
+        if (p.getParrain().getId().equals(filleulId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "On ne peut pas se parrainer soi-même");
+        }
 
         p.setFilleul(filleul);
-        p.setStatut(StatutParrainage.ACCEPTER);
+        p.setStatut(StatutParrainage.LIE);
 
         return parrainageRepo.save(p);
     }
@@ -66,13 +69,11 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
     @Override
     public void verifierEtCrediter(Long filleulId) {
         ParrainageLoueur p = parrainageRepo.findByFilleulId(filleulId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucun parrainage trouvé"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parrainage loueur introuvable"));
 
         if (p.isRecompenseVersee()) return;
 
-        boolean aContratTermine =
-                contratRepo.existsByLoueurIdAndStatut(filleulId, StatutContrat.TERMINE);
-
+        boolean aContratTermine = contratRepo.existsByLoueurIdAndStatut(filleulId, StatutContrat.TERMINE);
         if (!aContratTermine) return;
 
         Loueur parrain = p.getParrain();

@@ -10,7 +10,10 @@ import Projet_POO.Domain.Entity.Vehicule;
 public interface VehiculeRepository extends JpaRepository<Vehicule, Long> {
     // Permet de filtrer par ville directement en base
     List<Vehicule> findByVilleDisponibiliteIgnoreCase(String ville);
-
     Optional<Vehicule> findByImmatriculation(String immatriculation);
+
+    boolean existsByAgentId(Long agentId);
+    List<Vehicule> findByAgentId(Long agentId);
+
 }
 
