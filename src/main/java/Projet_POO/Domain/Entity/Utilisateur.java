@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class Utilisateur {
+public class  Utilisateur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -106,6 +106,8 @@ public class Utilisateur {
     public void setDateObtentionPermis(LocalDate dateObtentionPermis) {
         this.dateObtentionPermis = dateObtentionPermis;
     }
+    public double getSolde() { return solde; }
+    public void setSolde(double solde) { this.solde = solde; }
 
     public double getSolde() {
         return solde;

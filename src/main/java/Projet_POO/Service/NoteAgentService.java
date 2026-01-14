@@ -4,12 +4,9 @@ import Projet_POO.Domain.Entity.NoteAgent;
 import java.util.List;
 
 public interface NoteAgentService {
-    // Créer une nouvelle note pour un agent
-    NoteAgent creer(NoteAgent note);
+    // 🟢 Mise à jour de la signature : ajout de l'ID de l'agent
+    NoteAgent creer(NoteAgent note, Long agentId);
 
-    // Récupérer la liste de toutes les notes des agents
     List<NoteAgent> toutes();
-
-    // Filtrer les notes par l'identifiant de l'agent
     List<NoteAgent> parAgent(Long agentId);
 }

@@ -4,12 +4,9 @@ import Projet_POO.Domain.Entity.NoteLoueur;
 import java.util.List;
 
 public interface NoteLoueurService {
-    // Créer une nouvelle note pour un agent
-    NoteLoueur creer(NoteLoueur note);
+    // Création d'une note liée à un Loueur spécifique
+    NoteLoueur creer(NoteLoueur note, Long loueurId);
 
-    // Récupérer la liste de toutes les notes des agents
     List<NoteLoueur> toutes();
-
-    // Filtrer les notes par l'identifiant de l'agent
     List<NoteLoueur> parLoueur(Long loueurId);
 }

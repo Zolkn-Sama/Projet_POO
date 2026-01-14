@@ -16,13 +16,15 @@ public class NoteAgentController {
     private NoteAgentService noteAgentService;
 
     /**
-     * Crée une nouvelle évaluation pour un agent.
-     * Le service se charge de forcer l'ID à null pour l'insertion.
+     * Enregistre une nouvelle évaluation pour un Agent spécifique.
+     * URL : POST /api/notes-agent/{agentId}
      */
-    @PostMapping
+    // 🟢 CHANGEMENT : On récupère l'ID de l'agent via l'URL
+    @PostMapping("/{agentId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public NoteAgent create(@RequestBody NoteAgent note) {
-        return noteAgentService.creer(note);
+    public NoteAgent create(@PathVariable Long agentId, @RequestBody NoteAgent note) {
+        // On passe l'ID et l'objet Note au service
+        return noteAgentService.creer(note, agentId);
     }
 
     /**
@@ -35,7 +37,7 @@ public class NoteAgentController {
 
     /**
      * Récupère les notes d'un agent spécifique.
-     * Si aucune note n'est trouvée, le service lance une ResponseStatusException (404).
+     * URL : GET /api/notes-agent/agent/{agentId}
      */
     @GetMapping("/agent/{agentId}")
     public List<NoteAgent> getByAgent(@PathVariable Long agentId) {
