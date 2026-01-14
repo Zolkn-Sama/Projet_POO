@@ -4,6 +4,8 @@ import java.util.List;
 
 import Projet_POO.Domain.Entity.TypeVehicule;
 
+import java.util.List;
+
 public interface TypeVehiculeService {
     List<TypeVehicule> findAll();
     TypeVehicule findById(Long id);

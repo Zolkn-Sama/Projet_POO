@@ -18,3 +18,4 @@ public interface ConditionAssuranceService {
 
     void delete(Long id);
 }
+

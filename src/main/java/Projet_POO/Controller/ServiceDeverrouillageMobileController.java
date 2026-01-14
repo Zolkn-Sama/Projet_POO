@@ -18,6 +18,7 @@ public class ServiceDeverrouillageMobileController {
 
     @GetMapping
     public List<ServiceDeverrouillageMobile> getAll() {
+<<<<<<< HEAD
         return service.findAll();
     }
 
@@ -41,3 +42,13 @@ public class ServiceDeverrouillageMobileController {
         service.delete(id);
     }
 }
+=======
+        return service.listerTous();
+    }
+
+    @PostMapping
+    public ServiceDeverrouillageMobile creer(@RequestBody ServiceDeverrouillageMobile serviceDeverrouillage) {
+        return service.sauvegarder(serviceDeverrouillage);
+    }
+}
+>>>>>>> ALEX

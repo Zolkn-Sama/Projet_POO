@@ -13,7 +13,7 @@ public class CaracteristiquesVehicule {
     private String marque;
     private String modele;
     private String couleur;
-    private String categoriePermisRequise; // pour simplifier
+    private String categoriePermisRequise;
     private int nbPlaces;
 
     // ✅ Obligatoire pour JPA + utile pour Jackson
@@ -23,17 +23,6 @@ public class CaracteristiquesVehicule {
     // ✅ Constructeur pratique
     public CaracteristiquesVehicule(String marque, String modele, String couleur,
                                     String categoriePermisRequise, int nbPlaces) {
-        this.marque = marque;
-        this.modele = modele;
-        this.couleur = couleur;
-        this.categoriePermisRequise = categoriePermisRequise;
-        this.nbPlaces = nbPlaces;
-    }
-
-    // (Optionnel) Si tu veux garder ton constructeur avec id, tu peux le garder aussi
-    public CaracteristiquesVehicule(Long id, String marque, String modele, String couleur,
-                                    String categoriePermisRequise, int nbPlaces) {
-        this.id = id;
         this.marque = marque;
         this.modele = modele;
         this.couleur = couleur;

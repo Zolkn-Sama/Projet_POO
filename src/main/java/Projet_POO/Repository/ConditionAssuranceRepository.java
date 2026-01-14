@@ -17,3 +17,4 @@ public interface ConditionAssuranceRepository extends JpaRepository<ConditionAss
 
     List<ConditionAssurance> findByAssuranceId(Long assuranceId);
 }
+

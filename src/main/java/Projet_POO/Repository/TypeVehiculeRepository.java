@@ -17,3 +17,4 @@ public interface TypeVehiculeRepository extends JpaRepository<TypeVehicule, Long
 
     List<TypeVehicule> findByLibelleContainingIgnoreCase(String libellePart);
 }
+

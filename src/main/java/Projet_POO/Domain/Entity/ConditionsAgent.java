@@ -1,9 +1,20 @@
 package Projet_POO.Domain.Entity;
 
+<<<<<<< HEAD
 import jakarta.persistence.Embeddable;
 
 @Embeddable
+=======
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "conditions_agent")
+>>>>>>> ALEX
 public class ConditionsAgent {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private boolean chienAutorise;
     private boolean fumerAutorise;
@@ -17,6 +28,7 @@ public class ConditionsAgent {
         this.commentaire = commentaire;
     }
 
+<<<<<<< HEAD
     public boolean isChienAutorise() { return chienAutorise; }
     public void setChienAutorise(boolean chienAutorise) { this.chienAutorise = chienAutorise; }
 
@@ -26,3 +38,28 @@ public class ConditionsAgent {
     public String getCommentaire() { return commentaire; }
     public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
 }
+=======
+    // Getters et Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public boolean isChienAutorise() { return chienAutorise; }
+    public void setChienAutorise(boolean chienAutorise) { this.chienAutorise = chienAutorise; }
+
+    public boolean isFumerAutorise() { return fumerAutorise; }
+    public void setFumerAutorise(boolean fumerAutorise) { this.fumerAutorise = fumerAutorise; }
+
+    public String getCommentaire() { return commentaire; }
+    public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
+
+    @Override
+    public String toString() {
+        return "ConditionsAgent{" +
+                "id=" + id +
+                ", chienAutorise=" + chienAutorise +
+                ", fumerAutorise=" + fumerAutorise +
+                ", commentaire='" + commentaire + '\'' +
+                '}';
+    }
+}
+>>>>>>> ALEX

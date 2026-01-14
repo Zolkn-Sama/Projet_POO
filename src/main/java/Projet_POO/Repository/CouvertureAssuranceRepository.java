@@ -17,3 +17,4 @@ public interface CouvertureAssuranceRepository extends JpaRepository<CouvertureA
 
     List<CouvertureAssurance> findByAssuranceId(Long assuranceId);
 }
+
