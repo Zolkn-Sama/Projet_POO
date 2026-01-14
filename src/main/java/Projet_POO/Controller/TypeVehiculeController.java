@@ -16,6 +16,7 @@ public class TypeVehiculeController {
         this.service = service;
     }
 
+<<<<<<< HEAD
     @PostMapping
     public TypeVehicule creer(@RequestBody TypeVehicule t) {
         return service.creer(t);
@@ -26,3 +27,15 @@ public class TypeVehiculeController {
         return service.tous();
     }
 }
+=======
+    @GetMapping
+    public List<TypeVehicule> getAll() {
+        return service.listerTous();
+    }
+
+    @PostMapping
+    public TypeVehicule creer(@RequestBody TypeVehicule type) {
+        return service.sauvegarder(type);
+    }
+}
+>>>>>>> ALEX
