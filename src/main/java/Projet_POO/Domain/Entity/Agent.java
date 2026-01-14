@@ -44,11 +44,12 @@ public class Agent extends Utilisateur {
                  String numeroPermis,
                  LocalDate dateObtentionPermis,
                  boolean estProfessionnel,
-                 ConditionsAgent conditions) {
+                 ConditionsAgent conditions,
+                 double solde) {
 
         super(id, nom, prenom, password, email,
                 telephone, rue, ville, pays,
-                dateNaissance, numeroPermis, dateObtentionPermis);
+                dateNaissance, numeroPermis, dateObtentionPermis, solde);
 
         this.estProfessionnel = estProfessionnel;
         this.conditions = conditions;

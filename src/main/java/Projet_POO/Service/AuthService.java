@@ -15,10 +15,7 @@ public class AuthService {
     private final AgentRepository agentRepository;
     private final LoueurRepository loueurRepository;
 
-    public AuthService(AgentRepository agentRepository, LoueurRepository loueurRepository) {
-        this.agentRepository = agentRepository;
-        this.loueurRepository = loueurRepository;
-    }
+
 
     public Utilisateur authentifier(String email, String password) {
         // 1. On cherche d'abord dans les Loueurs
@@ -34,5 +31,19 @@ public class AuthService {
         }
 
         return null; // Identifiants invalides
+    }
+
+
+    public AuthService(AgentRepository agentRepository, LoueurRepository loueurRepository) {
+        this.agentRepository = agentRepository;
+        this.loueurRepository = loueurRepository;
+    }
+
+    public Loueur inscrireLoueur(Loueur loueur) {
+        return loueurRepository.save(loueur);
+    }
+
+    public Agent inscrireAgent(Agent agent) {
+        return agentRepository.save(agent);
     }
 }

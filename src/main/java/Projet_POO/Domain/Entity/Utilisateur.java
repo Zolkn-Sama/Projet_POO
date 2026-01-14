@@ -25,6 +25,7 @@ public class Utilisateur {
     private LocalDate dateNaissance;
     private String numeroPermis;
     private LocalDate dateObtentionPermis;
+    private double solde;
 
     // --------- CONSTRUCTEURS ---------
 
@@ -41,7 +42,8 @@ public class Utilisateur {
                        String pays,
                        LocalDate dateNaissance,
                        String numeroPermis,
-                       LocalDate dateObtentionPermis) {
+                       LocalDate dateObtentionPermis,
+                       double solde) {
 
         this.id = id;
         this.nom = nom;
@@ -55,6 +57,7 @@ public class Utilisateur {
         this.dateNaissance = dateNaissance;
         this.numeroPermis = numeroPermis;
         this.dateObtentionPermis = dateObtentionPermis;
+        this.solde = solde;
     }
 
     // --------- GETTERS / SETTERS ---------
@@ -102,6 +105,15 @@ public class Utilisateur {
 
     public void setDateObtentionPermis(LocalDate dateObtentionPermis) {
         this.dateObtentionPermis = dateObtentionPermis;
+    }
+
+    public double getSolde() {
+        return solde;
+    }
+
+    // Ajoutez le Setter (C'est lui qui fera disparaître le rouge dans le Controller)
+    public void setSolde(double solde) {
+        this.solde = solde;
     }
 
     @Override
