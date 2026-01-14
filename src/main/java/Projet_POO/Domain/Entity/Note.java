@@ -23,6 +23,9 @@ public class Note {
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteCritere> criteres = new ArrayList<>();
 
+    private String reponse;
+    private java.time.LocalDateTime dateReponse;
+
     public Note() {
         this.date = LocalDateTime.now();
     }
@@ -31,6 +34,11 @@ public class Note {
         this();
         this.commentaire = commentaire;
     }
+    public String getReponse() { return reponse; }
+    public void setReponse(String reponse) { this.reponse = reponse; }
+
+    public LocalDateTime getDateReponse() { return dateReponse; }
+    public void setDateReponse(LocalDateTime dateReponse) { this.dateReponse = dateReponse; }
 
     public Long getId() { return id; }
 
