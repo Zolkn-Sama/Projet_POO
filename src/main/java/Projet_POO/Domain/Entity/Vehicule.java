@@ -6,12 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "vehicule")
@@ -26,23 +21,34 @@ public class Vehicule {
     private boolean deposeDifferenteAutorisee;
 
     // compositions / associations
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "type_vehicule_id")
     private TypeVehicule typeVehicule;
 
     @Transient
     private SystemePropulsion systemePropulsion;
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "caracteristiques_id")
     private CaracteristiquesVehicule caracteristiques;
 
-    @Transient
+    @ManyToMany
+    @JoinTable(
+            name = "vehicule_options",
+            joinColumns = @JoinColumn(name = "vehicule_id"),
+            inverseJoinColumns = @JoinColumn(name = "option_id")
+    )
     private List<OptionVehicule> options = new ArrayList<>();
 
-    @Transient
+    @ElementCollection
+    @CollectionTable(name = "vehicule_disponibilites", joinColumns = @JoinColumn(name = "vehicule_id"))
     private List<Disponibilite> disponibilites = new ArrayList<>();
 
-    @Transient
-    private List<Note> notes = new ArrayList<>();
+    // Ajoutez ce champ pour que findByVilleDisponibilite fonctionne
+    private String villeDisponibilite;
+
+    @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
+    private List<NoteVehicule> notes = new ArrayList<>(); // Utilise NoteVehicule au lieu de Note
 
     @Transient
     private List<ContratLocation> contrats = new ArrayList<>();
@@ -51,7 +57,7 @@ public class Vehicule {
     }
 
     public Vehicule(String immatriculation, Localisation localisationVehicule, boolean deposeDifferenteAutorisee,
-            TypeVehicule typeVehicule) {
+                    TypeVehicule typeVehicule) {
         this.immatriculation = immatriculation;
         this.localisationVehicule = localisationVehicule;
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
@@ -127,22 +133,19 @@ public class Vehicule {
         this.contrats = contratLocations;
     }
 
-    public List<Note> getNotes() {
+    public List<NoteVehicule> getNotes() {
         return new ArrayList<>(notes);
     }
-
-    public void setNotes(List<Note> notes) {
+    public void setNotes(List<NoteVehicule> notes) {
         this.notes = notes;
     }
-
     // --- Méthodes métier attendues par ton Service/Catalogue/Loueur ---
 
     public double getNoteMoyenne() {
-        if (notes.isEmpty())
-            return 0.0;
+        if (notes == null || notes.isEmpty()) return 0.0;
         double somme = 0.0;
-        for (Note n : notes) {
-            somme += n.noteGlobale(); // il faut que Note ait noteGlobale()
+        for (NoteVehicule n : notes) { // Utilise NoteVehicule ici
+            somme += n.noteGlobale();
         }
         return somme / notes.size();
     }

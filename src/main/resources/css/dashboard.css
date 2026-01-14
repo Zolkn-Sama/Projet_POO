@@ -1,0 +1,54 @@
+/* profil.css */
+
+/* En-tête du profil avec dégradé léger */
+.profile-header {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+/* Zone de Parrainage (US.L.9) */
+.referral-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    transition: transform 0.2s;
+}
+
+.referral-box:hover {
+    transform: scale(1.02);
+}
+
+.referral-code {
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px dashed #22c55e;
+    font-family: monospace;
+    font-weight: bold;
+    color: #166534;
+}
+
+/* Badge de statut personnalisé */
+.status-pill {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+/* Table de l'historique (US.L.6) */
+.history-table thead th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+}
+
+.history-table tbody tr:hover {
+    background-color: #f3f4f6;
+}

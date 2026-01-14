@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails du véhicule - LocAuto</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body class="bg-base-200 min-h-screen">
+<div class="navbar bg-base-100 shadow-sm px-4">
+    <a th:href="@{/}" class="btn btn-ghost text-xl">🚗 LocAuto</a>
+</div>
+
+<main class="max-w-4xl mx-auto p-6 mt-6 bg-white rounded-xl shadow-lg">
+    <div class="flex flex-col md:flex-row gap-8">
+        <div class="flex-1">
+            <div class="badge badge-primary mb-2">Disponible</div>
+            <h1 id="v-titre" class="text-4xl font-black text-primary">Chargement...</h1>
+            <p id="v-ville" class="text-lg opacity-70">📍 --</p>
+
+            <div class="divider">Caractéristiques</div>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="bg-base-200 p-3 rounded-lg"><strong>Marque :</strong> <span id="v-marque">--</span></div>
+                <div class="bg-base-200 p-3 rounded-lg"><strong>Modèle :</strong> <span id="v-modele">--</span></div>
+                <div class="bg-base-200 p-3 rounded-lg"><strong>Couleur :</strong> <span id="v-couleur">--</span></div>
+                <div class="bg-base-200 p-3 rounded-lg"><strong>Places :</strong> <span id="v-places">--</span></div>
+            </div>
+        </div>
+
+        <div class="w-full md:w-64 space-y-4">
+            <div class="stats stats-vertical shadow w-full">
+                <div class="stat">
+                    <div class="stat-title">Note Moyenne</div>
+                    <div id="v-note" class="stat-value text-secondary">--</div>
+                </div>
+            </div>
+            <a th:href="@{/reservation}" class="btn btn-primary w-full">Louer maintenant</a>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Récupération de l'ID dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehiculeId = urlParams.get('id');
+
+    if (vehiculeId) {
+        fetch(`/vehicules/ById/${vehiculeId}`)
+            .then(res => res.json())
+            .then(v => {
+                document.getElementById('v-titre').textContent = `${v.caracteristiques.marque} ${v.caracteristiques.modele}`;
+                document.getElementById('v-marque').textContent = v.caracteristiques.marque;
+                document.getElementById('v-modele').textContent = v.caracteristiques.modele;
+                document.getElementById('v-couleur').textContent = v.caracteristiques.couleur;
+                document.getElementById('v-places').textContent = v.caracteristiques.nbPlaces;
+                document.getElementById('v-ville').textContent = `📍 ${v.localisationVehicule.ville}`;
+                document.getElementById('v-note').textContent = `⭐ ${v.noteMoyenne.toFixed(1)}`;
+            });
+    }
+</script>
+</body>
+</html>

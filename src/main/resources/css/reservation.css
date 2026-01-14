@@ -1,0 +1,35 @@
+/* reservation.css - Version compacte */
+
+/* Zone de Signature Electronique (US.L.2) [cite: 394, 415] */
+.signature-pad {
+    border: 2px dashed #2563eb;
+    background: #fdfdfd; /* Un blanc légèrement plus pur */
+    border-radius: 0.75rem;
+    cursor: crosshair;
+    width: 100%;
+    max-width: 400px; /* Limite la largeur pour garder un aspect compact */
+    height: 120px;    /* Taille diminuée */
+    display: block;
+    margin: 0 auto;   /* Centre le pad si nécessaire */
+}
+
+/* Récapitulatif du prix (US.P) [cite: 402, 406] */
+.price-breakdown {
+    background: #f8fafc;
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.price-total {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #2563eb;
+}

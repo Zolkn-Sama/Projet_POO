@@ -43,8 +43,9 @@ public class RechercheController {
                                                                 && filtre.getCouleur().equalsIgnoreCase(
                                                                                 v.getCaracteristiques().getCouleur())))
 
-                                .filter(v -> filtre.getLocalisation() == null
-                                                || filtre.getLocalisation().equals(v.getLocalisationVehicule()))
+                                .filter(v -> filtre.getLocalisation() == null || filtre.getLocalisation().getVille() == null ||
+                                        (v.getLocalisationVehicule() != null &&
+                                            filtre.getLocalisation().getVille().equalsIgnoreCase(v.getLocalisationVehicule().getVille())))
                                 .filter(v -> filtre.getNoteMin() <= 0
                                                 || v.getNoteMoyenne() >= filtre.getNoteMin())
                                 // options (si tu as bien OptionVehicule en @Entity + ManyToMany)

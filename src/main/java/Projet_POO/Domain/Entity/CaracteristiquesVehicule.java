@@ -1,18 +1,14 @@
 package Projet_POO.Domain.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-@Entity // <--- INDISPENSABLE : Dit à Spring que c'est une table en BD
-@Table(name = "caracteristiques_vehicule")
+@Entity
+@Table(name = "caracteristiquesvehicule")
 public class CaracteristiquesVehicule {
 
-    @Id // <--- INDISPENSABLE : Définit la clé primaire
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incrémentation
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String marque;
     private String modele;
@@ -20,13 +16,13 @@ public class CaracteristiquesVehicule {
     private String categoriePermisRequise;
     private int nbPlaces;
 
-    // CONSTRUCTEUR VIDE (Obligatoire pour JPA/Hibernate)
+    // ✅ Obligatoire pour JPA + utile pour Jackson
     public CaracteristiquesVehicule() {
     }
 
-    public CaracteristiquesVehicule(long id, String marque, String modele, String couleur,
+    // ✅ Constructeur pratique
+    public CaracteristiquesVehicule(String marque, String modele, String couleur,
                                     String categoriePermisRequise, int nbPlaces) {
-        this.id = id;
         this.marque = marque;
         this.modele = modele;
         this.couleur = couleur;
@@ -34,13 +30,52 @@ public class CaracteristiquesVehicule {
         this.nbPlaces = nbPlaces;
     }
 
-    // --- Getters ---
-    public long getId() { return id; }
-    public String getMarque() { return marque; }
-    public String getModele() { return modele; }
-    public String getCouleur() { return couleur; }
-    public String getCategoriePermisRequise() { return categoriePermisRequise; }
-    public int getNbPlaces() { return nbPlaces; }
+    // ✅ Getter/Setter standard : Jackson + outils + clarté
+    public Long getId() {
+        return id;
+    }
 
-    // Ajoutez également les Setters si vous voulez pouvoir modifier les données
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMarque() {
+        return marque;
+    }
+
+    public void setMarque(String marque) {
+        this.marque = marque;
+    }
+
+    public String getModele() {
+        return modele;
+    }
+
+    public void setModele(String modele) {
+        this.modele = modele;
+    }
+
+    public String getCouleur() {
+        return couleur;
+    }
+
+    public void setCouleur(String couleur) {
+        this.couleur = couleur;
+    }
+
+    public String getCategoriePermisRequise() {
+        return categoriePermisRequise;
+    }
+
+    public void setCategoriePermisRequise(String categoriePermisRequise) {
+        this.categoriePermisRequise = categoriePermisRequise;
+    }
+
+    public int getNbPlaces() {
+        return nbPlaces;
+    }
+
+    public void setNbPlaces(int nbPlaces) {
+        this.nbPlaces = nbPlaces;
+    }
 }

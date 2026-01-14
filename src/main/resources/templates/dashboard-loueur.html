@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil Loueur - LocAuto</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/profil.css}">
+</head>
+<body class="min-h-screen bg-base-200">
+
+<div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+    <div class="flex-1 px-4">
+        <a th:href="@{/}" class="brand" style="text-decoration: none; color: inherit;">🚗 LocAuto</a>
+    </div>
+    <div class="flex-none gap-4 px-4">
+        <a th:href="@{/dashboard-agent}" class="btn btn-outline btn-sm">Espace Agent</a>
+        <div class="avatar placeholder">
+            <div class="bg-primary text-primary-content rounded-full w-10 flex items-center justify-center font-bold">JD</div>
+        </div>
+    </div>
+</div>
+
+<main class="container space-y-8">
+
+    <section class="profile-header flex flex-col md:flex-row items-center gap-8">
+        <div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-28 ring ring-primary ring-offset-2">
+                <span class="text-4xl font-bold">JD</span>
+            </div>
+        </div>
+        <div class="flex-1 text-center md:text-left">
+            <h1 class="hero-title">Jean Dupont</h1>
+            <p class="hero-subtitle">Conducteur vérifié • Membre depuis 2025</p>
+            <div class="flex flex-wrap gap-2 justify-center md:justify-start mt-4">
+                <div class="badge badge-primary font-bold">⭐ 4.9 (Score Loueur)</div> <div class="badge badge-outline">12 Locations</div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary btn-sm">Modifier Profil</button>
+        </div>
+    </section>
+
+    <div class="layout">
+        <aside class="space-y-6">
+            <div class="card">
+                <h2 class="text-lg font-bold mb-4">Mes Coordonnées</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label>Email</label>
+                        <p class="text-sm">jean.dupont@email.com</p>
+                    </div>
+                    <div>
+                        <label>Numéro de Permis</label>
+                        <p class="text-sm font-mono font-bold">25AA12345</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="referral-box">
+                <h2 class="text-success font-bold text-lg mb-2">🎁 Parrainage</h2>
+                <p class="text-[11px] mb-4 opacity-70">Gagnez 15€ par ami parrainé ayant effectué une location.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <span class="referral-code">LOC-JEAN-2026</span>
+                    <button class="btn btn-ghost btn-xs">Copier</button>
+                </div>
+                <div class="border-t border-success/20 pt-3">
+                    <label class="text-[10px] uppercase font-bold text-success/70">Solde disponible</label>
+                    <p class="text-2xl font-black text-success">30.00 €</p>
+                </div>
+            </div>
+        </aside>
+
+        <section class="card min-h-[450px]">
+            <h2 class="text-xl font-bold mb-6">Historique des locations</h2>
+            <div class="overflow-x-auto">
+                <table class="table history-table w-full">
+                    <thead>
+                    <tr>
+                        <th>Véhicule</th>
+                        <th class="text-center">Dates</th>
+                        <th class="text-center">Statut</th>
+                        <th class="text-right">Document</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-base-200 rounded flex items-center justify-center text-xl">🚗</div>
+                                <div>
+                                    <div class="font-bold">Renault Clio 5</div>
+                                    <div class="text-[10px] opacity-50">Agent : Sixt Paris</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center opacity-70">10/01 - 12/01</td>
+                        <td class="text-center">
+                            <span class="status-pill bg-success/10 text-success">Terminé</span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn btn-ghost btn-xs text-primary font-bold">PDF 📄</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    LocAuto Platform – Projet POO 2026
+</footer>
+</body>
+</html>

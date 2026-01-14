@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Agent - LocAuto</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body class="min-h-screen bg-base-200">
+
+<div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+    <div class="flex-1 px-4">
+        <a th:href="@{/}" class="btn btn-ghost text-xl font-bold normal-case">🚗 LocAuto</a>
+    </div>
+    <div class="flex-none gap-4 px-4">
+        <div class="badge badge-info gap-2 p-3 font-semibold">Mode Agent</div>
+        <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                <div class="w-10 rounded-full bg-secondary text-secondary-content flex items-center justify-center font-bold">AG</div>
+            </label>
+            <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                <li><a th:href="@{/profil-loueur}">Mon Profil Loueur</a></li>
+                <li><a class="text-error font-semibold">Déconnexion</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-base-300">
+        <div>
+            <h1 class="text-3xl font-black">Tableau de bord Agent</h1>
+            <p class="text-base-content/60">Gérez vos véhicules et vos revenus mensuels.</p>
+        </div>
+        <div class="stats shadow-sm bg-base-200 border border-base-300">
+            <div class="stat">
+                <div class="stat-title text-xs">Revenus (Mois)</div>
+                <div class="stat-value text-primary text-2xl">1 250 €</div>
+            </div>
+            <div class="stat">
+                <div class="stat-title text-xs">Véhicules</div>
+                <div class="stat-value text-secondary text-2xl">3</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <aside class="space-y-6">
+            <div class="card bg-base-100 border border-base-300 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-sm uppercase opacity-50">Alertes Maintenance</h2>
+                    <div class="space-y-3 mt-2">
+                        <div class="alert alert-warning py-2 text-xs flex items-start gap-2">
+                            <span>⚠️ Peugeot 208 : Contrôle technique à prévoir avant le 15/02.</span>
+                        </div>
+                        <div class="alert alert-info py-2 text-xs flex items-start gap-2">
+                            <span>🔧 Renault Clio : Révision des 20 000 km conseillée.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 border border-base-300 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-sm uppercase opacity-50">Mes Options Plateforme</h2>
+                    <div class="form-control mt-2 space-y-2">
+                        <label class="label cursor-pointer bg-base-200 p-2 rounded-lg">
+                            <span class="label-text text-xs">Acceptation manuelle (6h)</span>
+                            <input type="checkbox" class="toggle toggle-primary toggle-sm" checked />
+                        </label>
+                        <label class="label cursor-pointer bg-base-200 p-2 rounded-lg">
+                            <span class="label-text text-xs">Assurance Pro</span>
+                            <input type="checkbox" class="toggle toggle-secondary toggle-sm" />
+                        </label>
+                    </div>
+                    <p class="text-[10px] opacity-50 mt-2 italic">* Options facturées en fin de mois.</p>
+                </div>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-2 space-y-6">
+            <div class="card bg-base-100 border border-base-300 shadow-sm">
+                <div class="card-body">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Mon Parc Automobile</h2>
+                        <button class="btn btn-primary btn-sm rounded-full">+ Ajouter un véhicule</button>
+                    </div>
+
+                    <div class="grid gap-4">
+                        <div class="p-4 bg-base-200 rounded-xl border border-base-300 flex justify-between items-center hover:border-primary transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="text-3xl">🚗</div>
+                                <div>
+                                    <h3 class="font-bold">Peugeot 208 (AA-123-BB)</h3>
+                                    <p class="text-xs opacity-60">Dernière location : Hier</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="flex flex-col items-end mr-4">
+                                    <span class="text-[10px] font-bold opacity-50">Statut Location</span>
+                                    <div class="badge badge-success badge-xs">ACTIF</div>
+                                </div>
+                                <input type="checkbox" class="toggle toggle-success toggle-sm" title="Mettre en pause la location" checked />
+                                <button class="btn btn-ghost btn-sm">⚙️</button>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-base-200 rounded-xl border border-base-300 flex justify-between items-center opacity-70">
+                            <div class="flex items-center gap-4">
+                                <div class="text-3xl">🏍️</div>
+                                <div>
+                                    <h3 class="font-bold italic">Yamaha MT-07 (CC-456-DD)</h3>
+                                    <p class="text-xs">En pause (Entretien en cours)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="badge badge-ghost badge-xs">PAUSE</div>
+                                <input type="checkbox" class="toggle toggle-sm" />
+                                <button class="btn btn-ghost btn-sm">⚙️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer text-center p-4 text-xs opacity-50">
+    LocAuto Agent - Gestion de flotte v1.0
+</footer>
+</body>
+</html>

@@ -1,45 +1,18 @@
 package Projet_POO.Service;
 
-import Projet_POO.Domain.Entity.TypeVehicule;
-import Projet_POO.Repository.TypeVehiculeRepository;
-import org.springframework.stereotype.Service;
-<<<<<<< HEAD
-
-=======
->>>>>>> ALEX
 import java.util.List;
 
-@Service
-public class TypeVehiculeService {
+import Projet_POO.Domain.Entity.TypeVehicule;
 
-<<<<<<< HEAD
-    private final TypeVehiculeRepository repo;
+import java.util.List;
 
-    public TypeVehiculeService(TypeVehiculeRepository repo) {
-        this.repo = repo;
-    }
+public interface TypeVehiculeService {
+    List<TypeVehicule> findAll();
+    TypeVehicule findById(Long id);
+    TypeVehicule findByLibelle(String libelle);
+    List<TypeVehicule> findByDomaine(String domaine);
 
-    public TypeVehicule creer(TypeVehicule t) {
-        return repo.save(t);
-    }
-
-    public List<TypeVehicule> tous() {
-        return repo.findAll();
-    }
+    TypeVehicule create(TypeVehicule typeVehicule);
+    TypeVehicule update(Long id, TypeVehicule typeVehicule);
+    void delete(Long id);
 }
-=======
-    private final TypeVehiculeRepository repository;
-
-    public TypeVehiculeService(TypeVehiculeRepository repository) {
-        this.repository = repository;
-    }
-
-    public TypeVehicule sauvegarder(TypeVehicule type) {
-        return repository.save(type);
-    }
-
-    public List<TypeVehicule> listerTous() {
-        return repository.findAll();
-    }
-}
->>>>>>> ALEX

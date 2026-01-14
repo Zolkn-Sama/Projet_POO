@@ -46,7 +46,7 @@ public class VehiculeController {
 
     @PutMapping("/{id}")
     public Vehicule update(@PathVariable Long id,
-            @RequestBody Vehicule vehicule) {
+                           @RequestBody Vehicule vehicule) {
         return vehiculeService.update(id, vehicule);
     }
 
