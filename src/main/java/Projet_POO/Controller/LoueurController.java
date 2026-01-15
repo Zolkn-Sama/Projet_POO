@@ -65,35 +65,43 @@ public class LoueurController {
     @GetMapping("/dashboard-data")
     public ResponseEntity<?> getDashboardData(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(401).body("Non connecté");
-        }
+        if (userId == null) return ResponseEntity.status(401).body("Non connecté");
 
-        // 1. Récupérer le loueur
         Loueur loueur = loueurService.findById(userId);
-
-        // 2. Récupérer ses contrats (via le loueurId)
-        // Note : Assure-toi que ton contratRepo possède findByLoueurId
         List<ContratLocation> sesContrats = contratLocationService.findByLoueur(userId);
 
-        // 3. Calculer quelques stats rapides
-        double totalDepense = sesContrats.stream()
-                .mapToDouble(ContratLocation::getMontantTotal)
-                .sum();
-
+        // 1. Calcul des stats
+        double totalDepense = sesContrats.stream().mapToDouble(ContratLocation::getMontantTotal).sum();
         long nbLocationsActives = sesContrats.stream()
-                .filter(c -> c.getStatut().toString().equals("EN_COURS"))
+                .filter(c -> c.getStatut() != null &&
+                        (c.getStatut().name().equals("EN_ATTENTE") || c.getStatut().name().equals("ACCEPTE")))
                 .count();
 
-        // 4. Construire la réponse
+        // 2. Simplification du profil
+        Map<String, Object> profilSimple = Map.of(
+                "nom", loueur.getNom(),
+                "prenom", loueur.getPrenom(),
+                "email", loueur.getEmail(),
+                "solde", loueur.getSolde(),
+                "ville", loueur.getVille() != null ? loueur.getVille() : "Non renseignée"
+        );
+
+        // 3. Simplification des contrats pour stopper la récursion
+        List<Map<String, Object>> contratsSimples = sesContrats.stream().map(c -> {
+            Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", c.getId());
+            map.put("dateDebut", c.getDateDebut());
+            map.put("dateFin", c.getDateFin());
+            map.put("statut", c.getStatut() != null ? c.getStatut().name() : "INCONNU");
+            map.put("montantTotal", c.getMontantTotal());
+            map.put("vehiculeId", c.getVehiculeId());
+            return map;
+        }).toList();
+
         return ResponseEntity.ok(Map.of(
-                "profil", loueur,
-                "stats", Map.of(
-                        "totalDepense", totalDepense,
-                        "nbLocations", sesContrats.size(),
-                        "locationsActives", nbLocationsActives
-                ),
-                "contrats", sesContrats
+                "profil", profilSimple,
+                "stats", Map.of("totalDepense", totalDepense, "nbLocations", sesContrats.size()),
+                "contrats", contratsSimples // On envoie la liste simplifiée sans objets imbriqués
         ));
     }
 }

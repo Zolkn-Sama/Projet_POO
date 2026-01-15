@@ -1,20 +1,30 @@
 package Projet_POO.Controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
+import Projet_POO.Domain.Entity.Vehicule;
+import Projet_POO.Service.VehiculeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import Projet_POO.Domain.Entity.ContratLocation;
 import Projet_POO.Service.ContratLocationService;
+
+
+
 
 @RestController
 @RequestMapping("/contrats")
 public class ContratLocationController {
 
     private final ContratLocationService contratService;
+    private final VehiculeService vehiculeService;
 
-    public ContratLocationController(ContratLocationService contratService) {
+    public ContratLocationController(ContratLocationService contratService,  VehiculeService vehiculeService) {
         this.contratService = contratService;
+        this.vehiculeService = vehiculeService;
     }
 
     @GetMapping
@@ -37,9 +47,44 @@ public class ContratLocationController {
         return contratService.findByVehicule(vehiculeId);
     }
 
+
     @PostMapping
-    public ContratLocation create(@RequestBody ContratLocation contrat) {
-        return contratService.create(contrat);
+    public ResponseEntity<?> create(@RequestBody Map<String, Object> data) {
+        try {
+            ContratLocation contrat = new ContratLocation();
+            Long vehiculeId = Long.valueOf(data.get("vehiculeId").toString());
+
+            // 1. Récupération des dates
+            LocalDateTime debut = LocalDateTime.parse(data.get("dateDebut").toString());
+            LocalDateTime fin = LocalDateTime.parse(data.get("dateFin").toString());
+            long jours = java.time.Duration.between(debut, fin).toDays();
+            if (jours <= 0) jours = 1;
+
+            // 2. RÉCUPÉRATION DU PRIX RÉEL (SÉCURITÉ)
+            // On récupère le véhicule via un service interne au lieu de croire le montant envoyé par le JS
+            Vehicule v = vehiculeService.findById(vehiculeId);
+            double prixReelTotal = v.getPrixJournalier() * jours;
+            double commission = prixReelTotal * 0.10;
+            double montantFinalHomologue = prixReelTotal + commission;
+
+            // 3. Remplissage du contrat
+            contrat.setVehiculeId(vehiculeId);
+            contrat.setLoueurId(Long.valueOf(data.get("loueurId").toString()));
+            contrat.setDateDebut(debut);
+            contrat.setDateFin(fin);
+            contrat.setStatut(Projet_POO.Domain.Enums.StatutContrat.EN_ATTENTE);
+            contrat.setMontantTotal(montantFinalHomologue); // On utilise le montant calculé par le serveur
+
+            // 4. PrixLocation
+            Projet_POO.Domain.Entity.PrixLocation prixDetails = new Projet_POO.Domain.Entity.PrixLocation();
+            // Optionnel : remplir les détails de prixDetails ici
+            contrat.setPrixLocation(prixDetails);
+
+            ContratLocation saved = contratService.create(contrat);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Erreur serveur : " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
