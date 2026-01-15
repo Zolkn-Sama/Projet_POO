@@ -21,11 +21,13 @@ public class HomeController {
     @GetMapping("/")
     public String home(HttpSession session, Model model) {
         // Récupération des attributs de session définis dans AuthController
+        String userLastName = (String) session.getAttribute("userLastName");
         String userName = (String) session.getAttribute("userName");
         String userRole = (String) session.getAttribute("userRole");
 
         if (userName != null) {
             model.addAttribute("isConnected", true);
+            model.addAttribute("nom", userLastName);
             model.addAttribute("prenom", userName);
             model.addAttribute("role", userRole);
         } else {

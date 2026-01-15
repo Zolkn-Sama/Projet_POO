@@ -37,6 +37,7 @@ public class AuthController {
             session.setAttribute("userId", user.getId());
             session.setAttribute("userRole", role);
             session.setAttribute("userName", user.getPrenom());
+            session.setAttribute("userLastName", user.getNom());
 
             session.setAttribute("user", user);
 
