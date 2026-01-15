@@ -80,49 +80,89 @@
                     </div>
 
                     <!-- Liste des conversations -->
-                    <div class="overflow-y-auto flex-1 pr-1">
-                        <ul class="menu menu-sm gap-1">
-                            <!-- Exemple de structure : th:each="conv : ${conversations}" -->
-                            <li th:each="conv : ${conversations}">
-                                <a th:href="@{/conversations/{id}(id=${conv.id})}"
-                                    class="flex items-center gap-3 rounded-lg"
-                                    th:classappend="${activeConversation != null and conv.id == activeConversation.id} ? ' bg-base-200 font-semibold'">
-                                    <div class="avatar">
-                                        <div
-                                            class="w-8 rounded-full bg-neutral text-neutral-content text-xs flex items-center justify-center font-bold">
-                                            <span th:text="${conv.otherParticipantInitials}">AG</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center justify-between gap-2">
-                                            <span class="truncate text-sm" th:text="${conv.otherParticipantName}">
-                                                Agent Dupont
-                                            </span>
-                                            <span class="text-[10px] opacity-60"
-                                                th:text="${#temporals.format(conv.lastMessageAt, 'HH:mm')}">
-                                                14:32
-                                            </span>
-                                        </div>
-                                        <div class="text-[11px] opacity-70 truncate"
-                                            th:text="${conv.lastMessagePreview}">
-                                            Dernier message…
-                                        </div>
-                                    </div>
-                                    <span class="badge badge-xs badge-primary" th:if="${conv.unreadCount > 0}"
-                                        th:text="${conv.unreadCount}">
-                                        2
-                                    </span>
-                                </a>
-                            </li>
+                    <div class="overflow-y-auto flex-1 pr-1 space-y-4">
 
-                            <!-- Si pas de conversation -->
-                            <li th:if="${conversations == null or #lists.isEmpty(conversations)}">
-                                <span class="text-xs text-base-content/60">
-                                    Aucune conversation pour l’instant.
-                                </span>
-                            </li>
-                        </ul>
+                        <!-- SECTION : conversations où je suis AGENT -->
+                        <div>
+                            <div class="text-[11px] font-semibold uppercase text-base-content/60 mb-1">
+                                En tant qu’agent
+                            </div>
+                            <ul class="menu menu-sm gap-1">
+                                <!-- On boucle sur toutes les conversations, on garde seulement celles où currentUser est agent -->
+                                <li th:each="conv : ${conversations}"
+                                    th:if="${currentUser != null and conv.agentId != null and conv.agentId == currentUser.id}">
+                                    <a th:href="@{/conversations/{id}(id=${conv.id})}"
+                                        class="flex items-center gap-3 rounded-lg"
+                                        th:classappend="${activeConversation != null and conv.id == activeConversation.id} ? ' bg-base-200 font-semibold'">
+                                        <div class="avatar">
+                                            <div
+                                                class="w-8 rounded-full bg-neutral text-neutral-content text-xs flex items-center justify-center font-bold">
+                                                <!-- Ici on affiche par ex. 'L' pour Loueur, tu adapteras à ton modèle -->
+                                                <span>L</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <!-- pour l’instant on affiche le nom de la conversation -->
+                                                <span class="truncate text-sm" th:text="${conv.nom}">Conversation</span>
+                                                <span class="text-[10px] opacity-60"
+                                                    th:text="${#temporals.format(conv.dateCreation, 'dd/MM HH:mm')}">
+                                                    14:32
+                                                </span>
+                                            </div>
+                                            <div class="text-[11px] opacity-70 truncate">
+                                                Avec un loueur
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- SECTION : conversations où je suis LOUEUR -->
+                        <div>
+                            <div class="text-[11px] font-semibold uppercase text-base-content/60 mb-1">
+                                En tant que loueur
+                            </div>
+                            <ul class="menu menu-sm gap-1">
+                                <!-- On boucle sur toutes les conversations, on garde seulement celles où currentUser est loueur -->
+                                <li th:each="conv : ${conversations}"
+                                    th:if="${currentUser != null and conv.loueurId != null and conv.loueurId == currentUser.id}">
+                                    <a th:href="@{/conversations/{id}(id=${conv.id})}"
+                                        class="flex items-center gap-3 rounded-lg"
+                                        th:classappend="${activeConversation != null and conv.id == activeConversation.id} ? ' bg-base-200 font-semibold'">
+                                        <div class="avatar">
+                                            <div
+                                                class="w-8 rounded-full bg-primary text-primary-content text-xs flex items-center justify-center font-bold">
+                                                <!-- Ici on affiche par ex. 'A' pour Agent -->
+                                                <span>A</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <span class="truncate text-sm" th:text="${conv.nom}">Conversation</span>
+                                                <span class="text-[10px] opacity-60"
+                                                    th:text="${#temporals.format(conv.dateCreation, 'dd/MM HH:mm')}">
+                                                    09:15
+                                                </span>
+                                            </div>
+                                            <div class="text-[11px] opacity-70 truncate">
+                                                Avec un agent
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Message global si aucune conversation -->
+                        <div th:if="${conversations == null or #lists.isEmpty(conversations)}"
+                            class="text-[11px] text-base-content/50">
+                            Aucune conversation pour l’instant.
+                        </div>
+
                     </div>
+
                 </div>
             </aside>
 
@@ -166,31 +206,32 @@
                 <!-- Zone des messages -->
                 <div class="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-base-200/60"
                     th:if="${activeConversation != null}">
-                    <!-- Boucle sur les messages : th:each="msg : ${messages}" -->
-                    <div th:each="msg : ${messages}"
-                        th:class="${'chat ' + ((currentUser != null and msg.expediteur.id == currentUser.id) ? 'chat-end' : 'chat-start')}">
 
+                    <!-- Un <div> par message -->
+                    <div th:each="msg : ${messages}"
+                        th:class="'chat ' + ((currentUser != null and msg.utilisateurId == currentUser.id) ? 'chat-end' : 'chat-start')">
 
                         <!-- Nom + heure -->
                         <div class="chat-header text-xs opacity-70">
-                            <span th:text="${msg.expediteur.nomComplet}">
+                            <span
+                                th:text="${currentUser != null and msg.utilisateurId == currentUser.id ? 'Vous' : 'Interlocuteur'}">
                                 Vous
                             </span>
-                            <time class="ml-1" th:text="${#temporals.format(msg.dateEnvoi, 'dd/MM HH:mm')}">
+                            <time class="ml-1" th:text="${#temporals.format(msg.dateMessage, 'dd/MM HH:mm')}">
                                 10/01 14:32
                             </time>
                         </div>
 
-                        <!-- Bulle de message -->
-                        <div class="chat-bubble max-w-xs md:max-w-md"
-                            th:classappend="${msg.expediteur.id} == ${currentUser.id} ? ' chat-bubble-primary' : ''"
-                            th:text="${msg.contenu}">
+                        <!-- Bulle de message : couleur différente selon qui parle -->
+                        <div class="chat-bubble max-w-xs md:max-w-md" th:classappend="${currentUser != null and msg.utilisateurId == currentUser.id} ?
+                             ' chat-bubble-primary' :
+                             ' chat-bubble-secondary'" th:text="${msg.contenu}">
                             Contenu du message…
                         </div>
 
-                        <!-- État (optionnel) -->
+                        <!-- État (optionnel) pour tes messages -->
                         <div class="chat-footer opacity-60 text-[10px]"
-                            th:text="${msg.expediteur.id} == ${currentUser.id} ? 'Envoyé' : ''">
+                            th:text="${currentUser != null and msg.utilisateurId == currentUser.id} ? 'Envoyé' : ''">
                             Envoyé
                         </div>
                     </div>
@@ -205,6 +246,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Si aucune conversation sélectionnée -->
                 <div class="flex-1 flex items-center justify-center text-center p-6"
@@ -222,7 +264,8 @@
                 <!-- Barre de saisie du message -->
                 <div class="border-t border-base-300 bg-base-100" th:if="${activeConversation != null}">
                     <form class="px-3 py-2 flex items-end gap-2"
-                        th:action="@{/conversations/{id}/messages(id=${activeConversation.id})}" method="post">
+                        th:action="@{/conversation/message(conversationId=${activeConversation.id})}" method="post">
+
                         <!-- CSRF si Spring Security -->
                         <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
                             th:value="${_csrf.token}" />

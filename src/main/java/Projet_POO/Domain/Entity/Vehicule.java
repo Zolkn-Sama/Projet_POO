@@ -2,12 +2,22 @@ package Projet_POO.Domain.Entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "vehicule")
@@ -61,6 +71,10 @@ public class Vehicule {
     @Transient
     private List<ContratLocation> contrats = new ArrayList<>();
 
+    @Transient
+    private List<String> photosURL = new ArrayList<>();
+
+   
     public Vehicule() {
     }
 
@@ -148,9 +162,6 @@ public class Vehicule {
         this.notes = notes;
     }
 
-
-
-
     public double getPrixJournalier() {
         return prixJournalier;
     }
@@ -165,6 +176,14 @@ public class Vehicule {
 
     public void setAgent(Agent agent) {
         this.agent = agent;
+    }
+
+     public List<String> getPhotosURL() {
+        return photosURL;
+    }
+
+    public void setPhotosURL(List<String> photosURL) {
+        this.photosURL = photosURL;
     }
 
 

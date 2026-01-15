@@ -61,6 +61,8 @@ public class VehiculeServiceImpl implements VehiculeService {
         existing.setDisponibilites(vehicule.getDisponibilites());
         existing.setNotes(vehicule.getNotes());
         existing.setContrats(vehicule.getContrats());
+        existing.setPhotosURL(vehicule.getPhotosURL());
+        existing.setPrixJournalier(vehicule.getPrixJournalier());
 
         return vehiculeRepository.save(existing);
     }
