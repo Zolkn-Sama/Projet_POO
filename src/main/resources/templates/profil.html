@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+        .profile-card {
+            background-color: white;
+            width: 600px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .header h1 { margin: 0; color: #333; }
+        .role-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            vertical-align: middle;
+        }
+        .section { margin-bottom: 20px; }
+        .section h3 { color: #555; border-left: 4px solid #007bff; padding-left: 10px; }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 5px;
+        }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #333; }
+        .solde { color: #28a745; font-weight: bold; font-size: 1.1em; }
+        .btn-group { text-align: center; margin-top: 30px; }
+        .btn {
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 0 5px;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-home { background-color: #6c757d; }
+        .btn-edit { background-color: #007bff; }
+        .btn-logout { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+<div class="profile-card">
+
+    <div th:if="${monUtilisateur == null}" style="text-align: center; color: red;">
+        <h2>Erreur</h2>
+        <p>Impossible de récupérer les informations de l'utilisateur.</p>
+        <a th:href="@{/login}">Se connecter</a>
+    </div>
+
+    <div th:if="${monUtilisateur != null}">
+
+        <div class="header">
+            <h1>
+                <span th:text="${monUtilisateur.prenom} + ' ' + ${monUtilisateur.nom}">Jean Dupont</span>
+            </h1>
+            <p style="color: #777;">
+                <span th:text="${monUtilisateur.email}">jean@test.com</span>
+            </p>
+
+            <span class="role-badge" th:text="${roleAffichage}">Utilisateur</span>
+        </div>
+
+        <div class="section">
+            <h3>Informations Personnelles</h3>
+            <div class="info-row">
+                <span class="label">Date de naissance :</span>
+                <span class="value" th:text="${monUtilisateur.dateNaissance}">01/01/1990</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Téléphone :</span>
+                <span class="value" th:text="${monUtilisateur.telephone}">06 12 34 56 78</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Adresse</h3>
+            <div class="info-row">
+                <span class="label">Rue :</span>
+                <span class="value" th:text="${monUtilisateur.rue}">Rue inconnue</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Ville / Pays :</span>
+                <span class="value">
+                        <span th:text="${monUtilisateur.ville}">Paris</span>,
+                        <span th:text="${monUtilisateur.pays}">France</span>
+                    </span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Permis de Conduire</h3>
+            <div class="info-row">
+                <span class="label">Numéro de permis :</span>
+                <span class="value" th:text="${monUtilisateur.numeroPermis}">Non renseigné</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Date d'obtention :</span>
+                <span class="value" th:text="${monUtilisateur.dateObtentionPermis}">2020-05-20</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Mon Portefeuille</h3>
+            <div class="info-row">
+                <span class="label">Solde actuel :</span>
+                <span class="value solde" th:text="${monUtilisateur.solde} + ' €'">150.0 €</span>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <a th:href="@{${lienRetour}}" class="btn btn-home">Retour Accueil</a>
+
+            <a th:href="@{/profil/edit}" class="btn btn-edit">Modifier</a>
+
+            <a th:href="@{/api/auth/logout-page}" class="btn btn-logout"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Déconnexion
+            </a>
+
+            <form id="logout-form" th:action="@{/api/auth/logout}" method="post" style="display: none;">
+            </form>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

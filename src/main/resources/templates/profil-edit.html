@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier Profil</title>
+    <style>
+
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding-top: 50px; }
+        .edit-card { background-color: white; width: 500px; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #666; font-weight: bold; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        input[readonly] { background-color: #e9ecef; color: #6c757d; }
+        .btn-submit { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-cancel { display: block; text-align: center; margin-top: 10px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="edit-card">
+    <h2>Modifier mes informations</h2>
+
+    <form th:action="@{/profil/update}" th:object="${monUtilisateur}" method="post">
+
+        <div class="form-group">
+            <label>Nom :</label>
+            <input type="text" th:field="*{nom}" readonly />
+        </div>
+        <div class="form-group">
+            <label>Prénom :</label>
+            <input type="text" th:field="*{prenom}" readonly />
+        </div>
+
+        <div class="form-group">
+            <label>Téléphone :</label>
+            <input type="text" th:field="*{telephone}" required />
+        </div>
+
+        <div class="form-group">
+            <label>Rue :</label>
+            <input type="text" th:field="*{rue}" />
+        </div>
+
+        <div class="form-group">
+            <label>Ville :</label>
+            <input type="text" th:field="*{ville}" />
+        </div>
+
+        <div class="form-group">
+            <label>Pays :</label>
+            <input type="text" th:field="*{pays}" />
+        </div>
+
+        <button type="submit" class="btn-submit">Enregistrer</button>
+        <a th:href="@{/profil}" class="btn-cancel">Annuler</a>
+
+    </form>
+</div>
+
+</body>
+</html>
