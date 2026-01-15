@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <style>
-        /* Optionnel : police un peu plus propre */
         * {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
@@ -24,20 +23,23 @@
     <!-- NAVBAR -->
     <div class="navbar bg-base-100 shadow-sm px-4">
         <div class="flex-1">
-            <a th:href="@{/}" class="btn btn-ghost text-xl font-bold">🚗 LocAuto</a>
+            <a th:href="@{/}" class="btn btn-ghost text-xl font-bold">🚗 EasyLoc</a>
         </div>
         <div class="flex-none gap-4">
             <div th:if="${isConnected}" class="flex items-center gap-4">
                 <span class="text-sm">Bienvenue, <b th:text="${prenom}" class="text-primary"></b></span>
 
-                <a th:if="${role == 'AGENT'}" th:href="@{/dashboard-agent}" class="btn btn-warning btn-sm">Espace Agent</a>
-                <a th:if="${role == 'LOUEUR'}" th:href="@{/dashboard-loueur}" class="btn btn-primary btn-sm">Mon Profil</a>
+                <a th:if="${role == 'AGENT'}" th:href="@{/dashboard-agent}" class="btn btn-warning btn-sm">Espace
+                    Agent</a>
+                <a th:if="${role == 'LOUEUR'}" th:href="@{/dashboard-loueur}" class="btn btn-primary btn-sm">Mon
+                    Profil</a>
 
                 <button onclick="logout()" class="btn btn-ghost btn-sm text-error">Déconnexion</button>
             </div>
 
             <div th:unless="${isConnected}">
-                <a th:href="@{/login}" class="btn btn-ghost border-primary text-primary hover:bg-primary hover:text-white btn-sm rounded-full px-6">
+                <a th:href="@{/login}"
+                    class="btn btn-ghost border-primary text-primary hover:bg-primary hover:text-white btn-sm rounded-full px-6">
                     Se connecter
                 </a>
             </div>
@@ -81,11 +83,14 @@
                                 Accède à ton espace pour gérer tes locations.
                             </p>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                                <a th:href="@{/dashboard-agent}" class="btn btn-outline btn-sm justify-between">
+                                <!-- Redirige vers /login si non connecté, sinon vers dashboard -->
+                                <a th:href="@{/quick/agent}" href="/quick/agent"
+                                    class="btn btn-outline btn-sm justify-between">
                                     <span>Agent</span>
                                     <span class="badge badge-sm badge-info">Back-office</span>
                                 </a>
-                                <a th:href="@{/dashboard-loueur}" class="btn btn-primary btn-sm justify-between">
+                                <a th:href="@{/quick/loueur}" href="/quick/loueur"
+                                    class="btn btn-primary btn-sm justify-between">
                                     <span>Loueur</span>
                                     <span class="badge badge-sm badge-accent">Client</span>
                                 </a>
@@ -228,7 +233,6 @@
             const formData = new FormData(form);
 
             const filtre = {
-                // Au lieu de comparer l'objet entier, on prépare les données pour le controlleur
                 marque: formData.get('marque') || null,
                 modele: formData.get('modele') || null,
                 localisation: formData.get('ville') ? { ville: formData.get('ville') } : null,
@@ -243,8 +247,22 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(filtre)
             })
-                .then(res => res.json())
-                .then(vehicules => afficherVehicules(vehicules));
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Erreur HTTP : ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(vehicules => afficherVehicules(vehicules))
+                .catch(err => {
+                    console.error(err);
+                    resultCount.textContent = 'Erreur lors du chargement.';
+                    resultsDiv.innerHTML = `
+                        <div class="alert alert-error">
+                            <span>Une erreur est survenue lors du chargement des véhicules.</span>
+                        </div>
+                    `;
+                });
         });
 
         function afficherVehicules(vehicules) {
@@ -260,30 +278,65 @@
 
             resultCount.textContent = vehicules.length + ' véhicule(s) trouvé(s).';
 
-            // ⚠️ Adapte les noms de propriétés selon ta classe Vehicule
-            let html = '<div class="grid gap-3 md:grid-cols-2">';
+            // Liste verticale : 1 véhicule = 1 carte en largeur complète
+            let html = '<div class="space-y-3">';
 
             vehicules.forEach(v => {
-                const marque = (v.caracteristiques && v.caracteristiques.marque) ? v.caracteristiques.marque : "Marque inconnue";
-                const modele = (v.caracteristiques && v.caracteristiques.modele) ? v.caracteristiques.modele : "";
-                const ville = (v.localisationVehicule && v.localisationVehicule.ville) ? v.localisationVehicule.ville : "N/A";
+                const car = v.caracteristiques || {};
+                const marque = car.marque || v.marque || "Marque inconnue";
+                const modele = car.modele || v.modele || "";
+                const ville = (v.localisationVehicule && v.localisationVehicule.ville)
+                    ? v.localisationVehicule.ville
+                    : "N/A";
 
-// Note : getNoteMoyenne() est une méthode calculée, assurez-vous qu'elle est bien sérialisée en JSON
-                const note = v.noteMoyenne ? v.noteMoyenne.toFixed(1) : "0.0";
+                const note = (typeof v.noteMoyenne === 'number') ? v.noteMoyenne.toFixed(1) : "0.0";
+                const prix = (v.prixJournalier != null) ? v.prixJournalier : 30;
 
-                // Dans la boucle vehicules.forEach(v => { ... })
+                // Une seule image par véhicule
+                let imageUrl = '/ressources/img/default-car.jpeg'; // image par défaut à créer
+                if (Array.isArray(v.photosURL) && v.photosURL.length > 0) {
+                    const fragment = v.photosURL[0]; // ex: "/ressources/img/S1000RR_1.jpeg" ou "S1000RR_1.jpeg"
+                    if (fragment.startsWith('/')) {
+                        imageUrl = fragment;
+                    } else {
+                        imageUrl = '/ressources/img/' + fragment;
+                    }
+                } else if (v.imageUrl) {
+                    imageUrl = v.imageUrl;
+                }
+
                 html += `
-    <div class="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-shadow">
-        <div class="card-body p-4">
-            <h3 class="font-bold">${marque} ${modele}</h3>
-            <p class="text-xs opacity-60">📍 ${ville}</p>
-            <div class="flex justify-between items-center mt-4">
-                <span class="text-primary font-bold">${v.prixJournalier || 30}€/j</span>
-                <a href="/vehicule-detail?id=${v.id}" class="btn btn-primary btn-xs">Voir détails</a>
-            </div>
-        </div>
-    </div>
-`;
+                    <div class="card card-side bg-base-100 border border-base-300 shadow-sm hover:shadow-md hover:border-primary transition-all">
+                        <figure class="w-32 h-24 md:w-40 md:h-28 overflow-hidden bg-base-200">
+                            <img src="${imageUrl}" alt="Photo du véhicule" class="w-full h-full object-cover" />
+                        </figure>
+                        <div class="card-body py-3 px-4 gap-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <h3 class="font-semibold text-sm md:text-base">
+                                        ${marque} ${modele}
+                                    </h3>
+                                    <p class="text-xs text-base-content/70 mt-1">
+                                        📍 <span class="font-medium">${ville}</span>
+                                    </p>
+                                </div>
+                                <div class="flex flex-col items-end gap-1">
+                                    <span class="badge badge-primary badge-sm">
+                                        ${prix} €/j
+                                    </span>
+                                    <span class="badge badge-ghost badge-sm">
+                                        ⭐ ${note}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-1">
+                                <a href="/vehicule-detail?id=${v.id}" class="btn btn-primary btn-xs">
+                                    Voir détails
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
 
             html += '</div>';
@@ -293,7 +346,6 @@
         function logout() {
             fetch('/api/auth/logout', { method: 'POST' })
                 .then(() => {
-                    // Recharge la page pour que le contrôleur repasse isConnected à false
                     window.location.reload();
                 })
                 .catch(err => console.error("Erreur déconnexion:", err));

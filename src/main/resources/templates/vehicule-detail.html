@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Détails du véhicule - LocAuto</title>
+    <title>Détails du véhicule - EasyLoc</title>
 
     <!-- DaisyUI + Tailwind -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
@@ -23,7 +23,7 @@
         <div class="flex-1">
             <a th:href="@{/}" class="btn btn-ghost text-xl font-bold gap-2">
                 <span class="text-primary text-2xl">🚗</span>
-                <span>LocAuto</span>
+                <span>EasyLoc</span>
             </a>
         </div>
         <div class="flex-none text-xs text-base-content/70">
@@ -326,8 +326,8 @@
                     const agent = v.agent || v.loueur || v.owner || null;
                     if (agent) {
                         const nomComplet = (agent.prenom ? agent.prenom + ' ' : '') + (agent.nom || '');
-                        agentNomEl.textContent = nomComplet.trim() || 'Agent LocAuto';
-                        agentInfoEl.textContent = agent.ville ? `Basé à ${agent.ville}` : 'Agent partenaire LocAuto';
+                        agentNomEl.textContent = nomComplet.trim() || 'Agent EasyLoc';
+                        agentInfoEl.textContent = agent.ville ? `Basé à ${agent.ville}` : 'Agent partenaire EasyLoc';
 
                         // Initiales
                         const initiales = ((agent.prenom || 'A')[0] + (agent.nom || 'G')[0]).toUpperCase();
@@ -338,8 +338,8 @@
                             contactAgentBtn.href = `/conversation?with=${agent.id}`;
                         }
                     } else {
-                        agentNomEl.textContent = 'Agent LocAuto';
-                        agentInfoEl.textContent = 'Agent partenaire LocAuto';
+                        agentNomEl.textContent = 'Agent EasyLoc';
+                        agentInfoEl.textContent = 'Agent partenaire EasyLoc';
                         agentInitialsEl.textContent = 'AG';
                     }
 

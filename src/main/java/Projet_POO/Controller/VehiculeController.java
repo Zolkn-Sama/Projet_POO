@@ -3,8 +3,7 @@ package Projet_POO.Controller;
 import java.util.List;
 import java.util.Map;
 
-import Projet_POO.Domain.Entity.*;
-import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,20 +12,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.servlet.http.HttpSession;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import Projet_POO.Service.VehiculeService;
+import Projet_POO.Domain.Entity.Agent;
+import Projet_POO.Domain.Entity.CaracteristiquesVehicule;
+import Projet_POO.Domain.Entity.Localisation;
+import Projet_POO.Domain.Entity.Loueur;
+import Projet_POO.Domain.Entity.TypeVehicule;
+import Projet_POO.Domain.Entity.Vehicule;
 import Projet_POO.Repository.AgentRepository;
 import Projet_POO.Repository.LoueurRepository;
-
-
-
-
-
-import Projet_POO.Domain.Entity.Vehicule;
+import Projet_POO.Service.VehiculeService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/vehicules")
@@ -139,8 +136,10 @@ public class VehiculeController {
             TypeVehicule type = new TypeVehicule((String) data.get("typeLibelle"), "Route");
 
             Localisation loc = new Localisation();
+            loc.setRue((String) locMap.get("rue"));
             loc.setVille((String) locMap.get("ville"));
-            loc.setAdresse((String) locMap.get("adresse"));
+            loc.setCodePostal((String) locMap.get("codepostal"));
+            loc.setPays((String) locMap.get("pays"));
 
             // 3. Créer le véhicule
             Vehicule vehicule = new Vehicule();

@@ -1,251 +1,263 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Agent - LocAuto</title>
+    <title>Espace Agent - EasyLoc</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
+
 <body class="min-h-screen bg-base-200">
 
-<div class="navbar bg-base-100 shadow-sm border-b border-base-300">
-    <div class="flex-1 px-4">
-        <a th:href="@{/}" class="btn btn-ghost text-xl font-bold normal-case">🚗 LocAuto</a>
-    </div>
-    <div class="flex-none gap-4 px-4">
-        <div class="badge badge-info gap-2 p-3 font-semibold">Mode Agent</div>
-        <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                <div class="w-10 rounded-full bg-secondary text-secondary-content flex items-center justify-center font-bold">AG</div>
-            </label>
-            <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                <li><a th:href="@{/profil-loueur}">Mon Profil Loueur</a></li>
-                <li><a class="text-error font-semibold">Déconnexion</a></li>
-            </ul>
+    <div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+        <div class="flex-1 px-4">
+            <a th:href="@{/}" class="btn btn-ghost text-xl font-bold normal-case">🚗 EasyLoc</a>
+        </div>
+        <div class="flex-none gap-4 px-4">
+            <div class="badge badge-info gap-2 p-3 font-semibold">Mode Agent</div>
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                    <div
+                        class="w-10 rounded-full bg-secondary text-secondary-content flex items-center justify-center font-bold">
+                        AG</div>
+                </label>
+                <ul tabindex="0"
+                    class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                    <li><a th:href="@{/profil-loueur}">Mon Profil Loueur</a></li>
+                    <li><a class="text-error font-semibold">Déconnexion</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-base-300">
-        <div>
-            <h1 class="text-3xl font-black">Tableau de bord Agent</h1>
-            <p class="text-base-content/60">Gérez vos véhicules et vos revenus mensuels.</p>
-        </div>
-        <div class="stats shadow-sm bg-base-200 border border-base-300">
-            <div class="stat">
-                <div class="stat-title text-xs">Revenus </div>
-                <div id="stat-revenus" class="stat-value text-primary text-2xl">0 €</div>
+        <header
+            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-base-300">
+            <div>
+                <h1 class="text-3xl font-black">Tableau de bord Agent</h1>
+                <p class="text-base-content/60">Gérez vos véhicules et vos revenus mensuels.</p>
             </div>
-            <div class="stat">
-                <div class="stat-title text-xs">Véhicules</div>
-                <div id="stat-count" class="stat-value text-secondary text-2xl">0</div>
-            </div>
-        </div>
-    </header>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        <aside class="space-y-6">
-            <div class="card bg-base-100 border border-base-300 shadow-sm">
-                <div class="card-body">
-                    <h2 class="card-title text-sm uppercase opacity-50">Alertes Maintenance</h2>
-                    <div class="space-y-3 mt-2">
-                        <div class="alert alert-warning py-2 text-xs flex items-start gap-2">
-                            <span>⚠️ Peugeot 208 : Contrôle technique à prévoir avant le 15/02.</span>
-                        </div>
-                        <div class="alert alert-info py-2 text-xs flex items-start gap-2">
-                            <span>🔧 Renault Clio : Révision des 20 000 km conseillée.</span>
-                        </div>
-                    </div>
+            <div class="stats shadow-sm bg-base-200 border border-base-300">
+                <div class="stat">
+                    <div class="stat-title text-xs">Revenus </div>
+                    <div id="stat-revenus" class="stat-value text-primary text-2xl">0 €</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-title text-xs">Véhicules</div>
+                    <div id="stat-count" class="stat-value text-secondary text-2xl">0</div>
                 </div>
             </div>
+        </header>
 
-            <div class="card bg-base-100 border border-base-300 shadow-sm">
-                <div class="card-body">
-                    <h2 class="card-title text-sm uppercase opacity-50">Mes Options Plateforme</h2>
-                    <div class="form-control mt-2 space-y-2">
-                        <label class="label cursor-pointer bg-base-200 p-2 rounded-lg">
-                            <span class="label-text text-xs">Acceptation manuelle (6h)</span>
-                            <input type="checkbox" class="toggle toggle-primary toggle-sm" checked />
-                        </label>
-                        <label class="label cursor-pointer bg-base-200 p-2 rounded-lg">
-                            <span class="label-text text-xs">Assurance Pro</span>
-                            <input type="checkbox" class="toggle toggle-secondary toggle-sm" />
-                        </label>
-                    </div>
-                    <p class="text-[10px] opacity-50 mt-2 italic">* Options facturées en fin de mois.</p>
-                </div>
-            </div>
-        </aside>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        <section class="lg:col-span-2 space-y-6">
-            <div class="card bg-base-100 border border-base-300 shadow-sm">
-                <div class="card-body">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold">Mes Véhicules</h2>
-                        <button class="btn btn-primary shadow-lg" onclick="add_vehicle_modal.showModal()">
-                            <i class="fas fa-plus mr-2"></i> Ajouter un véhicule
-                        </button>
-                    </div>
-
-                    <div id="vehicleContainer" class="grid gap-4">
-                        <div class="flex justify-center py-10">
-                            <span class="loading loading-spinner loading-lg text-primary"></span>
+            <aside class="space-y-6">
+                <div class="card bg-base-100 border border-base-300 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title text-sm uppercase opacity-50">Alertes Maintenance</h2>
+                        <div class="space-y-3 mt-2">
+                            <div class="alert alert-warning py-2 text-xs flex items-start gap-2">
+                                <span>⚠️ Peugeot 208 : Contrôle technique à prévoir avant le 15/02.</span>
+                            </div>
+                            <div class="alert alert-info py-2 text-xs flex items-start gap-2">
+                                <span>🔧 Renault Clio : Révision des 20 000 km conseillée.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </div>
-</main>
 
-<dialog id="add_vehicle_modal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box max-w-2xl bg-base-100">
-        <h3 class="font-bold text-xl mb-6 border-b pb-2">Nouveau Véhicule</h3>
+                <div class="card bg-base-100 border border-base-300 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title text-sm uppercase opacity-50">Mes Options Plateforme</h2>
+                        <div class="form-control mt-2 space-y-2">
+                            <label class="label cursor-pointer bg-base-200 p-2 rounded-lg">
+                                <span class="label-text text-xs">Acceptation manuelle (6h)</span>
+                                <input type="checkbox" class="toggle toggle-primary toggle-sm" checked />
+                            </label>
+                            <label class="label cursor-pointer bg-base-200 p-2 rounded-lg">
+                                <span class="label-text text-xs">Assurance Pro</span>
+                                <input type="checkbox" class="toggle toggle-secondary toggle-sm" />
+                            </label>
+                        </div>
+                        <p class="text-[10px] opacity-50 mt-2 italic">* Options facturées en fin de mois.</p>
+                    </div>
+                </div>
+            </aside>
 
-        <form id="addVehicleForm">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Marque</span></label>
-                    <input type="text" id="v-marque" placeholder="ex: Renault" class="input input-bordered w-full" required />
+            <section class="lg:col-span-2 space-y-6">
+                <div class="card bg-base-100 border border-base-300 shadow-sm">
+                    <div class="card-body">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Mes Véhicules</h2>
+                            <button class="btn btn-primary shadow-lg" onclick="add_vehicle_modal.showModal()">
+                                <i class="fas fa-plus mr-2"></i> Ajouter un véhicule
+                            </button>
+                        </div>
+
+                        <div id="vehicleContainer" class="grid gap-4">
+                            <div class="flex justify-center py-10">
+                                <span class="loading loading-spinner loading-lg text-primary"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Modèle</span></label>
-                    <input type="text" id="v-modele" placeholder="ex: Clio 5" class="input input-bordered w-full" required />
-                </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Immatriculation</span></label>
-                    <input type="text" id="v-immat" placeholder="AB-123-CD" class="input input-bordered w-full" required />
-                </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Prix par jour (€)</span></label>
-                    <input type="number" id="v-prix" placeholder="50" class="input input-bordered w-full" required />
+            </section>
+        </div>
+    </main>
+
+    <dialog id="add_vehicle_modal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box max-w-2xl bg-base-100">
+            <h3 class="font-bold text-xl mb-6 border-b pb-2">Nouveau Véhicule</h3>
+
+            <form id="addVehicleForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Marque</span></label>
+                        <input type="text" id="v-marque" placeholder="ex: Renault" class="input input-bordered w-full"
+                            required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Modèle</span></label>
+                        <input type="text" id="v-modele" placeholder="ex: Clio 5" class="input input-bordered w-full"
+                            required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Immatriculation</span></label>
+                        <input type="text" id="v-immat" placeholder="AB-123-CD" class="input input-bordered w-full"
+                            required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Prix par jour (€)</span></label>
+                        <input type="number" id="v-prix" placeholder="50" class="input input-bordered w-full"
+                            required />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Nombre de places</span></label>
+                        <input type="number" id="v-places" value="5" class="input input-bordered w-full" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Type</span></label>
+                        <select id="v-type" class="select select-bordered w-full">
+                            <option value="Voiture">Voiture</option>
+                            <option value="Moto">Moto</option>
+                            <option value="Utilitaire">Utilitaire</option>
+                        </select>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Couleur</span></label>
+                        <input type="text" id="v-couleur" placeholder="Noir" class="input input-bordered w-full" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Ville</span></label>
+                        <input type="text" id="v-ville" placeholder="Paris" class="input input-bordered w-full"
+                            required />
+                    </div>
                 </div>
 
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Nombre de places</span></label>
-                    <input type="number" id="v-places" value="5" class="input input-bordered w-full" required />
-                </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Type</span></label>
-                    <select id="v-type" class="select select-bordered w-full">
-                        <option value="Voiture">Voiture</option>
-                        <option value="Moto">Moto</option>
-                        <option value="Utilitaire">Utilitaire</option>
-                    </select>
+                <div class="form-control mt-4">
+                    <label class="label"><span class="label-text">Adresse précise</span></label>
+                    <textarea id="v-adresse" placeholder="12 rue des Fleurs, 75001 Paris"
+                        class="textarea textarea-bordered h-24" required></textarea>
                 </div>
 
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Couleur</span></label>
-                    <input type="text" id="v-couleur" placeholder="Noir" class="input input-bordered w-full" />
+                <div class="modal-action mt-8">
+                    <button type="button" class="btn btn-ghost" onclick="add_vehicle_modal.close()">Annuler</button>
+                    <button type="submit" class="btn btn-primary px-8 text-white">Enregistrer le véhicule</button>
                 </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Ville</span></label>
-                    <input type="text" id="v-ville" placeholder="Paris" class="input input-bordered w-full" required />
-                </div>
-            </div>
-
-            <div class="form-control mt-4">
-                <label class="label"><span class="label-text">Adresse précise</span></label>
-                <textarea id="v-adresse" placeholder="12 rue des Fleurs, 75001 Paris" class="textarea textarea-bordered h-24" required></textarea>
-            </div>
-
-            <div class="modal-action mt-8">
-                <button type="button" class="btn btn-ghost" onclick="add_vehicle_modal.close()">Annuler</button>
-                <button type="submit" class="btn btn-primary px-8 text-white">Enregistrer le véhicule</button>
-            </div>
+            </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>Fermer</button>
         </form>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>Fermer</button>
-    </form>
-</dialog>
+    </dialog>
 
-<footer class="footer text-center p-4 text-xs opacity-50">
-    LocAuto Agent - Gestion de flotte v1.0
-</footer>
+    <footer class="footer text-center p-4 text-xs opacity-50">
+        EasyLoc Agent - Gestion de flotte v1.0
+    </footer>
 
-<script>
-    document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    <script>
+        document.getElementById('addVehicleForm').addEventListener('submit', function (e) {
+            e.preventDefault();
 
-        // Dans dashboardagent.html, modifier la fonction de soumission :
-        const payload = {
-            immatriculation: document.getElementById('v-immat').value,
-            prix: document.getElementById('v-prix').value,
-            typeLibelle: document.getElementById('v-type').value, // Ajout du type
-            caracteristiques: {
-                marque: document.getElementById('v-marque').value,
-                modele: document.getElementById('v-modele').value,
-                couleur: document.getElementById('v-couleur').value,
-                nbPlaces: document.getElementById('v-places').value // Ajout des places
-            },
-            localisation: {
-                ville: document.getElementById('v-ville').value,
-                adresse: document.getElementById('v-adresse').value
-            }
-        };
-
-        // Appel API vers notre VehiculeController
-        fetch('/vehicules/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-            .then(response => {
-                if (response.ok) {
-                    // Au lieu d'attendre un JSON complexe, on recharge juste la page
-                    window.location.reload();
-                } else {
-                    return response.text().then(text => { throw new Error(text) });
+            // Dans dashboardagent.html, modifier la fonction de soumission :
+            const payload = {
+                immatriculation: document.getElementById('v-immat').value,
+                prix: document.getElementById('v-prix').value,
+                typeLibelle: document.getElementById('v-type').value, // Ajout du type
+                caracteristiques: {
+                    marque: document.getElementById('v-marque').value,
+                    modele: document.getElementById('v-modele').value,
+                    couleur: document.getElementById('v-couleur').value,
+                    nbPlaces: document.getElementById('v-places').value // Ajout des places
+                },
+                localisation: {
+                    ville: document.getElementById('v-ville').value,
+                    adresse: document.getElementById('v-adresse').value
                 }
+            };
+
+            // Appel API vers notre VehiculeController
+            fetch('/vehicules/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             })
-            .catch(err => {
-                console.error(err);
-                alert("Erreur : " + err.message);
-                // On cache le bouton de chargement ou on réactive le formulaire ici si besoin
-            });
-    });
+                .then(response => {
+                    if (response.ok) {
+                        // Au lieu d'attendre un JSON complexe, on recharge juste la page
+                        window.location.reload();
+                    } else {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Erreur : " + err.message);
+                    // On cache le bouton de chargement ou on réactive le formulaire ici si besoin
+                });
+        });
 
 
-    // Fonction pour charger les véhicules de l'agent
-    function fetchMyVehicles() {
-        fetch('/vehicules/my-vehicles')
-            .then(res => res.json())
-            .then(data => {
+        // Fonction pour charger les véhicules de l'agent
+        function fetchMyVehicles() {
+            fetch('/vehicules/my-vehicles')
+                .then(res => res.json())
+                .then(data => {
 
-                // ✅ Dynamiser le nombre de véhicules
-                // On cherche l'élément qui contient "3" dans votre header
-                const vehicleStat = document.querySelector('.stat:nth-child(2) .stat-value');
-                if (vehicleStat) vehicleStat.innerText = data.length;
+                    // ✅ Dynamiser le nombre de véhicules
+                    // On cherche l'élément qui contient "3" dans votre header
+                    const vehicleStat = document.querySelector('.stat:nth-child(2) .stat-value');
+                    if (vehicleStat) vehicleStat.innerText = data.length;
 
-                // ✅ Calculer les revenus (Exemple : somme des prix journaliers)
-                const totalPrix = data.reduce((sum, v) => sum + v.prixJournalier, 0);
-                const revenueStat = document.querySelector('.stat:nth-child(1) .stat-value');
-                if (revenueStat) revenueStat.innerText = totalPrix + " €";
+                    // ✅ Calculer les revenus (Exemple : somme des prix journaliers)
+                    const totalPrix = data.reduce((sum, v) => sum + v.prixJournalier, 0);
+                    const revenueStat = document.querySelector('.stat:nth-child(1) .stat-value');
+                    if (revenueStat) revenueStat.innerText = totalPrix + " €";
 
 
-                // ✅ Mise à jour dynamique du nombre de véhicules
-                document.querySelector('.stat:nth-child(2) .stat-value').innerText = data.length;
+                    // ✅ Mise à jour dynamique du nombre de véhicules
+                    document.querySelector('.stat:nth-child(2) .stat-value').innerText = data.length;
 
-                const container = document.getElementById('vehicleContainer');
-                if (data.length === 0) {
-                    container.innerHTML = `<div class="text-center py-10 opacity-50">Aucun véhicule.</div>`;
-                    return;
-                }
+                    const container = document.getElementById('vehicleContainer');
+                    if (data.length === 0) {
+                        container.innerHTML = `<div class="text-center py-10 opacity-50">Aucun véhicule.</div>`;
+                        return;
+                    }
 
-                container.innerHTML = '';
-                data.forEach(v => {
-                    // On récupère le libellé du type et le nbPlaces des caractéristiques
-                    const type = v.typeVehicule ? v.typeVehicule.libelle : 'Véhicule';
-                    const places = v.caracteristiques ? v.caracteristiques.nbPlaces : '?';
+                    container.innerHTML = '';
+                    data.forEach(v => {
+                        // On récupère le libellé du type et le nbPlaces des caractéristiques
+                        const type = v.typeVehicule ? v.typeVehicule.libelle : 'Véhicule';
+                        const places = v.caracteristiques ? v.caracteristiques.nbPlaces : '?';
 
-                    const card = `
+                        const card = `
                 <div class="p-4 bg-base-200 rounded-xl border border-base-300 flex justify-between items-center hover:border-primary transition-all">
                     <div class="flex items-center gap-4">
                         <div class="text-3xl">${type === 'Moto' ? '🏍️' : '🚗'}</div>
@@ -262,28 +274,29 @@
                         <button class="btn btn-ghost btn-sm text-error" onclick="deleteVehicle(${v.id})">🗑️</button>
                     </div>
                 </div>`;
-                    container.insertAdjacentHTML('beforeend', card);
-                });
-            });
-    }
-
-    // Fonction pour supprimer un véhicule
-    function deleteVehicle(id) {
-        if (confirm("Voulez-vous vraiment supprimer ce véhicule ?")) {
-            fetch('/vehicules/' + id, { method: 'DELETE' })
-                .then(res => {
-                    if (res.ok) {
-                        alert("Véhicule supprimé");
-                        fetchMyVehicles(); // Rafraîchir la liste
-                    }
+                        container.insertAdjacentHTML('beforeend', card);
+                    });
                 });
         }
-    }
 
-    // Lancer le chargement au démarrage
-    document.addEventListener('DOMContentLoaded', fetchMyVehicles);
-</script>
+        // Fonction pour supprimer un véhicule
+        function deleteVehicle(id) {
+            if (confirm("Voulez-vous vraiment supprimer ce véhicule ?")) {
+                fetch('/vehicules/' + id, { method: 'DELETE' })
+                    .then(res => {
+                        if (res.ok) {
+                            alert("Véhicule supprimé");
+                            fetchMyVehicles(); // Rafraîchir la liste
+                        }
+                    });
+            }
+        }
+
+        // Lancer le chargement au démarrage
+        document.addEventListener('DOMContentLoaded', fetchMyVehicles);
+    </script>
 
 
 </body>
+
 </html>

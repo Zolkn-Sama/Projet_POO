@@ -1,88 +1,93 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
-    <title>Connexion - LocAuto</title>
+    <title>Connexion - EasyLoc</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
+
 <body class="min-h-screen bg-base-200 flex items-center justify-center p-4">
 
-<div class="card w-full max-w-md bg-base-100 shadow-2xl border border-base-300">
-    <div class="card-body">
-        <div class="text-center mb-6">
-            <a th:href="@{/}" class="text-3xl font-bold text-primary no-underline">🚗 LocAuto</a>
-            <h2 class="text-xl font-semibold mt-4">Bon retour parmi nous !</h2>
-            <p class="text-sm opacity-60">Connectez-vous pour gérer vos locations</p>
+    <div class="card w-full max-w-md bg-base-100 shadow-2xl border border-base-300">
+        <div class="card-body">
+            <div class="text-center mb-6">
+                <a th:href="@{/}" class="text-3xl font-bold text-primary no-underline">🚗 EasyLoc</a>
+                <h2 class="text-xl font-semibold mt-4">Bon retour parmi nous !</h2>
+                <p class="text-sm opacity-60">Connectez-vous pour gérer vos locations</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-bold">Email</span></label>
+                    <input type="email" id="username" name="username" placeholder="votre@email.com"
+                        class="input input-bordered w-full" required />
+                </div>
+
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-bold">Mot de passe</span></label>
+                    <input type="password" id="password" name="password" placeholder="••••••••"
+                        class="input input-bordered w-full" required />
+                    <label class="label">
+                        <a href="#" class="label-text-alt link link-hover">Mot de passe oublié ?</a>
+                    </label>
+                </div>
+
+                <div class="form-control mt-6">
+                    <button type="submit" class="btn btn-primary text-white">Se connecter</button>
+                </div>
+            </form>
+
+            <div class="divider">OU</div>
+
+            <p class="text-center text-sm">
+                Pas encore de compte ?
+                <a th:href="@{/register}" class="link link-primary font-bold">Inscrivez-vous ici</a>
+            </p>
         </div>
-
-        <form id="loginForm">
-            <div class="form-control">
-                <label class="label"><span class="label-text font-bold">Email</span></label>
-                <input type="email" id="username" name="username" placeholder="votre@email.com" class="input input-bordered w-full" required />
-            </div>
-
-            <div class="form-control">
-                <label class="label"><span class="label-text font-bold">Mot de passe</span></label>
-                <input type="password" id="password" name="password" placeholder="••••••••" class="input input-bordered w-full" required />
-                <label class="label">
-                    <a href="#" class="label-text-alt link link-hover">Mot de passe oublié ?</a>
-                </label>
-            </div>
-
-            <div class="form-control mt-6">
-                <button type="submit" class="btn btn-primary text-white">Se connecter</button>
-            </div>
-        </form>
-
-        <div class="divider">OU</div>
-
-        <p class="text-center text-sm">
-            Pas encore de compte ?
-            <a th:href="@{/register}" class="link link-primary font-bold">Inscrivez-vous ici</a>
-        </p>
     </div>
-</div>
 
-<script th:inline="javascript">
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    <script th:inline="javascript">
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
 
-        const emailField = document.getElementById('username');
-        const passwordField = document.getElementById('password');
+            const emailField = document.getElementById('username');
+            const passwordField = document.getElementById('password');
 
-        // Vérification de sécurité
-        if (!emailField || !passwordField) {
-            console.error("Erreur : Les champs email ou password sont introuvables dans le HTML.");
-            return;
-        }
+            // Vérification de sécurité
+            if (!emailField || !passwordField) {
+                console.error("Erreur : Les champs email ou password sont introuvables dans le HTML.");
+                return;
+            }
 
-        const data = {
-            email: emailField.value,
-            password: passwordField.value
-        };
+            const data = {
+                email: emailField.value,
+                password: passwordField.value
+            };
 
-        fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Email ou mot de passe incorrect');
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             })
-            .then(result => {
-                // Redirection automatique (vers / ou /dashboard-agent selon le rôle)
-                window.location.href = result.redirect;
-            })
-            .catch(error => {
-                alert(error.message);
-            });
-    });
-</script>
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Email ou mot de passe incorrect');
+                })
+                .then(result => {
+                    // Redirection automatique (vers / ou /dashboard-agent selon le rôle)
+                    window.location.href = result.redirect;
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+        });
+    </script>
 </body>
+
 </html>

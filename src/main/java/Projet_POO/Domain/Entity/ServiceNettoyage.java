@@ -9,6 +9,8 @@ import jakarta.persistence.Table;
 @PrimaryKeyJoinColumn(name = "id")
 public class ServiceNettoyage extends Service {
 
+    private final float serviceFees = 0.02f;
+
     @Column(name = "type_service")
     private String typeService;
 
@@ -21,4 +23,9 @@ public class ServiceNettoyage extends Service {
 
     public String getTypeService() { return typeService; }
     public void setTypeService(String typeService) { this.typeService = typeService; }
+
+    @Override
+    protected Double CalculerPrix(Vehicule v) {
+        return v.getPrixJournalier() * serviceFees;
+    }
 }
