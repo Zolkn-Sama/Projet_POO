@@ -44,7 +44,7 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
         ParrainageAgent p = new ParrainageAgent();
         p.setParrain(parrain);
         p.setCode(UUID.randomUUID().toString());
-        p.setMontantRecompense(20.0); // 💡 à adapter (crédit options)
+        p.setMontantRecompense(20.0);
         p.setStatut(StatutParrainage.EN_ATTENTE);
 
         return parrainageRepo.save(p);
@@ -74,16 +74,18 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
 
     @Override
     public void verifierEtCrediter(Long filleulId) {
-        ParrainageAgent p = parrainageRepo.findByFilleulId(filleulId)
+
+        // ✅ ici on change juste findByFilleul_Id
+        ParrainageAgent p = parrainageRepo.findByFilleul_Id(filleulId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parrainage agent introuvable"));
 
         if (p.isRecompenseVersee()) return;
 
-        // 1) Le filleul a au moins 1 véhicule
-        if (!vehiculeRepo.existsByAgentId(filleulId)) return;
+        // ✅ ici on change existsByAgent_Id
+        if (!vehiculeRepo.existsByAgent_Id(filleulId)) return;
 
-        // 2) Et au moins 1 de ses véhicules a un contrat TERMINE
-        List<Vehicule> vehicules = vehiculeRepo.findByAgentId(filleulId);
+        // ✅ ici on change findByAgent_Id
+        List<Vehicule> vehicules = vehiculeRepo.findByAgent_Id(filleulId);
         boolean aUnContratTermine = false;
 
         for (Vehicule v : vehicules) {
