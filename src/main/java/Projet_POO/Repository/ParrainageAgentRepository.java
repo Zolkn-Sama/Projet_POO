@@ -10,5 +10,5 @@ import Projet_POO.Domain.Entity.ParrainageAgent;
 @Repository
 public interface ParrainageAgentRepository extends JpaRepository<ParrainageAgent, Long> {
     Optional<ParrainageAgent> findByCode(String code);
-    Optional<ParrainageAgent> findByFilleulId(Long filleulId);
+    Optional<ParrainageAgent> findByFilleul_Id(Long filleulId);
 }
