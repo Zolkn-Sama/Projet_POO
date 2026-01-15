@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Profil Loueur - EasyLoc</title>
 
-    <!-- DaisyUI + Tailwind via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
@@ -19,281 +18,181 @@
 
 <body class="min-h-screen bg-base-200">
 
-    <!-- NAVBAR -->
-    <div class="navbar bg-base-100 shadow-sm border-b border-base-300 sticky top-0 z-20">
-        <div class="flex-1 px-4">
-            <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
-                <span class="text-primary text-2xl">🚗</span>
-                <span>EasyLoc</span>
-            </a>
-        </div>
-        <div class="flex-none gap-4 px-4 items-center">
-            <a th:href="@{/dashboard-agent}" class="btn btn-outline btn-sm">
-                Espace Agent
-            </a>
-            <div class="dropdown dropdown-end">
-                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-                    <div
-                        class="bg-primary text-primary-content rounded-full w-10 flex items-center justify-center font-bold">
-                        JD
-                    </div>
+<div class="navbar bg-base-100 shadow-sm border-b border-base-300 sticky top-0 z-20">
+    <div class="flex-1 px-4">
+        <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
+            <span class="text-primary text-2xl">🚗</span>
+            <span>EasyLoc</span>
+        </a>
+    </div>
+    <div class="flex-none gap-4 px-4 items-center">
+        <a th:href="@{/dashboard-agent}" class="btn btn-outline btn-sm">
+            Espace Agent
+        </a>
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div id="avatar-initials" class="bg-primary text-primary-content rounded-full w-10 flex items-center justify-center font-bold">
+                    --
                 </div>
-                <ul tabindex="0"
-                    class="mt-3 z-10 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                    <li><a>Mon profil</a></li>
-                    <li><a>Paramètres</a></li>
-                    <li><a th:href="@{/logout}">Déconnexion</a></li>
-                </ul>
             </div>
+            <ul tabindex="0" class="mt-3 z-10 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                <li><a>Mon profil</a></li>
+                <li><a th:href="@{/logout}">Déconnexion</a></li>
+            </ul>
         </div>
     </div>
+</div>
 
-    <!-- CONTENU -->
-    <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+<main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
 
-        <!-- EN-TÊTE PROFIL -->
-        <section class="card bg-base-100 shadow-xl border border-base-300 overflow-hidden">
-            <div class="card-body flex flex-col md:flex-row gap-8 items-center md:items-center">
-                <div class="avatar">
-                    <div
-                        class="bg-neutral text-neutral-content rounded-full w-28 ring ring-primary ring-offset-base-100 ring-offset-2 flex items-center justify-center">
-                        <span class="text-4xl font-bold">JD</span>
+    <section class="card bg-base-100 shadow-xl border border-base-300 overflow-hidden">
+        <div class="card-body flex flex-col md:flex-row gap-8 items-center md:items-center text-center md:text-left">
+            <div class="avatar">
+                <div class="bg-neutral text-neutral-content rounded-full w-28 ring ring-primary ring-offset-base-100 ring-offset-2 flex items-center justify-center">
+                    <span id="profile-initials" class="text-4xl font-bold">--</span>
+                </div>
+            </div>
+            <div class="flex-1 space-y-2">
+                <div class="flex flex-col gap-1">
+                    <h1 id="loueur-nom-header" class="text-2xl md:text-3xl font-extrabold italic">Chargement...</h1>
+                    <p class="text-sm text-base-content/70 italic">Conducteur vérifié • Membre EasyLoc</p>
+                </div>
+                <div class="flex flex-wrap gap-2 justify-center md:justify-start pt-2">
+                    <div class="badge badge-primary gap-1 font-semibold">⭐ 4.9 <span class="text-xs opacity-80">(Score)</span></div>
+                    <div id="stat-nb-locations" class="badge badge-outline">0 location</div>
+                    <div class="badge badge-ghost gap-1">✅ Profil vérifié</div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <button class="btn btn-primary btn-sm">Modifier le profil</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-3 items-start">
+
+        <aside class="space-y-6 lg:col-span-1">
+            <div class="card bg-base-100 shadow-md border border-base-300">
+                <div class="card-body space-y-4">
+                    <h2 class="text-lg font-bold">Mes coordonnées</h2>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-base-200">📧</span>
+                            <div>
+                                <div class="text-xs uppercase text-base-content/60 font-semibold">Email</div>
+                                <div id="loueur-email" class="font-medium break-all text-primary">...</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-base-200">📍</span>
+                            <div>
+                                <div class="text-xs uppercase text-base-content/60 font-semibold">Localisation</div>
+                                <div id="loueur-ville" class="text-sm">...</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="flex-1 text-center md:text-left space-y-2">
-                    <div class="flex flex-col gap-1">
-                        <h1 class="text-2xl md:text-3xl font-extrabold">Jean Dupont</h1>
-                        <p class="text-sm text-base-content/70">
-                            Conducteur vérifié • Membre depuis 2025
-                        </p>
-                    </div>
-                    <div class="flex flex-wrap gap-2 justify-center md:justify-start pt-2">
-                        <div class="badge badge-primary gap-1 font-semibold">
-                            ⭐ 4.9 <span class="text-xs opacity-80">(Score Loueur)</span>
+            </div>
+
+            <div class="card bg-gradient-to-br from-success/10 via-base-100 to-base-100 shadow-md border border-success/30">
+                <div class="card-body space-y-4">
+                    <h2 class="text-success font-bold text-lg flex items-center gap-2">💰 Mon Compte</h2>
+                    <div class="pt-3 flex items-center justify-between">
+                        <div>
+                            <div class="text-[10px] uppercase font-bold text-success/70">Solde disponible</div>
+                            <div id="loueur-solde" class="text-2xl font-black text-success">0.00 €</div>
                         </div>
-                        <div class="badge badge-outline">
-                            12 locations
-                        </div>
-                        <div class="badge badge-ghost gap-1">
-                            ✅ Profil complété à 90%
-                        </div>
+                        <button class="btn btn-sm btn-outline btn-success italic">Créditer</button>
                     </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <button class="btn btn-primary btn-sm">
-                        Modifier le profil
-                    </button>
-                    <button class="btn btn-ghost btn-sm">
-                        Voir mes documents
-                    </button>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-2 space-y-4">
+            <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body">
+                    <h2 class="text-xl font-bold mb-4">Historique des locations</h2>
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra table-sm w-full">
+                            <thead class="text-xs">
+                            <tr>
+                                <th>Référence</th>
+                                <th class="text-center">Dates</th>
+                                <th class="text-center">Statut</th>
+                                <th class="text-right">Montant</th>
+                            </tr>
+                            </thead>
+                            <tbody id="table-locations-body" class="text-xs">
+                            <tr>
+                                <td colspan="4" class="text-center py-4 opacity-50 italic">Chargement...</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
+    </section>
+</main>
 
-        <!-- GRILLE PRINCIPALE -->
-        <section class="grid gap-6 lg:grid-cols-3 items-start">
+<script>
+    // Fonction pour charger les données réelles du serveur
+    async function loadDashboard() {
+        try {
+            const response = await fetch('/loueurs/dashboard-data');
+            if (!response.ok) throw new Error("Accès non autorisé");
 
-            <!-- COLONNE GAUCHE -->
-            <aside class="space-y-6 lg:col-span-1">
+            const data = await response.json();
+            const loueur = data.profil;
 
-                <!-- Coordonnées -->
-                <div class="card bg-base-100 shadow-md border border-base-300">
-                    <div class="card-body space-y-4">
-                        <h2 class="text-lg font-bold">
-                            Mes coordonnées
-                        </h2>
+            // 1. Injection des données de profil
+            document.getElementById('loueur-nom-header').textContent = `${loueur.prenom} ${loueur.nom}`;
+            document.getElementById('loueur-email').textContent = loueur.email;
+            document.getElementById('loueur-ville').textContent = `${loueur.ville || 'Non renseigné'}, ${loueur.pays || ''}`;
+            document.getElementById('loueur-solde').textContent = `${loueur.solde.toFixed(2)} €`;
+            document.getElementById('stat-nb-locations').textContent = `${data.contrats.length} location${data.contrats.length > 1 ? 's' : ''}`;
 
-                        <div class="space-y-3 text-sm">
-                            <div class="flex items-start gap-3">
-                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-base-200">
-                                    📧
-                                </span>
-                                <div>
-                                    <div class="text-xs uppercase text-base-content/60 font-semibold">
-                                        Email
-                                    </div>
-                                    <div class="font-medium break-all">
-                                        jean.dupont@email.com
-                                    </div>
-                                </div>
-                            </div>
+            // Initiales de l'avatar
+            const ini = `${loueur.prenom.charAt(0)}${loueur.nom.charAt(0)}`.toUpperCase();
+            document.getElementById('avatar-initials').textContent = ini;
+            document.getElementById('profile-initials').textContent = ini;
 
-                            <div class="flex items-start gap-3">
-                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-base-200">
-                                    🪪
-                                </span>
-                                <div>
-                                    <div class="text-xs uppercase text-base-content/60 font-semibold">
-                                        Numéro de permis
-                                    </div>
-                                    <div class="font-mono font-bold text-sm">
-                                        25AA12345
-                                    </div>
-                                </div>
-                            </div>
+            // 2. Remplissage dynamique du tableau des contrats
+            const tbody = document.getElementById('table-locations-body');
+            tbody.innerHTML = '';
 
-                            <div class="flex items-start gap-3">
-                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-base-200">
-                                    📍
-                                </span>
-                                <div>
-                                    <div class="text-xs uppercase text-base-content/60 font-semibold">
-                                        Localisation
-                                    </div>
-                                    <div class="text-sm">
-                                        Paris, France
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            if (data.contrats.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-10 opacity-50 italic">Aucune location effectuée.</td></tr>';
+                return;
+            }
 
-                <!-- Parrainage -->
-                <div
-                    class="card bg-gradient-to-br from-success/10 via-base-100 to-base-100 shadow-md border border-success/30">
-                    <div class="card-body space-y-4">
-                        <div class="flex items-center justify-between gap-2">
-                            <h2 class="text-success font-bold text-lg flex items-center gap-2">
-                                🎁 Parrainage
-                            </h2>
-                            <span class="badge badge-success badge-outline text-[10px]">
-                                +15€ / ami
-                            </span>
-                        </div>
+            data.contrats.forEach(c => {
+                const d1 = new Date(c.dateDebut).toLocaleDateString('fr-FR');
+                const d2 = new Date(c.dateFin).toLocaleDateString('fr-FR');
 
-                        <p class="text-xs text-base-content/70">
-                            Gagnez <span class="font-semibold">15€</span> par ami parrainé ayant
-                            effectué au moins une location.
-                        </p>
+                let badgeColor = "badge-ghost";
+                if (c.statut === "TERMINE") badgeColor = "badge-success text-white";
+                if (c.statut === "EN_COURS") badgeColor = "badge-info text-white";
 
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text text-xs uppercase font-semibold text-base-content/60">
-                                    Code de parrainage
-                                </span>
-                            </label>
-                            <div class="join w-full">
-                                <input type="text" class="input input-sm input-bordered join-item font-mono text-xs"
-                                    value="LOC-JEAN-2026" readonly>
-                                <button class="btn btn-sm btn-success join-item"
-                                    onclick="navigator.clipboard.writeText('LOC-JEAN-2026')">
-                                    Copier
-                                </button>
-                            </div>
-                        </div>
+                tbody.innerHTML += `
+                        <tr>
+                            <td><div class="font-bold">#${c.id}</div></td>
+                            <td class="text-center opacity-80">${d1} - ${d2}</td>
+                            <td class="text-center">
+                                <span class="badge ${badgeColor} badge-sm font-bold text-[10px]">● ${c.statut}</span>
+                            </td>
+                            <td class="text-right font-mono font-bold text-primary">${c.montantTotal.toFixed(2)} €</td>
+                        </tr>
+                    `;
+            });
+        } catch (err) {
+            console.error("Erreur :", err);
+            document.getElementById('loueur-nom-header').textContent = "Erreur de chargement";
+        }
+    }
 
-                        <div class="border-t border-success/20 pt-3 flex items-center justify-between">
-                            <div>
-                                <div class="text-[10px] uppercase font-bold text-success/70">
-                                    Solde disponible
-                                </div>
-                                <div class="text-2xl font-black text-success">
-                                    30.00 €
-                                </div>
-                            </div>
-                            <button class="btn btn-sm btn-outline btn-success">
-                                Utiliser mon solde
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- COLONNE DROITE : Historique -->
-            <section class="lg:col-span-2 space-y-4">
-                <div class="card bg-base-100 shadow-xl border border-base-300">
-                    <div class="card-body">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-                            <div>
-                                <h2 class="text-xl font-bold">
-                                    Historique des locations
-                                </h2>
-                                <p class="text-xs text-base-content/60">
-                                    Consultez vos dernières locations et téléchargez vos documents.
-                                </p>
-                            </div>
-                            <div class="flex flex-wrap gap-2 justify-end">
-                                <select class="select select-bordered select-xs w-32">
-                                    <option>Toutes</option>
-                                    <option>À venir</option>
-                                    <option>Passées</option>
-                                    <option>Annulées</option>
-                                </select>
-                                <button class="btn btn-xs btn-ghost">
-                                    🔍 Filtrer
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="table table-zebra table-sm w-full">
-                                <thead class="text-xs">
-                                    <tr>
-                                        <th>Véhicule</th>
-                                        <th class="text-center">Dates</th>
-                                        <th class="text-center">Statut</th>
-                                        <th class="text-right">Document</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-xs">
-                                    <!-- Exemple de ligne (à remplacer par th:each) -->
-                                    <tr>
-                                        <td>
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="w-10 h-10 bg-base-200 rounded-xl flex items-center justify-center text-xl">
-                                                    🚗
-                                                </div>
-                                                <div>
-                                                    <div class="font-semibold text-sm">
-                                                        Renault Clio 5
-                                                    </div>
-                                                    <div class="text-[10px] opacity-60">
-                                                        Agent : Sixt Paris
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center opacity-80">
-                                            10/01 - 12/01
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge badge-success badge-sm gap-1">
-                                                ● Terminé
-                                            </span>
-                                        </td>
-                                        <td class="text-right">
-                                            <button class="btn btn-ghost btn-xs text-primary font-semibold">
-                                                PDF 📄
-                                            </button>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Tu pourras ensuite faire quelque chose comme :
-                            <tr th:each="location : ${locations}">
-                                ...
-                            </tr>
-                            -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-    </main>
-
-    <footer class="mt-8 border-t border-base-300 bg-base-100">
-        <div
-            class="max-w-6xl mx-auto px-4 py-4 text-[11px] text-base-content/60 flex flex-col md:flex-row items-center justify-between gap-2">
-            <span>EasyLoc Platform – Projet POO 2026</span>
-            <span class="opacity-70">
-                Loueur connecté • Sécurisé & assuré
-            </span>
-        </div>
-    </footer>
-
+    // Exécution au chargement
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
 </body>
-
 </html>

@@ -1,5 +1,6 @@
 package Projet_POO.Domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +23,7 @@ public class NoteCritere {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "note_id")
+    @JsonIgnore
     private Note note;
 
     public NoteCritere() {}

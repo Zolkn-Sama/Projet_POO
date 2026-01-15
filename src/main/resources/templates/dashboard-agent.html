@@ -159,6 +159,15 @@
                         <input type="text" id="v-ville" placeholder="Paris" class="input input-bordered w-full"
                             required />
                     </div>
+
+                    <div class="form-control">
+                        <label class="label"><span class="label-text text-xs font-bold">Disponible du</span></label>
+                        <input type="datetime-local" id="v-dispo-debut" class="input input-bordered w-full" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text text-xs font-bold">Jusqu'au</span></label>
+                        <input type="datetime-local" id="v-dispo-fin" class="input input-bordered w-full" required />
+                    </div>
                 </div>
 
                 <div class="form-control mt-4">
@@ -190,16 +199,19 @@
             const payload = {
                 immatriculation: document.getElementById('v-immat').value,
                 prix: document.getElementById('v-prix').value,
-                typeLibelle: document.getElementById('v-type').value, // Ajout du type
+                typeLibelle: document.getElementById('v-type').value,
+                dispoDebut: document.getElementById('v-dispo-debut').value, // Ajout
+                dispoFin: document.getElementById('v-dispo-fin').value,     // Ajout
                 caracteristiques: {
                     marque: document.getElementById('v-marque').value,
                     modele: document.getElementById('v-modele').value,
                     couleur: document.getElementById('v-couleur').value,
-                    nbPlaces: document.getElementById('v-places').value // Ajout des places
+                    nbPlaces: document.getElementById('v-places').value
                 },
                 localisation: {
                     ville: document.getElementById('v-ville').value,
-                    adresse: document.getElementById('v-adresse').value
+                    rue: document.getElementById('v-adresse').value
+                    // Ajoutez code postal et pays si nécessaire
                 }
             };
 
