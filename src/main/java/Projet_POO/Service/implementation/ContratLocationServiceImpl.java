@@ -7,30 +7,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import Projet_POO.Domain.Entity.ContratLocation;
-import Projet_POO.Domain.Entity.Vehicule;
-import Projet_POO.Domain.Enums.StatutContrat;
+import Projet_POO.Domain.Entity.Loueur;
+import Projet_POO.Domain.Entity.PrixLocation;
 import Projet_POO.Repository.ContratLocationRepository;
-import Projet_POO.Repository.VehiculeRepository;
+import Projet_POO.Repository.LoueurRepository;
 import Projet_POO.Service.ContratLocationService;
-import Projet_POO.Service.ParrainageAgentService;
-import Projet_POO.Service.ParrainageLoueurService;
 
 @Service
 public class ContratLocationServiceImpl implements ContratLocationService {
 
     private final ContratLocationRepository contratRepo;
-    private final VehiculeRepository vehiculeRepo;
-    private final ParrainageLoueurService parrainageLoueurService;
-    private final ParrainageAgentService parrainageAgentService;
+    private final LoueurRepository loueurRepo;
 
     public ContratLocationServiceImpl(ContratLocationRepository contratRepo,
-                                      VehiculeRepository vehiculeRepo,
-                                      ParrainageLoueurService parrainageLoueurService,
-                                      ParrainageAgentService parrainageAgentService) {
+                                      LoueurRepository loueurRepo) {
         this.contratRepo = contratRepo;
-        this.vehiculeRepo = vehiculeRepo;
-        this.parrainageLoueurService = parrainageLoueurService;
-        this.parrainageAgentService = parrainageAgentService;
+        this.loueurRepo = loueurRepo;
     }
 
     @Override
@@ -59,6 +51,31 @@ public class ContratLocationServiceImpl implements ContratLocationService {
         if (contrat.getId() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "L'id doit être null pour créer un contrat");
         }
+        if (contrat.getLoueurId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "loueurId est obligatoire");
+        }
+        if (contrat.getPrixLocation() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "prixLocation est obligatoire");
+        }
+
+        // 1) Calculer/fixer le prix
+        PrixLocation prix = contrat.getPrixLocation();
+        prix.recalculer();
+        contrat.setMontantTotal(prix.getMontantTotal());
+
+        //  2) Utiliser le solde du loueur
+        Loueur loueur = loueurRepo.findById(contrat.getLoueurId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loueur introuvable"));
+
+        double total = contrat.getMontantTotal();
+        double utilise = Math.min(loueur.getSolde(), total);
+
+        loueur.setSolde(loueur.getSolde() - utilise);
+        loueurRepo.save(loueur);
+
+        contrat.setMontantPayeParSolde(utilise);
+        contrat.setMontantAPayer(total - utilise);
+
         return contratRepo.save(contrat);
     }
 
@@ -67,44 +84,29 @@ public class ContratLocationServiceImpl implements ContratLocationService {
         ContratLocation existing = contratRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contrat non trouvé"));
 
-        StatutContrat ancienStatut = existing.getStatut();
-        StatutContrat nouveauStatut = contrat.getStatut();
-
         existing.setDateDebut(contrat.getDateDebut());
         existing.setDateFin(contrat.getDateFin());
         existing.setLieuPrise(contrat.getLieuPrise());
         existing.setLieuDepose(contrat.getLieuDepose());
-        existing.setStatut(nouveauStatut);
-        existing.setMontantTotal(contrat.getMontantTotal());
+        existing.setStatut(contrat.getStatut());
 
+        // Si tu autorises update du prix:
+        if (contrat.getPrixLocation() != null) {
+            PrixLocation p = contrat.getPrixLocation();
+            p.recalculer();
+            existing.setPrixLocation(p);
+            existing.setMontantTotal(p.getMontantTotal());
+        } else {
+            existing.setMontantTotal(contrat.getMontantTotal());
+        }
+
+        // IDs liés
         existing.setLoueurId(contrat.getLoueurId());
         existing.setVehiculeId(contrat.getVehiculeId());
         existing.setAssuranceId(contrat.getAssuranceId());
 
-        ContratLocation saved = contratRepo.save(existing);
 
-        // ✅ déclenchement uniquement si on passe à TERMINE
-        if (ancienStatut != StatutContrat.TERMINE && nouveauStatut == StatutContrat.TERMINE) {
-
-            // Parrainage Loueur
-            if (saved.getLoueurId() != null) {
-                parrainageLoueurService.verifierEtCrediter(saved.getLoueurId());
-            }
-
-            // Parrainage Agent (via vehicule.agentId)
-            // Parrainage Agent (via vehicule.agent)
-            if (saved.getVehiculeId() != null) {
-                Vehicule v = vehiculeRepo.findById(saved.getVehiculeId())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Véhicule introuvable"));
-
-                // ✅ On vérifie si l'objet agent existe, puis on récupère son ID
-                if (v.getAgent() != null && v.getAgent().getId() != null) {
-                    parrainageAgentService.verifierEtCrediter(v.getAgent().getId());
-                }
-            }
-        }
-
-        return saved;
+        return contratRepo.save(existing);
     }
 
     @Override

@@ -22,29 +22,24 @@ public class ContratLocation {
     @Enumerated(EnumType.STRING)
     private StatutContrat statut;
 
+    // total final du contrat (figé)
     private double montantTotal;
 
-    // --- version simple: on stocke des IDs ---
+    // ✅ Trace paiement via solde
+    private double montantPayeParSolde;
+    private double montantAPayer;
+
+    // --- version simple: IDs ---
     private Long loueurId;
     private Long vehiculeId;
     private Long assuranceId;
 
-    public ContratLocation() { }
+    // ✅ PrixLocation attaché au contrat
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "prix_location_id")
+    private PrixLocation prixLocation;
 
-    public ContratLocation(LocalDateTime dateDebut, LocalDateTime dateFin,
-                           String lieuPrise, String lieuDepose,
-                           StatutContrat statut, double montantTotal,
-                           Long loueurId, Long vehiculeId, Long assuranceId) {
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        this.lieuPrise = lieuPrise;
-        this.lieuDepose = lieuDepose;
-        this.statut = statut;
-        this.montantTotal = montantTotal;
-        this.loueurId = loueurId;
-        this.vehiculeId = vehiculeId;
-        this.assuranceId = assuranceId;
-    }
+    public ContratLocation() {}
 
     public Long getId() { return id; }
 
@@ -66,6 +61,12 @@ public class ContratLocation {
     public double getMontantTotal() { return montantTotal; }
     public void setMontantTotal(double montantTotal) { this.montantTotal = montantTotal; }
 
+    public double getMontantPayeParSolde() { return montantPayeParSolde; }
+    public void setMontantPayeParSolde(double montantPayeParSolde) { this.montantPayeParSolde = montantPayeParSolde; }
+
+    public double getMontantAPayer() { return montantAPayer; }
+    public void setMontantAPayer(double montantAPayer) { this.montantAPayer = montantAPayer; }
+
     public Long getLoueurId() { return loueurId; }
     public void setLoueurId(Long loueurId) { this.loueurId = loueurId; }
 
@@ -75,19 +76,6 @@ public class ContratLocation {
     public Long getAssuranceId() { return assuranceId; }
     public void setAssuranceId(Long assuranceId) { this.assuranceId = assuranceId; }
 
-    @Override
-    public String toString() {
-        return "ContratLocation{" +
-                "id=" + id +
-                ", dateDebut=" + dateDebut +
-                ", dateFin=" + dateFin +
-                ", lieuPrise='" + lieuPrise + '\'' +
-                ", lieuDepose='" + lieuDepose + '\'' +
-                ", statut=" + statut +
-                ", montantTotal=" + montantTotal +
-                ", loueurId=" + loueurId +
-                ", vehiculeId=" + vehiculeId +
-                ", assuranceId=" + assuranceId +
-                '}';
-    }
+    public PrixLocation getPrixLocation() { return prixLocation; }
+    public void setPrixLocation(PrixLocation prixLocation) { this.prixLocation = prixLocation; }
 }
