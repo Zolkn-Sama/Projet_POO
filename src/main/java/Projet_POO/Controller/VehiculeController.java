@@ -68,9 +68,37 @@ public class VehiculeController {
     }
 
     @PutMapping("/{id}")
-    public Vehicule update(@PathVariable Long id,
-                           @RequestBody Vehicule vehicule) {
-        return vehiculeService.update(id, vehicule);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Map<String, Object> data) {
+        try {
+            // 1. Récupérer le véhicule existant
+            Vehicule vehicule = vehiculeService.findById(id);
+            if (vehicule == null) return ResponseEntity.notFound().build();
+
+            // 2. Extraire et mettre à jour les données (similaire à ta méthode addVehicule)
+            Map<String, Object> caracMap = (Map<String, Object>) data.get("caracteristiques");
+            Map<String, Object> locMap = (Map<String, Object>) data.get("localisation");
+
+            vehicule.setPrixJournalier(Double.parseDouble(data.get("prix").toString()));
+            vehicule.setImmatriculation((String) data.get("immatriculation"));
+
+            if (vehicule.getCaracteristiques() != null) {
+                vehicule.getCaracteristiques().setMarque((String) caracMap.get("marque"));
+                vehicule.getCaracteristiques().setModele((String) caracMap.get("modele"));
+                vehicule.getCaracteristiques().setCouleur((String) caracMap.get("couleur"));
+                vehicule.getCaracteristiques().setNbPlaces(Integer.parseInt(caracMap.get("nbPlaces").toString()));
+            }
+
+            if (vehicule.getLocalisationVehicule() != null) {
+                vehicule.getLocalisationVehicule().setVille((String) locMap.get("ville"));
+                vehicule.getLocalisationVehicule().setRue((String) locMap.get("rue"));
+            }
+
+            // 3. Sauvegarder
+            vehiculeService.update(id, vehicule);
+            return ResponseEntity.ok(Map.of("message", "Véhicule mis à jour avec succès !"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la modification : " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
