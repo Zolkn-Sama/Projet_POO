@@ -212,6 +212,9 @@
                         <select id="v-type" class="select select-bordered w-full">
                             <option value="Voiture">Voiture</option>
                             <option value="Moto">Moto</option>
+                            <option value="Bateau">Bateau</option>
+                            <option value="Avion">Avion</option>
+                            <option value="Helicoptere">Hélicoptère</option>
                             <option value="Utilitaire">Utilitaire</option>
                         </select>
                     </div>
@@ -450,28 +453,40 @@
 
                     container.innerHTML = '';
                     data.forEach(v => {
+                        // 1. Récupération du type et définition de l'icône
                         const type = v.typeVehicule ? v.typeVehicule.libelle : 'Véhicule';
                         const places = v.caracteristiques ? v.caracteristiques.nbPlaces : '?';
 
-                        const card = `
-    <div class="p-4 bg-base-200 rounded-xl border border-base-300 flex justify-between items-center hover:border-primary transition-all">
-        <div class="flex items-center gap-4">
-            <div class="text-3xl">${type === 'Moto' ? '🏍️' : '🚗'}</div>
-            <div>
-                <h3 class="font-bold">${v.caracteristiques?.marque ?? ""} ${v.caracteristiques?.modele ?? ""}</h3>
-                <p class="text-xs opacity-60">${type} • ${places} places • ${v.immatriculation ?? ""}</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="flex flex-col items-end mr-4">
-                <span class="text-sm font-bold text-primary">${v.prixJournalier ?? 0} €/j</span>
-                <div class="badge badge-success badge-xs">ACTIF</div>
-            </div>
-            <button class="btn btn-ghost btn-sm text-info" onclick='openEditModal(${JSON.stringify(v)})'>✏️</button>
+                        let typeIcon = '🚗'; // Par défaut
+                        const typeLower = type.toLowerCase();
 
-            <button class="btn btn-ghost btn-sm text-error" onclick="deleteVehicle(${v.id})">🗑️</button>
-        </div>
-    </div>`;
+                        if (typeLower === 'moto') typeIcon = '🏍️';
+                        else if (typeLower === 'bateau') typeIcon = '🚤';
+                        else if (typeLower === 'avion') typeIcon = '🛩️';
+                        else if (typeLower === 'helicoptere') typeIcon = '🚁';
+                        else if (typeLower === 'utilitaire') typeIcon = '🚚';
+
+                        // 2. Génération de la carte avec l'icône dynamique
+                        const card = `
+        <div class="p-4 bg-base-200 rounded-xl border border-base-300 flex justify-between items-center hover:border-primary transition-all">
+            <div class="flex items-center gap-4">
+                <div class="text-3xl flex items-center justify-center w-12 h-12 bg-base-100 rounded-lg shadow-sm">
+                    ${typeIcon}
+                </div>
+                <div>
+                    <h3 class="font-bold">${v.caracteristiques?.marque ?? ""} ${v.caracteristiques?.modele ?? ""}</h3>
+                    <p class="text-xs opacity-60">${type} • ${places} places • ${v.immatriculation ?? ""}</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex flex-col items-end mr-4">
+                    <span class="text-sm font-bold text-primary">${v.prixJournalier ?? 0} €/j</span>
+                    <div class="badge badge-success badge-xs">ACTIF</div>
+                </div>
+                <button class="btn btn-ghost btn-sm text-info" onclick='openEditModal(${JSON.stringify(v)})'>✏️</button>
+                <button class="btn btn-ghost btn-sm text-error" onclick="deleteVehicle(${v.id})">🗑️</button>
+            </div>
+        </div>`;
                         container.insertAdjacentHTML('beforeend', card);
                     });
                 });

@@ -269,16 +269,15 @@
             if (!vehicules || vehicules.length === 0) {
                 resultCount.textContent = '0 véhicule trouvé.';
                 resultsDiv.innerHTML = `
-                    <div class="alert alert-warning">
-                        <span>Aucun véhicule trouvé pour ces critères.</span>
-                    </div>
-                `;
+            <div class="alert alert-warning">
+                <span>Aucun véhicule trouvé pour ces critères.</span>
+            </div>
+        `;
                 return;
             }
 
             resultCount.textContent = vehicules.length + ' véhicule(s) trouvé(s).';
 
-            // Liste verticale : 1 véhicule = 1 carte en largeur complète
             let html = '<div class="space-y-3">';
 
             vehicules.forEach(v => {
@@ -289,54 +288,57 @@
                     ? v.localisationVehicule.ville
                     : "N/A";
 
+                // --- LOGIQUE DE L'ÉMOJI ---
+                const typeLibelle = v.typeVehicule ? v.typeVehicule.libelle : 'Voiture';
+                let typeIcon = '🚗'; // Par défaut : Voiture
+
+                const typeLower = typeLibelle.toLowerCase();
+                if (typeLower === 'moto') typeIcon = '🏍️';
+                else if (typeLower === 'bateau') typeIcon = '🚤';
+                else if (typeLower === 'avion') typeIcon = '🛩️';
+                else if (typeLower === 'helicoptere') typeIcon = '🚁';
+                else if (typeLower === 'utilitaire') typeIcon = '🚚';
+                // --------------------------
+
                 const note = (typeof v.noteMoyenne === 'number') ? v.noteMoyenne.toFixed(1) : "0.0";
                 const prix = (v.prixJournalier != null) ? v.prixJournalier : 30;
 
-                // Une seule image par véhicule
-                let imageUrl = '/ressources/img/default-car.jpeg'; // image par défaut à créer
-                if (Array.isArray(v.photosURL) && v.photosURL.length > 0) {
-                    const fragment = v.photosURL[0]; // ex: "/ressources/img/S1000RR_1.jpeg" ou "S1000RR_1.jpeg"
-                    if (fragment.startsWith('/')) {
-                        imageUrl = fragment;
-                    } else {
-                        imageUrl = '/ressources/img/' + fragment;
-                    }
-                } else if (v.imageUrl) {
-                    imageUrl = v.imageUrl;
-                }
-
                 html += `
-                    <div class="card card-side bg-base-100 border border-base-300 shadow-sm hover:shadow-md hover:border-primary transition-all">
-                        <figure class="w-32 h-24 md:w-40 md:h-28 overflow-hidden bg-base-200">
-                            <img src="${imageUrl}" alt="Photo du véhicule" class="w-full h-full object-cover" />
-                        </figure>
-                        <div class="card-body py-3 px-4 gap-2">
-                            <div class="flex items-start justify-between gap-2">
-                                <div>
-                                    <h3 class="font-semibold text-sm md:text-base">
-                                        ${marque} ${modele}
-                                    </h3>
-                                    <p class="text-xs text-base-content/70 mt-1">
-                                        📍 <span class="font-medium">${ville}</span>
-                                    </p>
-                                </div>
-                                <div class="flex flex-col items-end gap-1">
-                                    <span class="badge badge-primary badge-sm">
-                                        ${prix} €/j
-                                    </span>
-                                    <span class="badge badge-ghost badge-sm">
-                                        ⭐ ${note}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex justify-end pt-1">
-                                <a href="/vehicule-detail?id=${v.id}" class="btn btn-primary btn-xs">
-                                    Voir détails
-                                </a>
-                            </div>
+            <div class="card card-side bg-base-100 border border-base-300 shadow-sm hover:shadow-md hover:border-primary transition-all overflow-hidden">
+                <figure class="w-32 h-24 md:w-40 md:h-28 flex items-center justify-center bg-base-200 text-5xl select-none">
+                    ${typeIcon}
+                </figure>
+
+                <div class="card-body py-3 px-4 gap-2">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <h3 class="font-bold text-sm md:text-base">
+                                ${marque} ${modele}
+                            </h3>
+                            <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">
+                                ${typeLibelle}
+                            </p>
+                            <p class="text-xs text-base-content/70 mt-1">
+                                📍 <span class="font-medium">${ville}</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="badge badge-primary badge-sm font-bold">
+                                ${prix} €/j
+                            </span>
+                            <span class="text-[10px] opacity-60">
+                                ⭐ ${note}
+                            </span>
                         </div>
                     </div>
-                `;
+                    <div class="flex justify-end pt-1">
+                        <a href="/vehicule-detail?id=${v.id}" class="btn btn-primary btn-xs px-4">
+                            Détails
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
             });
 
             html += '</div>';
