@@ -38,6 +38,8 @@ public class AuthController {
             session.setAttribute("userRole", role);
             session.setAttribute("userName", user.getPrenom());
 
+            session.setAttribute("user", user);
+
             return ResponseEntity.ok(Map.of(
                     "role", role,
                     "name", user.getPrenom(),
@@ -49,9 +51,11 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void logout(HttpSession session) {
+    public ResponseEntity<?> logout(HttpSession session) {
         session.invalidate();
+        return ResponseEntity.ok().build();
     }
+
 
     /**
      * Méthode utilitaire utilisée par Thymeleaf pour récupérer l'utilisateur connecté.
