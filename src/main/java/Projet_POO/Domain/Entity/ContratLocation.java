@@ -35,6 +35,20 @@ public class ContratLocation {
     private Long vehiculeId;
     private Long assuranceId;
 
+    // ✅ AJOUT : Un champ temporaire pour transporter l'ID de l'agent vers le frontend
+    // @Transient signifie que ce champ n'est PAS stocké dans la base de données
+    @Transient
+    private Long agentIdPourNote;
+
+    // ✅ AJOUT : Getter et Setter pour ce champ
+    public Long getAgentIdPourNote() {
+        return agentIdPourNote;
+    }
+
+    public void setAgentIdPourNote(Long agentIdPourNote) {
+        this.agentIdPourNote = agentIdPourNote;
+    }
+
     // ✅ PrixLocation attaché au contrat
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

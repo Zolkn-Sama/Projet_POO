@@ -44,7 +44,7 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
         ParrainageAgent p = new ParrainageAgent();
         p.setParrain(parrain);
         p.setCode(UUID.randomUUID().toString());
-        p.setMontantRecompense(20.0); // 💡 à adapter (crédit options)
+        p.setMontantRecompense(20.0);
         p.setStatut(StatutParrainage.EN_ATTENTE);
 
         return parrainageRepo.save(p);
@@ -74,21 +74,27 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
 
     @Override
     public void verifierEtCrediter(Long filleulId) {
-        ParrainageAgent p = parrainageRepo.findByFilleulId(filleulId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parrainage agent introuvable"));
+
+        // ✅ récupère tous les parrainages liés à ce filleul
+        List<ParrainageAgent> list = parrainageRepo.findAllByFilleul_Id(filleulId);
+        if (list == null || list.isEmpty()) return;
+
+        // ✅ on prend le plus récent (ou celui qui n’est pas payé)
+        ParrainageAgent p = list.stream()
+                .filter(x -> !x.isRecompenseVersee())
+                .findFirst()
+                .orElse(list.get(0));
 
         if (p.isRecompenseVersee()) return;
 
-        // 1) Le filleul a au moins 1 véhicule
-        if (!vehiculeRepo.existsByAgentId(filleulId)) return;
+        if (!vehiculeRepo.existsByAgent_Id(filleulId)) return;
 
-        // 2) Et au moins 1 de ses véhicules a un contrat TERMINE
-        List<Vehicule> vehicules = vehiculeRepo.findByAgentId(filleulId);
+        List<Vehicule> vehicules = vehiculeRepo.findByAgent_Id(filleulId);
         boolean aUnContratTermine = false;
 
         for (Vehicule v : vehicules) {
-            if (v != null && v.getId() != null &&
-                    contratRepo.existsByVehiculeIdAndStatut(v.getId(), StatutContrat.TERMINE)) {
+            if (v != null && v.getId() != null
+                    && contratRepo.existsByVehiculeIdAndStatut(v.getId(), StatutContrat.TERMINE)) {
                 aUnContratTermine = true;
                 break;
             }
@@ -104,4 +110,5 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
         p.setStatut(StatutParrainage.RECOMPENSE_VERSEE);
         parrainageRepo.save(p);
     }
+
 }

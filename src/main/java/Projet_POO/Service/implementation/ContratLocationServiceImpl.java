@@ -2,6 +2,7 @@ package Projet_POO.Service.implementation;
 
 import java.util.List;
 
+import Projet_POO.Repository.VehiculeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,11 +19,13 @@ public class ContratLocationServiceImpl implements ContratLocationService {
 
     private final ContratLocationRepository contratRepo;
     private final LoueurRepository loueurRepo;
+    private final VehiculeRepository vehiculeRepo;
 
     public ContratLocationServiceImpl(ContratLocationRepository contratRepo,
-                                      LoueurRepository loueurRepo) {
+                                      LoueurRepository loueurRepo, VehiculeRepository vehiculeRepo) {
         this.contratRepo = contratRepo;
         this.loueurRepo = loueurRepo;
+        this.vehiculeRepo = vehiculeRepo;
     }
 
     @Override
@@ -36,10 +39,7 @@ public class ContratLocationServiceImpl implements ContratLocationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contrat non trouvé"));
     }
 
-    @Override
-    public List<ContratLocation> findByLoueur(Long loueurId) {
-        return contratRepo.findByLoueurId(loueurId);
-    }
+
 
     @Override
     public List<ContratLocation> findByVehicule(Long vehiculeId) {
@@ -115,5 +115,25 @@ public class ContratLocationServiceImpl implements ContratLocationService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contrat non trouvé");
         }
         contratRepo.deleteById(id);
+    }
+
+    @Override
+    public List<ContratLocation> findByLoueur(Long loueurId) {
+        // 1. Récupérer les contrats depuis la base de données
+        List<ContratLocation> contrats = contratRepo.findByLoueurId(loueurId);
+
+        // 2. 🟢 Boucle magique : Remplir l'ID de l'agent pour chaque contrat
+        for (ContratLocation c : contrats) {
+            if (c.getVehiculeId() != null) {
+                // On utilise ta méthode personnalisée du Repository
+                Long agentId = vehiculeRepo.findAgentIdByVehiculeId(c.getVehiculeId());
+
+                // On stocke l'ID dans le champ temporaire @Transient
+                c.setAgentIdPourNote(agentId);
+            }
+        }
+
+        // 3. Retourner la liste enrichie (le JSON contiendra maintenant "agentIdPourNote")
+        return contrats;
     }
 }

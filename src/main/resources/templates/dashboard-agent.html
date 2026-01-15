@@ -27,11 +27,13 @@
                 </label>
                 <ul tabindex="0"
                     class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                    <li><a th:href="@{/profil-loueur}">Mon Profil Loueur</a></li>
-                    <li><a class="text-error font-semibold">Déconnexion</a></li>
+                    <li><a class="dropdown-item" th:href="@{/profil}">Mon Profil</a></li>
+                    <li><a th:href="@{/dashboard-loueur}">Mon espace Loueur</a></li>
+                    <li><a class="text-error font-semibold" onclick="logout()">Déconnexion</a></li>
                 </ul>
             </div>
         </div>
+    </div>
     </div>
 
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
@@ -41,10 +43,16 @@
             <div>
                 <h1 class="text-3xl font-black">Tableau de bord Agent</h1>
                 <p class="text-base-content/60">Gérez vos véhicules et vos revenus mensuels.</p>
+
+                <!-- Bonus: afficher prénom si session disponible -->
+                <p class="text-sm mt-2 opacity-70" th:if="${session.userName != null}">
+                    Connecté en tant que <span class="font-semibold" th:text="${session.userName}">Agent</span>
+                </p>
             </div>
+
             <div class="stats shadow-sm bg-base-200 border border-base-300">
                 <div class="stat">
-                    <div class="stat-title text-xs">Revenus </div>
+                    <div class="stat-title text-xs">Revenus</div>
                     <div id="stat-revenus" class="stat-value text-primary text-2xl">0 €</div>
                 </div>
                 <div class="stat">
@@ -57,6 +65,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             <aside class="space-y-6">
+
                 <div class="card bg-base-100 border border-base-300 shadow-sm">
                     <div class="card-body">
                         <h2 class="card-title text-sm uppercase opacity-50">Alertes Maintenance</h2>
@@ -87,6 +96,62 @@
                         <p class="text-[10px] opacity-50 mt-2 italic">* Options facturées en fin de mois.</p>
                     </div>
                 </div>
+
+                <!-- ✅ AJOUT : PARRAINAGE AGENT -->
+                <div class="card bg-base-100 border border-base-300 shadow-sm">
+                    <div class="card-body space-y-4">
+                        <h2 class="card-title text-sm uppercase opacity-50">Parrainage Agent</h2>
+
+                        <!-- Générer un code -->
+                        <div class="bg-base-200 p-3 rounded-xl border border-base-300">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <p class="text-xs font-semibold">Créer mon code</p>
+                                    <p class="text-[11px] opacity-60">Partage ce code à un nouvel agent.</p>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="generateParrainCode()">Générer</button>
+                            </div>
+
+                            <div id="parrain-code-zone" class="mt-3 hidden">
+                                <div class="flex items-center gap-2">
+                                    <input id="parrain-code" class="input input-bordered input-sm w-full font-mono"
+                                        readonly value="" />
+                                    <button class="btn btn-ghost btn-sm" onclick="copyParrainCode()">Copier</button>
+                                </div>
+                                <p id="parrain-status" class="text-[11px] opacity-60 mt-2"></p>
+                            </div>
+                        </div>
+
+                        <!-- Utiliser un code -->
+                        <div class="bg-base-200 p-3 rounded-xl border border-base-300">
+                            <p class="text-xs font-semibold">J’ai un code de parrainage</p>
+                            <p class="text-[11px] opacity-60 mb-2">Colle le code et lie-le à ton compte (filleul).</p>
+
+                            <div class="flex items-center gap-2">
+                                <input id="filleul-code" class="input input-bordered input-sm w-full font-mono"
+                                    placeholder="xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                                <button class="btn btn-secondary btn-sm" onclick="useParrainCode()">Valider</button>
+                            </div>
+
+                            <p id="filleul-msg" class="text-[11px] opacity-60 mt-2"></p>
+                        </div>
+
+                        <!-- Vérifier récompense -->
+                        <div class="bg-base-200 p-3 rounded-xl border border-base-300">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <p class="text-xs font-semibold">Vérifier la récompense</p>
+                                    <p class="text-[11px] opacity-60">Si conditions remplies, le parrain sera crédité.
+                                    </p>
+                                </div>
+                                <button class="btn btn-accent btn-sm" onclick="verifyParrainReward()">Vérifier</button>
+                            </div>
+                            <p id="verify-msg" class="text-[11px] opacity-60 mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ✅ FIN AJOUT -->
+
             </aside>
 
             <section class="lg:col-span-2 space-y-6">
@@ -95,7 +160,7 @@
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold">Mes Véhicules</h2>
                             <button class="btn btn-primary shadow-lg" onclick="add_vehicle_modal.showModal()">
-                                <i class="fas fa-plus mr-2"></i> Ajouter un véhicule
+                                Ajouter un véhicule
                             </button>
                         </div>
 
@@ -107,6 +172,7 @@
                     </div>
                 </div>
             </section>
+
         </div>
     </main>
 
@@ -191,17 +257,108 @@
         EasyLoc Agent - Gestion de flotte v1.0
     </footer>
 
-    <script>
+    <!-- ✅ IMPORTANT : inline thymeleaf pour récupérer session.userId dans JS -->
+    <script th:inline="javascript">
+        const CURRENT_AGENT_ID = /*[[${session.userId}]]*/ null;
+
+        function setText(id, txt) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = txt;
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+            } finally {
+                window.location.href = "/login";
+            }
+        }
+
+        // ---------------------------
+        // ✅ PARRAINAGE - API calls
+        // ---------------------------
+        async function generateParrainCode() {
+            if (!CURRENT_AGENT_ID) {
+                alert("Vous devez être connecté.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/parrainages/agents/parrain/${CURRENT_AGENT_ID}`, { method: "POST" });
+                if (!res.ok) throw new Error(await res.text());
+                const data = await res.json();
+
+                document.getElementById("parrain-code-zone").classList.remove("hidden");
+                document.getElementById("parrain-code").value = data.code || "";
+                setText("parrain-status", `Code créé • Récompense: ${data.montantRecompense ?? 20} € • Statut: ${data.statut ?? ""}`);
+            } catch (e) {
+                alert("Erreur génération code: " + e.message);
+            }
+        }
+
+        function copyParrainCode() {
+            const input = document.getElementById("parrain-code");
+            if (!input || !input.value) return;
+
+            navigator.clipboard.writeText(input.value)
+                .then(() => setText("parrain-status", "✅ Code copié dans le presse-papier"))
+                .catch(() => setText("parrain-status", "⚠️ Copie automatique impossible"));
+        }
+
+        async function useParrainCode() {
+            if (!CURRENT_AGENT_ID) {
+                alert("Vous devez être connecté.");
+                return;
+            }
+
+            const code = document.getElementById("filleul-code").value.trim();
+            if (!code) {
+                setText("filleul-msg", "⚠️ Saisis un code.");
+                return;
+            }
+
+            try {
+                const url = `/parrainages/agents/utiliser/${encodeURIComponent(code)}/filleul/${CURRENT_AGENT_ID}`;
+                const res = await fetch(url, { method: "POST" });
+
+                if (!res.ok) throw new Error(await res.text());
+                const data = await res.json();
+
+                setText("filleul-msg", `✅ Code lié avec succès • Statut: ${data.statut ?? ""}`);
+            } catch (e) {
+                setText("filleul-msg", "❌ " + e.message);
+            }
+        }
+
+        async function verifyParrainReward() {
+            if (!CURRENT_AGENT_ID) {
+                alert("Vous devez être connecté.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/parrainages/agents/verifier/${CURRENT_AGENT_ID}`, { method: "POST" });
+                if (!res.ok) throw new Error(await res.text());
+
+                // ton endpoint renvoie void => OK = tentative de vérification
+                setText("verify-msg", "✅ Vérification envoyée. Si les conditions sont remplies, le parrain est crédité.");
+            } catch (e) {
+                setText("verify-msg", "❌ " + e.message);
+            }
+        }
+
+        // ---------------------------
+        // ✅ VEHICULES - Ton code existant
+        // ---------------------------
         document.getElementById('addVehicleForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Dans dashboardagent.html, modifier la fonction de soumission :
             const payload = {
                 immatriculation: document.getElementById('v-immat').value,
                 prix: document.getElementById('v-prix').value,
                 typeLibelle: document.getElementById('v-type').value,
-                dispoDebut: document.getElementById('v-dispo-debut').value, // Ajout
-                dispoFin: document.getElementById('v-dispo-fin').value,     // Ajout
+                dispoDebut: document.getElementById('v-dispo-debut').value,
+                dispoFin: document.getElementById('v-dispo-fin').value,
                 caracteristiques: {
                     marque: document.getElementById('v-marque').value,
                     modele: document.getElementById('v-modele').value,
@@ -211,11 +368,9 @@
                 localisation: {
                     ville: document.getElementById('v-ville').value,
                     rue: document.getElementById('v-adresse').value
-                    // Ajoutez code postal et pays si nécessaire
                 }
             };
 
-            // Appel API vers notre VehiculeController
             fetch('/vehicules/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -223,7 +378,6 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        // Au lieu d'attendre un JSON complexe, on recharge juste la page
                         window.location.reload();
                     } else {
                         return response.text().then(text => { throw new Error(text) });
@@ -232,30 +386,19 @@
                 .catch(err => {
                     console.error(err);
                     alert("Erreur : " + err.message);
-                    // On cache le bouton de chargement ou on réactive le formulaire ici si besoin
                 });
         });
 
-
-        // Fonction pour charger les véhicules de l'agent
         function fetchMyVehicles() {
             fetch('/vehicules/my-vehicles')
                 .then(res => res.json())
                 .then(data => {
-
-                    // ✅ Dynamiser le nombre de véhicules
-                    // On cherche l'élément qui contient "3" dans votre header
-                    const vehicleStat = document.querySelector('.stat:nth-child(2) .stat-value');
+                    const vehicleStat = document.getElementById('stat-count');
                     if (vehicleStat) vehicleStat.innerText = data.length;
 
-                    // ✅ Calculer les revenus (Exemple : somme des prix journaliers)
-                    const totalPrix = data.reduce((sum, v) => sum + v.prixJournalier, 0);
-                    const revenueStat = document.querySelector('.stat:nth-child(1) .stat-value');
+                    const totalPrix = data.reduce((sum, v) => sum + (v.prixJournalier || 0), 0);
+                    const revenueStat = document.getElementById('stat-revenus');
                     if (revenueStat) revenueStat.innerText = totalPrix + " €";
-
-
-                    // ✅ Mise à jour dynamique du nombre de véhicules
-                    document.querySelector('.stat:nth-child(2) .stat-value').innerText = data.length;
 
                     const container = document.getElementById('vehicleContainer');
                     if (data.length === 0) {
@@ -265,50 +408,45 @@
 
                     container.innerHTML = '';
                     data.forEach(v => {
-                        // On récupère le libellé du type et le nbPlaces des caractéristiques
                         const type = v.typeVehicule ? v.typeVehicule.libelle : 'Véhicule';
                         const places = v.caracteristiques ? v.caracteristiques.nbPlaces : '?';
 
                         const card = `
-                <div class="p-4 bg-base-200 rounded-xl border border-base-300 flex justify-between items-center hover:border-primary transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="text-3xl">${type === 'Moto' ? '🏍️' : '🚗'}</div>
-                        <div>
-                            <h3 class="font-bold">${v.caracteristiques.marque} ${v.caracteristiques.modele}</h3>
-                            <p class="text-xs opacity-60">${type} • ${places} places • ${v.immatriculation}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="flex flex-col items-end mr-4">
-                            <span class="text-sm font-bold text-primary">${v.prixJournalier} €/j</span>
-                            <div class="badge badge-success badge-xs">ACTIF</div>
-                        </div>
-                        <button class="btn btn-ghost btn-sm text-error" onclick="deleteVehicle(${v.id})">🗑️</button>
-                    </div>
-                </div>`;
+                            <div class="p-4 bg-base-200 rounded-xl border border-base-300 flex justify-between items-center hover:border-primary transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="text-3xl">${type === 'Moto' ? '🏍️' : '🚗'}</div>
+                                    <div>
+                                        <h3 class="font-bold">${v.caracteristiques?.marque ?? ""} ${v.caracteristiques?.modele ?? ""}</h3>
+                                        <p class="text-xs opacity-60">${type} • ${places} places • ${v.immatriculation ?? ""}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex flex-col items-end mr-4">
+                                        <span class="text-sm font-bold text-primary">${v.prixJournalier ?? 0} €/j</span>
+                                        <div class="badge badge-success badge-xs">ACTIF</div>
+                                    </div>
+                                    <button class="btn btn-ghost btn-sm text-error" onclick="deleteVehicle(${v.id})">🗑️</button>
+                                </div>
+                            </div>`;
                         container.insertAdjacentHTML('beforeend', card);
                     });
                 });
         }
 
-        // Fonction pour supprimer un véhicule
         function deleteVehicle(id) {
             if (confirm("Voulez-vous vraiment supprimer ce véhicule ?")) {
                 fetch('/vehicules/' + id, { method: 'DELETE' })
                     .then(res => {
                         if (res.ok) {
                             alert("Véhicule supprimé");
-                            fetchMyVehicles(); // Rafraîchir la liste
+                            fetchMyVehicles();
                         }
                     });
             }
         }
 
-        // Lancer le chargement au démarrage
         document.addEventListener('DOMContentLoaded', fetchMyVehicles);
     </script>
-
-
 </body>
 
 </html>
