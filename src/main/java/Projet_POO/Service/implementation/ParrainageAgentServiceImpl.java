@@ -75,22 +75,26 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
     @Override
     public void verifierEtCrediter(Long filleulId) {
 
-        // ✅ ici on change juste findByFilleul_Id
-        ParrainageAgent p = parrainageRepo.findByFilleul_Id(filleulId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parrainage agent introuvable"));
+        // ✅ récupère tous les parrainages liés à ce filleul
+        List<ParrainageAgent> list = parrainageRepo.findAllByFilleul_Id(filleulId);
+        if (list == null || list.isEmpty()) return;
+
+        // ✅ on prend le plus récent (ou celui qui n’est pas payé)
+        ParrainageAgent p = list.stream()
+                .filter(x -> !x.isRecompenseVersee())
+                .findFirst()
+                .orElse(list.get(0));
 
         if (p.isRecompenseVersee()) return;
 
-        // ✅ ici on change existsByAgent_Id
         if (!vehiculeRepo.existsByAgent_Id(filleulId)) return;
 
-        // ✅ ici on change findByAgent_Id
         List<Vehicule> vehicules = vehiculeRepo.findByAgent_Id(filleulId);
         boolean aUnContratTermine = false;
 
         for (Vehicule v : vehicules) {
-            if (v != null && v.getId() != null &&
-                    contratRepo.existsByVehiculeIdAndStatut(v.getId(), StatutContrat.TERMINE)) {
+            if (v != null && v.getId() != null
+                    && contratRepo.existsByVehiculeIdAndStatut(v.getId(), StatutContrat.TERMINE)) {
                 aUnContratTermine = true;
                 break;
             }
@@ -106,4 +110,5 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
         p.setStatut(StatutParrainage.RECOMPENSE_VERSEE);
         parrainageRepo.save(p);
     }
+
 }
