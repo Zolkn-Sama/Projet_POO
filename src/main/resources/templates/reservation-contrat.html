@@ -88,13 +88,17 @@
     </section>
 </main>
 
+
+<input type="hidden" id="prixJournalierDb" th:value="${vehicule.prixJournalier}">
+
+
 <script>
-    // 1. Calcul dynamique du prix
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
 
-        // Récupération avec valeurs de secours
-        const prixJournalier = parseFloat(urlParams.get('prix')) || 45.00; // 45€ par défaut si absent
+        // RÉCUPÉRATION SÉCURISÉE : On prend le prix injecté par le serveur
+        const prixJournalier = parseFloat(document.getElementById('prixJournalierDb').value);
+
         const dateDebutStr = urlParams.get('dateDebut') || new Date().toISOString().split('T')[0];
         const dateFinStr = urlParams.get('dateFin') || new Date(Date.now() + 172800000).toISOString().split('T')[0];
 
@@ -110,11 +114,7 @@
         document.getElementById('montant-location-display').innerText = totalLocation.toFixed(2) + " €";
         document.getElementById('commission-display').innerText = commission.toFixed(2) + " €";
         document.getElementById('total-display').innerText = totalFinal.toFixed(2) + " €";
-
-        // TRÈS IMPORTANT : Mise à jour de l'input caché utilisé par validerReservation()
         document.getElementById('montantTotal').value = totalFinal.toFixed(2);
-
-        console.log("Calcul effectué - Total final:", totalFinal);
     });
 
     // 2. Gestion de la signature
