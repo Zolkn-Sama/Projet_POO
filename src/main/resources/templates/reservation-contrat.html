@@ -1,186 +1,190 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finaliser ma réservation - EasyLoc</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-        * { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
+
 <body class="min-h-screen bg-base-200">
 
-<div class="navbar bg-base-100 shadow-sm border-b border-base-300">
-    <div class="flex-1 px-4">
-        <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
-            <span class="text-primary text-2xl">🚗</span>
-            <span>EasyLoc</span>
-        </a>
-    </div>
-</div>
-
-<main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
-    <section class="card bg-base-100 shadow-md border border-base-300">
-        <div class="card-body py-4">
-            <h1 class="text-2xl md:text-3xl font-extrabold">Finaliser votre réservation</h1>
-            <p class="text-sm text-base-content/60">Vérifiez vos informations et signez le contrat électronique.</p>
+    <div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+        <div class="flex-1 px-4">
+            <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
+                <span class="text-primary text-2xl">🚗</span>
+                <span>EasyLoc</span>
+            </a>
         </div>
-    </section>
+    </div>
 
-    <section class="grid gap-6 lg:grid-cols-3 items-start">
-        <section class="space-y-6 lg:col-span-2">
-            <div class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
-                        <span class="badge badge-primary badge-sm">1</span> Assurance Incluse
-                    </h2>
-                    <p class="text-xs text-base-content/60 italic">Assurance AZA standard activée par défaut.</p>
-                </div>
-            </div>
-
-            <div class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body space-y-4">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
-                        <span class="badge badge-primary badge-sm">2</span> Signature électronique
-                    </h2>
-                    <div class="border border-dashed border-base-300 rounded-2xl bg-base-200/60 p-4 flex flex-col items-center">
-                        <canvas id="signature-canvas" class="w-full h-40 bg-base-100 rounded-xl shadow-inner cursor-crosshair"></canvas>
-                        <button type="button" class="btn btn-ghost btn-xs text-error mt-2" onclick="clearSignature()">Effacer la signature</button>
-                    </div>
-                </div>
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <section class="card bg-base-100 shadow-md border border-base-300">
+            <div class="card-body py-4">
+                <h1 class="text-2xl md:text-3xl font-extrabold">Finaliser votre réservation</h1>
+                <p class="text-sm text-base-content/60">Vérifiez vos informations et signez le contrat électronique.</p>
             </div>
         </section>
 
-        <aside class="lg:col-span-1">
-            <div class="card bg-base-100 shadow-xl border border-primary/40">
-                <div class="card-body space-y-4">
-                    <h2 class="text-lg font-bold">Récapitulatif</h2>
-                    <div class="divider my-0"></div>
-
-                    <div class="flex justify-between text-sm">
-                        <span>Location</span>
-                        <span id="montant-location-display">En calcul...</span>
+        <section class="grid gap-6 lg:grid-cols-3 items-start">
+            <section class="space-y-6 lg:col-span-2">
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body">
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <span class="badge badge-primary badge-sm">1</span> Assurance Incluse
+                        </h2>
+                        <p class="text-xs text-base-content/60 italic">Assurance AZA standard activée par défaut.</p>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span>Frais service (10%)</span>
-                        <span id="commission-display">0.00 €</span>
-                    </div>
-
-                    <div class="divider my-0"></div>
-
-                    <div class="flex justify-between items-baseline font-bold">
-                        <span>Total</span>
-                        <span class="text-xl text-primary" id="total-display">0.00 €</span>
-                    </div>
-
-                    <input type="hidden" id="vehiculeId" th:value="${vehiculeId}">
-                    <input type="hidden" id="loueurId" th:value="${session.userId}">
-                    <input type="hidden" id="montantTotal" value="0">
-
-                    <button class="btn btn-primary w-full mt-4" type="button" onclick="validerReservation()">
-                        ✅ Confirmer la location
-                    </button>
                 </div>
-            </div>
-        </aside>
-    </section>
-</main>
+
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body space-y-4">
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <span class="badge badge-primary badge-sm">2</span> Signature électronique
+                        </h2>
+                        <div
+                            class="border border-dashed border-base-300 rounded-2xl bg-base-200/60 p-4 flex flex-col items-center">
+                            <canvas id="signature-canvas"
+                                class="w-full h-40 bg-base-100 rounded-xl shadow-inner cursor-crosshair"></canvas>
+                            <button type="button" class="btn btn-ghost btn-xs text-error mt-2"
+                                onclick="clearSignature()">Effacer la signature</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="lg:col-span-1">
+                <div class="card bg-base-100 shadow-xl border border-primary/40">
+                    <div class="card-body space-y-4">
+                        <h2 class="text-lg font-bold">Récapitulatif</h2>
+                        <div class="divider my-0"></div>
+
+                        <div class="flex justify-between text-sm">
+                            <span>Location</span>
+                            <span id="montant-location-display">En calcul...</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Frais service (10%)</span>
+                            <span id="commission-display">0.00 €</span>
+                        </div>
+
+                        <div class="divider my-0"></div>
+
+                        <div class="flex justify-between items-baseline font-bold">
+                            <span>Total</span>
+                            <span class="text-xl text-primary" id="total-display">0.00 €</span>
+                        </div>
+
+                        <input type="hidden" id="vehiculeId" th:value="${vehiculeId}">
+                        <input type="hidden" id="loueurId" th:value="${session.userId}">
+                        <input type="hidden" id="montantTotal" value="0">
+
+                        <button class="btn btn-primary w-full mt-4" type="button" onclick="validerReservation()">
+                            ✅ Confirmer la location
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
 
 
-<input type="hidden" id="prixJournalierDb" th:value="${vehicule.prixJournalier}">
+    <input type="hidden" id="prixJournalierDb" th:value="${vehicule.prixJournalier}">
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
 
-        // RÉCUPÉRATION SÉCURISÉE : On prend le prix injecté par le serveur
-        const prixJournalier = parseFloat(document.getElementById('prixJournalierDb').value);
+            // RÉCUPÉRATION SÉCURISÉE : On prend le prix injecté par le serveur
+            const prixJournalier = parseFloat(document.getElementById('prixJournalierDb').value);
 
-        const dateDebutStr = urlParams.get('dateDebut') || new Date().toISOString().split('T')[0];
-        const dateFinStr = urlParams.get('dateFin') || new Date(Date.now() + 172800000).toISOString().split('T')[0];
+            const dateDebutStr = urlParams.get('dateDebut') || new Date().toISOString().split('T')[0];
+            const dateFinStr = urlParams.get('dateFin') || new Date(Date.now() + 172800000).toISOString().split('T')[0];
 
-        const d1 = new Date(dateDebutStr);
-        const d2 = new Date(dateFinStr);
-        const diffDays = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) || 1;
+            const d1 = new Date(dateDebutStr);
+            const d2 = new Date(dateFinStr);
+            const diffDays = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) || 1;
 
-        const totalLocation = prixJournalier * diffDays;
-        const commission = totalLocation * 0.10;
-        const totalFinal = totalLocation + commission;
+            const totalLocation = prixJournalier * diffDays;
+            const commission = totalLocation * 0.10;
+            const totalFinal = totalLocation + commission;
 
-        // Mise à jour visuelle
-        document.getElementById('montant-location-display').innerText = totalLocation.toFixed(2) + " €";
-        document.getElementById('commission-display').innerText = commission.toFixed(2) + " €";
-        document.getElementById('total-display').innerText = totalFinal.toFixed(2) + " €";
-        document.getElementById('montantTotal').value = totalFinal.toFixed(2);
-    });
-
-    // 2. Gestion de la signature
-    const canvas = document.getElementById('signature-canvas');
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
-
-    function resizeCanvas() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
-    window.addEventListener('load', resizeCanvas);
-    canvas.addEventListener('mousedown', () => drawing = true);
-    window.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
-    canvas.addEventListener('mousemove', (e) => {
-        if (!drawing) return;
-        ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#1e293b';
-        const rect = canvas.getBoundingClientRect();
-        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-        ctx.stroke(); ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-    });
-
-    function clearSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-    // 3. Envoi du contrat
-    async function validerReservation() {
-        const urlParams = new URLSearchParams(window.location.search);
-        let vId = document.getElementById('vehiculeId').value || urlParams.get('vehiculeId');
-        const lId = document.getElementById('loueurId').value;
-        const total = document.getElementById('montantTotal').value;
-
-        if (!vId || !lId || total === "0") {
-            alert("Erreur : Informations de réservation incomplètes.");
-            return;
-        }
-
-        const now = new Date();
-        const payload = {
-            vehiculeId: parseInt(vId),
-            loueurId: parseInt(lId),
-            montantTotal: parseFloat(total),
-            statut: "EN_ATTENTE", //
-            dateDebut: now.toISOString().split('.')[0],
-            dateFin: new Date(now.getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString().split('.')[0],
-            lieuPrise: "Agence EasyLoc",
-            lieuDepose: "Agence EasyLoc"
-        };
-
-        const response = await fetch('/contrats', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            // Mise à jour visuelle
+            document.getElementById('montant-location-display').innerText = totalLocation.toFixed(2) + " €";
+            document.getElementById('commission-display').innerText = commission.toFixed(2) + " €";
+            document.getElementById('total-display').innerText = totalFinal.toFixed(2) + " €";
+            document.getElementById('montantTotal').value = totalFinal.toFixed(2);
         });
 
-        if (response.ok) {
-            const data = await response.json(); // Récupère le contrat créé
-            console.log("Succès :", data);
-            alert("Réservation réussie !");
-            window.location.href = "/dashboard-loueur"; // Assurez-vous que cette URL existe
-        } else {
-            // Si ça arrive ici, c'est le bloc "catch" du Controller qui a répondu
-            const errorMsg = await response.text();
-            console.error("Erreur du serveur :", errorMsg);
-            alert("Erreur lors de la réservation : " + errorMsg);
+        // 2. Gestion de la signature
+        const canvas = document.getElementById('signature-canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
         }
-    }
-</script>
+        window.addEventListener('load', resizeCanvas);
+        canvas.addEventListener('mousedown', () => drawing = true);
+        window.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+        canvas.addEventListener('mousemove', (e) => {
+            if (!drawing) return;
+            ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#1e293b';
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke(); ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        });
+
+        function clearSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+        // 3. Envoi du contrat
+        async function validerReservation() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let vId = document.getElementById('vehiculeId').value || urlParams.get('vehiculeId');
+            const lId = document.getElementById('loueurId').value;
+            const total = document.getElementById('montantTotal').value;
+
+            if (!vId || !lId || total === "0") {
+                alert("Erreur : Informations de réservation incomplètes.");
+                return;
+            }
+
+            const now = new Date();
+            const payload = {
+                vehiculeId: parseInt(vId),
+                loueurId: parseInt(lId),
+                montantTotal: parseFloat(total),
+                statut: "EN_ATTENTE", //
+                dateDebut: now.toISOString().split('.')[0],
+                dateFin: new Date(now.getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString().split('.')[0],
+                lieuPrise: "Agence EasyLoc",
+                lieuDepose: "Agence EasyLoc"
+            };
+
+            const response = await fetch('/contrats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const data = await response.json(); // Récupère le contrat créé
+                console.log("Succès :", data);
+                alert("Réservation réussie !");
+                window.location.href = "/dashboard-loueur"; // Assurez-vous que cette URL existe
+            } else {
+                // Si ça arrive ici, c'est le bloc "catch" du Controller qui a répondu
+                const errorMsg = await response.text();
+                console.error("Erreur du serveur :", errorMsg);
+                alert("Erreur lors de la réservation : " + errorMsg);
+            }
+        }
+    </script>
 </body>
+
 </html>

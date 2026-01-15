@@ -7,8 +7,7 @@
     <title>Espace Agent - EasyLoc</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 
 <body class="min-h-screen bg-base-200">
@@ -258,39 +257,41 @@
         <div class="modal-box max-w-2xl bg-base-100">
             <h3 class="font-bold text-xl mb-6 border-b pb-2">Modifier le Véhicule</h3>
             <form id="editVehicleForm">
-                <input type="hidden" id="edit-v-id"> <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Marque</span></label>
-                    <input type="text" id="edit-v-marque" class="input input-bordered w-full" required />
+                <input type="hidden" id="edit-v-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Marque</span></label>
+                        <input type="text" id="edit-v-marque" class="input input-bordered w-full" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Modèle</span></label>
+                        <input type="text" id="edit-v-modele" class="input input-bordered w-full" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Immatriculation</span></label>
+                        <input type="text" id="edit-v-immat" class="input input-bordered w-full" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Prix par jour (€)</span></label>
+                        <input type="number" id="edit-v-prix" class="input input-bordered w-full" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Nombre de places</span></label>
+                        <input type="number" id="edit-v-places" class="input input-bordered w-full" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Couleur</span></label>
+                        <input type="text" id="edit-v-couleur" class="input input-bordered w-full" />
+                    </div>
                 </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Modèle</span></label>
-                    <input type="text" id="edit-v-modele" class="input input-bordered w-full" required />
-                </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Immatriculation</span></label>
-                    <input type="text" id="edit-v-immat" class="input input-bordered w-full" required />
-                </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Prix par jour (€)</span></label>
-                    <input type="number" id="edit-v-prix" class="input input-bordered w-full" required />
-                </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Nombre de places</span></label>
-                    <input type="number" id="edit-v-places" class="input input-bordered w-full" required />
-                </div>
-                <div class="form-control">
-                    <label class="label"><span class="label-text">Couleur</span></label>
-                    <input type="text" id="edit-v-couleur" class="input input-bordered w-full" />
-                </div>
-            </div>
                 <div class="form-control mt-4">
                     <label class="label"><span class="label-text">Ville</span></label>
                     <input type="text" id="edit-v-ville" class="input input-bordered w-full" required />
                 </div>
                 <div class="modal-action mt-8">
                     <button type="button" class="btn btn-ghost" onclick="edit_vehicle_modal.close()">Annuler</button>
-                    <button type="submit" class="btn btn-secondary px-8 text-white">Enregistrer les modifications</button>
+                    <button type="submit" class="btn btn-secondary px-8 text-white">Enregistrer les
+                        modifications</button>
                 </div>
             </form>
         </div>
