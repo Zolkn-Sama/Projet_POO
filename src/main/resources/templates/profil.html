@@ -1,150 +1,202 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
-    <title>Mon Profil</title>
+    <title>Mon Profil - LocAuto</title>
+
+    <!-- DaisyUI + Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            padding-top: 50px;
+        * {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
-        .profile-card {
-            background-color: white;
-            width: 600px;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-        .header h1 { margin: 0; color: #333; }
-        .role-badge {
-            background-color: #007bff;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            vertical-align: middle;
-        }
-        .section { margin-bottom: 20px; }
-        .section h3 { color: #555; border-left: 4px solid #007bff; padding-left: 10px; }
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-            border-bottom: 1px dashed #eee;
-            padding-bottom: 5px;
-        }
-        .label { font-weight: bold; color: #666; }
-        .value { color: #333; }
-        .solde { color: #28a745; font-weight: bold; font-size: 1.1em; }
-        .btn-group { text-align: center; margin-top: 30px; }
-        .btn {
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            margin: 0 5px;
-            color: white;
-            font-weight: bold;
-        }
-        .btn-home { background-color: #6c757d; }
-        .btn-edit { background-color: #007bff; }
-        .btn-logout { background-color: #dc3545; }
     </style>
 </head>
-<body>
 
-<div class="profile-card">
+<body class="min-h-screen bg-base-200">
 
-    <div th:if="${monUtilisateur == null}" style="text-align: center; color: red;">
-        <h2>Erreur</h2>
-        <p>Impossible de récupérer les informations de l'utilisateur.</p>
-        <a th:href="@{/login}">Se connecter</a>
-    </div>
-
-    <div th:if="${monUtilisateur != null}">
-
-        <div class="header">
-            <h1>
-                <span th:text="${monUtilisateur.prenom} + ' ' + ${monUtilisateur.nom}">Jean Dupont</span>
-            </h1>
-            <p style="color: #777;">
-                <span th:text="${monUtilisateur.email}">jean@test.com</span>
-            </p>
-
-            <span class="role-badge" th:text="${roleAffichage}">Utilisateur</span>
-        </div>
-
-        <div class="section">
-            <h3>Informations Personnelles</h3>
-            <div class="info-row">
-                <span class="label">Date de naissance :</span>
-                <span class="value" th:text="${monUtilisateur.dateNaissance}">01/01/1990</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Téléphone :</span>
-                <span class="value" th:text="${monUtilisateur.telephone}">06 12 34 56 78</span>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>Adresse</h3>
-            <div class="info-row">
-                <span class="label">Rue :</span>
-                <span class="value" th:text="${monUtilisateur.rue}">Rue inconnue</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Ville / Pays :</span>
-                <span class="value">
-                        <span th:text="${monUtilisateur.ville}">Paris</span>,
-                        <span th:text="${monUtilisateur.pays}">France</span>
-                    </span>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>Permis de Conduire</h3>
-            <div class="info-row">
-                <span class="label">Numéro de permis :</span>
-                <span class="value" th:text="${monUtilisateur.numeroPermis}">Non renseigné</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Date d'obtention :</span>
-                <span class="value" th:text="${monUtilisateur.dateObtentionPermis}">2020-05-20</span>
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>Mon Portefeuille</h3>
-            <div class="info-row">
-                <span class="label">Solde actuel :</span>
-                <span class="value solde" th:text="${monUtilisateur.solde} + ' €'">150.0 €</span>
-            </div>
-        </div>
-
-        <div class="btn-group">
-            <a th:href="@{${lienRetour}}" class="btn btn-home">Retour Accueil</a>
-
-            <a th:href="@{/profil/edit}" class="btn btn-edit">Modifier</a>
-
-            <a th:href="@{/api/auth/logout-page}" class="btn btn-logout"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Déconnexion
+    <!-- NAVBAR -->
+    <div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+        <div class="flex-1 px-4">
+            <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
+                <span class="text-primary text-2xl">👤</span>
+                <span>Mon profil</span>
             </a>
+        </div>
+        <div class="flex-none px-4">
+            <a th:href="@{/}" class="btn btn-ghost btn-sm">
+                ⬅ Accueil
+            </a>
+        </div>
+    </div>
 
-            <form id="logout-form" th:action="@{/api/auth/logout}" method="post" style="display: none;">
-            </form>
+    <!-- CONTENU -->
+    <main class="max-w-3xl mx-auto px-4 py-8">
+        <!-- Cas erreur : pas d'utilisateur -->
+        <div th:if="${monUtilisateur == null}" class="flex justify-center">
+            <div class="card bg-base-100 shadow-xl border border-error/30 max-w-md w-full">
+                <div class="card-body items-center text-center space-y-4">
+                    <div class="text-4xl">⚠️</div>
+                    <h2 class="card-title text-error">Erreur</h2>
+                    <p class="text-sm text-base-content/70">
+                        Impossible de récupérer les informations de l'utilisateur.
+                    </p>
+                    <a th:href="@{/login}" class="btn btn-primary btn-sm">
+                        Se connecter
+                    </a>
+                </div>
+            </div>
         </div>
 
-    </div>
-</div>
+        <!-- Cas normal : profil affiché -->
+        <div th:if="${monUtilisateur != null}" class="space-y-6">
+            <!-- Carte principale -->
+            <section class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body gap-6 md:flex md:flex-row md:items-center">
+                    <!-- Avatar -->
+                    <div class="flex justify-center md:justify-start">
+                        <div class="avatar placeholder">
+                            <div
+                                class="bg-primary text-primary-content rounded-full w-24 h-24 flex items-center justify-center text-3xl font-bold">
+                                <span
+                                    th:text="${#strings.substring(monUtilisateur.prenom,0,1)} + ${#strings.substring(monUtilisateur.nom,0,1)}">
+                                    JD
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Infos principales -->
+                    <div class="flex-1 space-y-2 text-center md:text-left">
+                        <h1 class="text-2xl font-extrabold">
+                            <span th:text="${monUtilisateur.prenom} + ' ' + ${monUtilisateur.nom}">Jean Dupont</span>
+                        </h1>
+                        <p class="text-sm text-base-content/70">
+                            <span th:text="${monUtilisateur.email}">jean@test.com</span>
+                        </p>
+
+                        <div class="flex flex-wrap gap-2 justify-center md:justify-start pt-1">
+                            <span class="badge badge-primary badge-outline"> Agent </span>
+                            <span class="badge badge-primary badge-outline"> Loueur </span>
+                            <span class="badge badge-ghost badge-sm">
+                                ID #<span th:text="${monUtilisateur.id}">1</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Actions principales -->
+                    <div class="flex flex-col gap-2 w-full md:w-auto">
+                        <a th:href="@{/profil/edit}" class="btn btn-primary btn-sm w-full">
+                            ✏️ Modifier mon profil
+                        </a>
+
+                        <a th:href="@{/api/auth/logout-page}" class="btn btn-ghost btn-sm text-error w-full"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Déconnexion
+                        </a>
+
+                        <form id="logout-form" th:action="@{/api/auth/logout}" method="post" class="hidden">
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Grille des informations -->
+            <section class="grid gap-4 md:grid-cols-2">
+                <!-- Infos personnelles -->
+                <div class="card bg-base-100 shadow-md border border-base-300">
+                    <div class="card-body space-y-3">
+                        <h3 class="font-semibold text-base flex items-center gap-2">
+                            <span class="text-lg">👤</span> Informations personnelles
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between gap-2">
+                                <span class="text-base-content/60">Date de naissance :</span>
+                                <span class="font-medium" th:text="${monUtilisateur.dateNaissance}">01/01/1990</span>
+                            </div>
+                            <div class="flex justify-between gap-2">
+                                <span class="text-base-content/60">Téléphone :</span>
+                                <span class="font-medium" th:text="${monUtilisateur.telephone}">06 12 34 56 78</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adresse -->
+                <div class="card bg-base-100 shadow-md border border-base-300">
+                    <div class="card-body space-y-3">
+                        <h3 class="font-semibold text-base flex items-center gap-2">
+                            <span class="text-lg">🏠</span> Adresse
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div>
+                                <div class="text-base-content/60 text-xs">Rue</div>
+                                <div class="font-medium" th:text="${monUtilisateur.rue}">Rue inconnue</div>
+                            </div>
+                            <div>
+                                <div class="text-base-content/60 text-xs">Ville / Pays</div>
+                                <div class="font-medium">
+                                    <span th:text="${monUtilisateur.ville}">Paris</span>,
+                                    <span th:text="${monUtilisateur.pays}">France</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Permis -->
+                <div class="card bg-base-100 shadow-md border border-base-300">
+                    <div class="card-body space-y-3">
+                        <h3 class="font-semibold text-base flex items-center gap-2">
+                            <span class="text-lg">🚘</span> Permis de conduire
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between gap-2">
+                                <span class="text-base-content/60">Numéro :</span>
+                                <span class="font-medium" th:text="${monUtilisateur.numeroPermis}">Non renseigné</span>
+                            </div>
+                            <div class="flex justify-between gap-2">
+                                <span class="text-base-content/60">Date d'obtention :</span>
+                                <span class="font-medium"
+                                    th:text="${monUtilisateur.dateObtentionPermis}">2020-05-20</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portefeuille -->
+                <div class="card bg-base-100 shadow-md border border-base-300">
+                    <div class="card-body space-y-3">
+                        <h3 class="font-semibold text-base flex items-center gap-2">
+                            <span class="text-lg">💳</span> Mon portefeuille
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-base-content/60">Solde actuel</span>
+                                <span class="text-2xl font-black text-success">
+                                    <span th:text="${monUtilisateur.solde}">150.0</span> €
+                                </span>
+                            </div>
+                            <p class="text-xs text-base-content/60">
+                                Utilisable pour vos prochaines locations ou services.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Boutons de navigation -->
+            <section class="flex flex-wrap gap-3 justify-end pt-2">
+                <a th:href="@{/}" class="btn btn-ghost btn-sm">
+                    ⬅ Acceuil
+                </a>
+            </section>
+        </div>
+    </main>
 
 </body>
+
 </html>
