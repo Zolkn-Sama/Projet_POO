@@ -9,6 +9,8 @@ import jakarta.persistence.Table;
 @PrimaryKeyJoinColumn(name = "id")
 public class ServiceSignature extends Service {
 
+    private final float serviceFees = 0.02f;
+
     private String signatureElectronique;
 
     public ServiceSignature() { super(); }
@@ -20,6 +22,11 @@ public class ServiceSignature extends Service {
 
     public String getSignature() { return signatureElectronique; }
     public void setSignature(String signatureElectronique) { this.signatureElectronique = signatureElectronique; }
+
+    @Override
+    protected Double CalculerPrix(Vehicule v) {
+        return v.getPrixJournalier() * serviceFees;
+    }
 
 }
 

@@ -2,11 +2,22 @@ package Projet_POO.Domain.Entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "vehicule")
@@ -19,18 +30,23 @@ public class Vehicule {
     private String immatriculation;
     private Localisation localisationVehicule;
     private boolean deposeDifferenteAutorisee;
-    private Long agentId;
 
+
+    private double prixJournalier;
+
+    @ManyToOne // SANS CascadeType.REMOVE ou ALL ici !
+    @JoinColumn(name = "agent_id")
+    private Agent agent; // Manquant pour setAgent
 
     // compositions / associations
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL) // AJOUTEZ CECI
     @JoinColumn(name = "type_vehicule_id")
     private TypeVehicule typeVehicule;
 
     @Transient
     private SystemePropulsion systemePropulsion;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL) // Ajoutez cascade = CascadeType.ALL ici
     @JoinColumn(name = "caracteristiques_id")
     private CaracteristiquesVehicule caracteristiques;
 
@@ -55,6 +71,10 @@ public class Vehicule {
     @Transient
     private List<ContratLocation> contrats = new ArrayList<>();
 
+    @Transient
+    private List<String> photosURL = new ArrayList<>();
+
+   
     public Vehicule() {
     }
 
@@ -65,8 +85,6 @@ public class Vehicule {
         this.deposeDifferenteAutorisee = deposeDifferenteAutorisee;
         this.typeVehicule = typeVehicule;
     }
-    public Long getAgentId() { return agentId; }
-    public void setAgentId(Long agentId) { this.agentId = agentId; }
 
     // --- Getters / Setters ---
     public Long getId() {
@@ -143,6 +161,32 @@ public class Vehicule {
     public void setNotes(List<NoteVehicule> notes) {
         this.notes = notes;
     }
+
+    public double getPrixJournalier() {
+        return prixJournalier;
+    }
+
+    public void setPrixJournalier(double prixJournalier) {
+        this.prixJournalier = prixJournalier;
+    }
+
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
+    }
+
+     public List<String> getPhotosURL() {
+        return photosURL;
+    }
+
+    public void setPhotosURL(List<String> photosURL) {
+        this.photosURL = photosURL;
+    }
+
+
     // --- Méthodes métier attendues par ton Service/Catalogue/Loueur ---
 
     public double getNoteMoyenne() {

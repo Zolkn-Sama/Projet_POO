@@ -4,10 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "agent")
@@ -21,7 +19,8 @@ public class Agent extends Utilisateur {
     private ConditionsAgent conditions;
 
     // Tant que Vehicule et Note ne sont pas reliés via @OneToMany/@ManyToMany, on laisse Transient
-    @Transient
+    @OneToMany(mappedBy = "agent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
     private List<Vehicule> vehicules = new ArrayList<>();
 
     @Transient
@@ -44,11 +43,12 @@ public class Agent extends Utilisateur {
                  String numeroPermis,
                  LocalDate dateObtentionPermis,
                  boolean estProfessionnel,
-                 ConditionsAgent conditions) {
+                 ConditionsAgent conditions,
+                 double solde) {
 
         super(id, nom, prenom, password, email,
                 telephone, rue, ville, pays,
-                dateNaissance, numeroPermis, dateObtentionPermis);
+                dateNaissance, numeroPermis, dateObtentionPermis, solde);
 
         this.estProfessionnel = estProfessionnel;
         this.conditions = conditions;
@@ -72,8 +72,13 @@ public class Agent extends Utilisateur {
         this.conditions = conditions;
     }
 
+
     public List<Vehicule> getVehicules() {
-        return new ArrayList<>(vehicules);
+        return vehicules;
+    }
+
+    public void setVehicules(List<Vehicule> vehicules) {
+        this.vehicules = vehicules;
     }
 
     public List<Note> getNotesRecues() {

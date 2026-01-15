@@ -42,7 +42,8 @@ public class Utilisateur {
                        String pays,
                        LocalDate dateNaissance,
                        String numeroPermis,
-                       LocalDate dateObtentionPermis) {
+                       LocalDate dateObtentionPermis,
+                       double solde) {
 
         this.id = id;
         this.nom = nom;
@@ -56,6 +57,7 @@ public class Utilisateur {
         this.dateNaissance = dateNaissance;
         this.numeroPermis = numeroPermis;
         this.dateObtentionPermis = dateObtentionPermis;
+        this.solde = solde;
     }
 
     // --------- GETTERS / SETTERS ---------

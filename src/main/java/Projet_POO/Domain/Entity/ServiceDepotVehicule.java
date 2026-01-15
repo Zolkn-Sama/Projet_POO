@@ -9,6 +9,8 @@ import jakarta.persistence.Table;
 @PrimaryKeyJoinColumn(name = "id")
 public class ServiceDepotVehicule extends Service {
 
+    private final float serviceFees = 0.02f;
+
     private String localisation;
     private String horaires;
 
@@ -25,5 +27,10 @@ public class ServiceDepotVehicule extends Service {
 
     public String getHoraires() { return horaires; }
     public void setHoraires(String horaires) { this.horaires = horaires; }
+
+    @Override
+    protected Double CalculerPrix(Vehicule v) {
+        return v.getPrixJournalier() * serviceFees;
+    }
 }
 
