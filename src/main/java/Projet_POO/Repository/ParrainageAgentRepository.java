@@ -1,5 +1,6 @@
 package Projet_POO.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,5 @@ import Projet_POO.Domain.Entity.ParrainageAgent;
 @Repository
 public interface ParrainageAgentRepository extends JpaRepository<ParrainageAgent, Long> {
     Optional<ParrainageAgent> findByCode(String code);
-    Optional<ParrainageAgent> findByFilleul_Id(Long filleulId);
+    List<ParrainageAgent> findAllByFilleul_Id(Long filleulId);
 }
