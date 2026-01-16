@@ -54,6 +54,7 @@ public class AgentServiceImpl implements AgentService {
         existing.setPassword(agent.getPassword());
         existing.setTelephone(agent.getTelephone());
         existing.setDateNaissance(agent.getDateNaissance());
+        existing.setSolde(agent.getSolde());
 
 
         return agentRepository.save(existing);
