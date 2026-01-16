@@ -146,19 +146,26 @@
         const lId = document.getElementById('loueurId').value;
         const total = document.getElementById('montantTotal').value;
 
-        if (!vId || !lId || total === "0") {
-            alert("Erreur : Informations de réservation incomplètes.");
+        // Récupération des dates de l'URL
+        let dateDebutSelectionnee = urlParams.get('dateDebut');
+        let dateFinSelectionnee = urlParams.get('dateFin');
+
+        if (!vId || !lId || !dateDebutSelectionnee || !dateFinSelectionnee) {
+            alert("Erreur : Dates ou informations manquantes.");
             return;
         }
 
-        const now = new Date();
+        // --- FIX : S'assurer que les dates ont le format LocalDateTime (T00:00:00) ---
+        if (!dateDebutSelectionnee.includes('T')) dateDebutSelectionnee += "T00:00:00";
+        if (!dateFinSelectionnee.includes('T')) dateFinSelectionnee += "T00:00:00";
+
         const payload = {
             vehiculeId: parseInt(vId),
             loueurId: parseInt(lId),
             montantTotal: parseFloat(total),
-            statut: "EN_ATTENTE", //
-            dateDebut: now.toISOString().split('.')[0],
-            dateFin: new Date(now.getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString().split('.')[0],
+            statut: "EN_ATTENTE",
+            dateDebut: dateDebutSelectionnee,
+            dateFin: dateFinSelectionnee,
             lieuPrise: "Agence EasyLoc",
             lieuDepose: "Agence EasyLoc"
         };
@@ -170,14 +177,10 @@
         });
 
         if (response.ok) {
-            const data = await response.json(); // Récupère le contrat créé
-            console.log("Succès :", data);
             alert("Réservation réussie !");
-            window.location.href = "/dashboard-loueur"; // Assurez-vous que cette URL existe
+            window.location.href = "/dashboard-loueur";
         } else {
-            // Si ça arrive ici, c'est le bloc "catch" du Controller qui a répondu
             const errorMsg = await response.text();
-            console.error("Erreur du serveur :", errorMsg);
             alert("Erreur lors de la réservation : " + errorMsg);
         }
     }
