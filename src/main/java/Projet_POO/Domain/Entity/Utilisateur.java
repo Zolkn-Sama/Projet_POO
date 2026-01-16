@@ -2,7 +2,6 @@ package Projet_POO.Domain.Entity;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,7 +17,6 @@ public class Utilisateur {
     private String nom;
     private String prenom;
 
-    @JsonIgnore
     private String password;
 
 

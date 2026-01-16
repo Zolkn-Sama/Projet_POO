@@ -37,15 +37,11 @@
                     </div>
                 </div>
                 <ul tabindex="0"
-                    class="mt-3 z-10 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                    <li><a th:href="@{/profil}">Mon profil</a></li>
-                    <li><a th:href="@{/logout}">Déconnexion</a></li>
+                    class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                    <li><a class="dropdown-item" th:href="@{/profil}">Mon Profil</a></li>
+                    <li><a class="text-error font-semibold" onclick="logout()">Déconnexion</a></li>
                 </ul>
             </div>
-            <ul tabindex="0" class="mt-3 z-10 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                <li><a>Mon profil</a></li>
-                <li><a class="text-error font-semibold" onclick="logout()">Déconnexion</a></li>
-            </ul>
         </div>
     </div>
 
@@ -73,7 +69,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <button class="btn btn-primary btn-sm" th:href="@{/profil}">Modifier mon profil</button>
+                    <button class="btn btn-primary btn-sm"><a th:href="@{/profil/edit}">Modifier mon profil</a></button>
                 </div>
             </div>
         </section>
@@ -85,7 +81,8 @@
                     <h2 class="text-lg font-bold">Mes coordonnées</h2>
                     <div class="space-y-3 text-sm">
                         <div class="flex items-start gap-3">
-                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-base-200">📧</span>
+                            <span
+                                class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-base-200">📧</span>
                             <div>
                                 <div class="text-xs uppercase text-base-content/60 font-semibold">Email</div>
                                 <div id="loueur-email" class="font-medium break-all text-primary">...</div>
@@ -134,7 +131,8 @@
 
                         <div id="loueur-code-zone" class="mt-3 hidden">
                             <div class="flex items-center gap-2">
-                                <input id="loueur-code" class="input input-bordered input-sm w-full font-mono" readonly value="" />
+                                <input id="loueur-code" class="input input-bordered input-sm w-full font-mono" readonly
+                                    value="" />
                                 <button class="btn btn-ghost btn-sm" onclick="copyLoueurCode()">Copier</button>
                             </div>
                             <p id="loueur-code-status" class="text-[11px] opacity-60 mt-2"></p>
@@ -147,7 +145,7 @@
                         <p class="text-[11px] opacity-60 mb-2">Colle le code pour être lié comme filleul.</p>
                         <div class="flex items-center gap-2">
                             <input id="loueur-filleul-code" class="input input-bordered input-sm w-full font-mono"
-                                   placeholder="xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                                placeholder="xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
                             <button class="btn btn-secondary btn-sm" onclick="useLoueurCode()">Valider</button>
                         </div>
                         <p id="loueur-filleul-msg" class="text-[11px] opacity-60 mt-2"></p>
@@ -179,109 +177,109 @@
                     <div class="overflow-x-auto">
                         <table class="table table-zebra table-sm w-full">
                             <thead class="text-xs">
-                            <tr>
-                                <th>Référence</th>
-                                <th class="text-center">Dates</th>
-                                <th class="text-center">Statut</th>
-                                <th class="text-right">Montant</th>
-                            </tr>
+                                <tr>
+                                    <th>Référence</th>
+                                    <th class="text-center">Dates</th>
+                                    <th class="text-center">Statut</th>
+                                    <th class="text-right">Montant</th>
+                                </tr>
                             </thead>
                             <tbody id="table-locations-body" class="text-xs">
-                            <tr>
-                                <td colspan="4" class="text-center py-4 opacity-50 italic">Chargement...</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 opacity-50 italic">Chargement...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </section>
         </section>
-  </main>
-<script th:inline="javascript">
-    const CURRENT_LOUEUR_ID = /*[[${session.userId}]]*/ null;
+        </section>
+    </main>
+    <script th:inline="javascript">
+        const CURRENT_LOUEUR_ID = /*[[${session.userId}]]*/ null;
 
-    function setText(id, txt) {
-        const el = document.getElementById(id);
-        if (el) el.innerText = txt;
-    }
-
-    async function logout() {
-        try {
-            await fetch('/api/auth/logout', { method: 'POST' });
-        } finally {
-            window.location.href = "/login";
-        }
-    }
-
-    // -------------------------
-    // ✅ PARRAINAGE LOUEUR
-    // -------------------------
-    async function generateLoueurCode() {
-        if (!CURRENT_LOUEUR_ID) {
-            alert("Vous devez être connecté.");
-            return;
-        }
-        try {
-            const res = await fetch(`/parrainages/loueurs/parrain/${CURRENT_LOUEUR_ID}`, { method: "POST" });
-            if (!res.ok) throw new Error(await res.text());
-            const data = await res.json();
-
-            document.getElementById("loueur-code-zone").classList.remove("hidden");
-            document.getElementById("loueur-code").value = data.code || "";
-            setText("loueur-code-status", `Code créé • Récompense: ${data.montantRecompense ?? 10} € • Statut: ${data.statut ?? ""}`);
-        } catch (e) {
-            alert("Erreur génération code : " + e.message);
-        }
-    }
-
-    function copyLoueurCode() {
-        const input = document.getElementById("loueur-code");
-        if (!input || !input.value) return;
-
-        navigator.clipboard.writeText(input.value)
-            .then(() => setText("loueur-code-status", "✅ Code copié dans le presse-papier"))
-            .catch(() => setText("loueur-code-status", "⚠️ Copie automatique impossible"));
-    }
-
-    async function useLoueurCode() {
-        if (!CURRENT_LOUEUR_ID) {
-            alert("Vous devez être connecté.");
-            return;
+        function setText(id, txt) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = txt;
         }
 
-        const code = document.getElementById("loueur-filleul-code").value.trim();
-        if (!code) {
-            setText("loueur-filleul-msg", "⚠️ Saisis un code.");
-            return;
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+            } finally {
+                window.location.href = "/login";
+            }
         }
 
-        try {
-            const url = `/parrainages/loueurs/utiliser/${encodeURIComponent(code)}/filleul/${CURRENT_LOUEUR_ID}`;
-            const res = await fetch(url, { method: "POST" });
-            if (!res.ok) throw new Error(await res.text());
-            const data = await res.json();
+        // -------------------------
+        // ✅ PARRAINAGE LOUEUR
+        // -------------------------
+        async function generateLoueurCode() {
+            if (!CURRENT_LOUEUR_ID) {
+                alert("Vous devez être connecté.");
+                return;
+            }
+            try {
+                const res = await fetch(`/parrainages/loueurs/parrain/${CURRENT_LOUEUR_ID}`, { method: "POST" });
+                if (!res.ok) throw new Error(await res.text());
+                const data = await res.json();
 
-            setText("loueur-filleul-msg", `✅ Code lié avec succès • Statut: ${data.statut ?? ""}`);
-        } catch (e) {
-            setText("loueur-filleul-msg", "❌ " + e.message);
+                document.getElementById("loueur-code-zone").classList.remove("hidden");
+                document.getElementById("loueur-code").value = data.code || "";
+                setText("loueur-code-status", `Code créé • Récompense: ${data.montantRecompense ?? 10} € • Statut: ${data.statut ?? ""}`);
+            } catch (e) {
+                alert("Erreur génération code : " + e.message);
+            }
         }
-    }
 
-    async function verifyLoueurReward() {
-        if (!CURRENT_LOUEUR_ID) {
-            alert("Vous devez être connecté.");
-            return;
+        function copyLoueurCode() {
+            const input = document.getElementById("loueur-code");
+            if (!input || !input.value) return;
+
+            navigator.clipboard.writeText(input.value)
+                .then(() => setText("loueur-code-status", "✅ Code copié dans le presse-papier"))
+                .catch(() => setText("loueur-code-status", "⚠️ Copie automatique impossible"));
         }
 
-        try {
-            const res = await fetch(`/parrainages/loueurs/verifier/${CURRENT_LOUEUR_ID}`, { method: "POST" });
-            if (!res.ok) throw new Error(await res.text());
+        async function useLoueurCode() {
+            if (!CURRENT_LOUEUR_ID) {
+                alert("Vous devez être connecté.");
+                return;
+            }
 
-            setText("loueur-verify-msg", "✅ Vérification envoyée. Si conditions remplies, le parrain sera crédité.");
-        } catch (e) {
-            setText("loueur-verify-msg", "❌ " + e.message);
+            const code = document.getElementById("loueur-filleul-code").value.trim();
+            if (!code) {
+                setText("loueur-filleul-msg", "⚠️ Saisis un code.");
+                return;
+            }
+
+            try {
+                const url = `/parrainages/loueurs/utiliser/${encodeURIComponent(code)}/filleul/${CURRENT_LOUEUR_ID}`;
+                const res = await fetch(url, { method: "POST" });
+                if (!res.ok) throw new Error(await res.text());
+                const data = await res.json();
+
+                setText("loueur-filleul-msg", `✅ Code lié avec succès • Statut: ${data.statut ?? ""}`);
+            } catch (e) {
+                setText("loueur-filleul-msg", "❌ " + e.message);
+            }
         }
-    }
+
+        async function verifyLoueurReward() {
+            if (!CURRENT_LOUEUR_ID) {
+                alert("Vous devez être connecté.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/parrainages/loueurs/verifier/${CURRENT_LOUEUR_ID}`, { method: "POST" });
+                if (!res.ok) throw new Error(await res.text());
+
+                setText("loueur-verify-msg", "✅ Vérification envoyée. Si conditions remplies, le parrain sera crédité.");
+            } catch (e) {
+                setText("loueur-verify-msg", "❌ " + e.message);
+            }
+        }
         // Fonction pour charger les données réelles du serveur
         async function loadDashboard() {
             try {
@@ -346,19 +344,19 @@
                     if (c.statut === "EN_ATTENTE") badgeColor = "badge-warning text-white";
 
                     tbody.innerHTML += `
-        <tr>
-            <td><div class="font-bold">#${c.id}</div></td>
-            <td class="text-center font-medium opacity-90">
-                ${d1} — ${d2}
-            </td>
-            <td class="text-center">
-                <span class="badge badge-ghost badge-sm font-bold">● ${c.statut}</span>
-            </td>
-            <td class="text-right font-mono font-bold text-primary">
-                ${(c.montantTotal || 0).toFixed(2)} €
-            </td>
-        </tr>
-    `;
+                        <tr>
+                            <td><div class="font-bold">#${c.id}</div></td>
+                            <td class="text-center font-medium opacity-90">
+                                ${d1} — ${d2}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-ghost badge-sm font-bold">● ${c.statut}</span>
+                            </td>
+                            <td class="text-right font-mono font-bold text-primary">
+                                ${(c.montantTotal || 0).toFixed(2)} €
+                            </td>
+                        </tr>
+                    `;
                 });
             } catch (err) {
                 console.error("Erreur détaillée :", err);
@@ -384,12 +382,10 @@
                     </tr>
                 `;
             });
-        } catch (err) {
-            console.error("Erreur :", err);
-            document.getElementById('loueur-nom-header').textContent = "Erreur de chargement";
         }
 
         document.addEventListener('DOMContentLoaded', loadDashboard);
     </script>
 </body>
+
 </html>

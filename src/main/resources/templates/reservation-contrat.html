@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,183 +8,371 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        * { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        * {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-base-200">
 
-<div class="navbar bg-base-100 shadow-sm border-b border-base-300">
-    <div class="flex-1 px-4">
-        <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
-            <span class="text-primary text-2xl">🚗</span>
-            <span>EasyLoc</span>
-        </a>
-    </div>
-</div>
+<body class="min-h-screen bg-base-200 flex flex-col">
 
-<main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
-    <section class="card bg-base-100 shadow-md border border-base-300">
-        <div class="card-body py-4">
-            <h1 class="text-2xl md:text-3xl font-extrabold">Finaliser votre réservation</h1>
-            <p class="text-sm text-base-content/60">Vérifiez vos informations et signez le contrat électronique.</p>
+    <!-- NAVBAR -->
+    <div class="navbar bg-base-100 shadow-sm border-b border-base-300 sticky top-0 z-30">
+        <div class="flex-1 px-4 gap-2">
+            <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
+                <span class="text-primary text-2xl">🚗</span>
+                <span>EasyLoc</span>
+            </a>
+            <div class="hidden md:flex items-center gap-2 text-xs text-base-content/60">
+                <span>Résumé</span>
+                <span class="text-base-300">›</span>
+                <span>Contrat</span>
+                <span class="text-base-300">›</span>
+                <span class="font-semibold text-primary">Confirmation</span>
+            </div>
         </div>
-    </section>
+        <div class="flex-none pr-4">
+            <div class="badge badge-outline gap-1 hidden sm:inline-flex">
+                <span class="text-xs text-base-content/60">Support</span>
+                <span class="text-xs font-semibold text-primary">7j/7</span>
+            </div>
+        </div>
+    </div>
 
-    <section class="grid gap-6 lg:grid-cols-3 items-start">
-        <section class="space-y-6 lg:col-span-2">
-            <div class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
-                        <span class="badge badge-primary badge-sm">1</span> Assurance Incluse
-                    </h2>
-                    <p class="text-xs text-base-content/60 italic">Assurance AZA standard activée par défaut.</p>
+    <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 md:py-10 space-y-6">
+
+        <!-- HEADER + STEPPER -->
+        <section class="space-y-3">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-2">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">
+                        Finaliser votre réservation
+                    </h1>
+                    <p class="text-sm text-base-content/60">
+                        Vérifiez le montant, signez le contrat et confirmez votre location en toute sécurité.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="badge badge-outline">Étape 3 sur 3</span>
                 </div>
             </div>
 
-            <div class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body space-y-4">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
-                        <span class="badge badge-primary badge-sm">2</span> Signature électronique
-                    </h2>
-                    <div class="border border-dashed border-base-300 rounded-2xl bg-base-200/60 p-4 flex flex-col items-center">
-                        <canvas id="signature-canvas" class="w-full h-40 bg-base-100 rounded-xl shadow-inner cursor-crosshair"></canvas>
-                        <button type="button" class="btn btn-ghost btn-xs text-error mt-2" onclick="clearSignature()">Effacer la signature</button>
-                    </div>
-                </div>
+            <!-- Stepper -->
+            <div class="w-full max-w-xl">
+                <ul class="steps steps-horizontal w-full text-xs md:text-sm">
+                    <li class="step step-primary">Choix du véhicule</li>
+                    <li class="step step-primary">Dates & options</li>
+                    <li class="step step-primary">Contrat & paiement</li>
+                </ul>
             </div>
         </section>
 
-        <aside class="lg:col-span-1">
-            <div class="card bg-base-100 shadow-xl border border-primary/40">
-                <div class="card-body space-y-4">
-                    <h2 class="text-lg font-bold">Récapitulatif</h2>
-                    <div class="divider my-0"></div>
+        <section class="grid gap-6 lg:grid-cols-3 items-start">
 
-                    <div class="flex justify-between text-sm">
-                        <span>Location</span>
-                        <span id="montant-location-display">En calcul...</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span>Frais service (10%)</span>
-                        <span id="commission-display">0.00 €</span>
-                    </div>
+            <!-- COLONNE GAUCHE -->
+            <section class="space-y-6 lg:col-span-2">
 
-                    <div class="divider my-0"></div>
-
-                    <div class="flex justify-between items-baseline font-bold">
-                        <span>Total</span>
-                        <span class="text-xl text-primary" id="total-display">0.00 €</span>
-                    </div>
-
-                    <input type="hidden" id="vehiculeId" th:value="${vehiculeId}">
-                    <input type="hidden" id="loueurId" th:value="${session.userId}">
-                    <input type="hidden" id="montantTotal" value="0">
-
-                    <button class="btn btn-primary w-full mt-4" type="button" onclick="validerReservation()">
-                        ✅ Confirmer la location
-                    </button>
+                <!-- INFO / ASSURANCE -->
+                <div class="alert alert-info shadow-sm">
+                    <span class="text-sm">
+                        <span class="font-semibold">Bon à savoir :</span>
+                        votre réservation est protégée par notre assurance partenaire. Vous recevrez un récapitulatif
+                        complet par e-mail.
+                    </span>
                 </div>
-            </div>
-        </aside>
-    </section>
-</main>
 
+                <!-- ASSURANCE -->
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body space-y-4">
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <span class="badge badge-primary badge-sm">1</span>
+                            Choisissez votre assurance
+                        </h2>
+                        <p class="text-xs text-base-content/60">
+                            Une assurance de base AZA est déjà incluse. Vous pourrez ajuster votre niveau de couverture
+                            plus tard avec l’agent si nécessaire.
+                        </p>
 
-<input type="hidden" id="prixJournalierDb" th:value="${vehicule.prixJournalier}">
+                        <div class="grid gap-3">
+                            <!-- Assurance par défaut -->
+                            <label
+                                class="card border border-primary/40 bg-primary/5 cursor-pointer hover:border-primary transition-colors">
+                                <div class="card-body flex-row items-center gap-4">
+                                    <input type="radio" name="assurance" class="radio radio-primary" checked />
+                                    <div class="flex-1 space-y-1">
+                                        <p class="font-semibold text-sm">
+                                            Assurance AZA (Par défaut)
+                                        </p>
+                                        <p class="text-xs text-base-content/70">
+                                            Couverture standard : responsabilité civile, dommages au véhicule et
+                                            assistance.
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-col items-end gap-1 text-right">
+                                        <span class="badge badge-success badge-sm">
+                                            Inclus
+                                        </span>
+                                        <span class="text-[11px] text-base-content/60">
+                                            0,00 € / jour
+                                        </span>
+                                    </div>
+                                </div>
+                            </label>
 
+                            <!-- Exemple d’autre option (facultatif, statique pour l’instant) -->
+                            <label class="card border border-base-300 cursor-not-allowed opacity-60">
+                                <div class="card-body flex-row items-center gap-4">
+                                    <input type="radio" name="assurance" class="radio" disabled />
+                                    <div class="flex-1 space-y-1">
+                                        <p class="font-semibold text-sm">
+                                            Confort+ (bientôt disponible)
+                                        </p>
+                                        <p class="text-xs text-base-content/60">
+                                            Franchise réduite, bris de glace, véhicule de remplacement.
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-col items-end gap-1 text-right">
+                                        <span class="badge badge-outline badge-sm">
+                                            Option
+                                        </span>
+                                        <span class="text-[11px] text-base-content/60">
+                                            À venir
+                                        </span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
+                <!-- SIGNATURE -->
+                <div class="card bg-base-100 shadow-xl border border-base-300">
+                    <div class="card-body space-y-4">
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <span class="badge badge-primary badge-sm">2</span>
+                            Signature électronique du contrat
+                        </h2>
+                        <p class="text-xs text-base-content/60">
+                            Merci d’apposer votre signature électronique ci-dessous. Elle a la même valeur qu’une
+                            signature manuscrite et est nécessaire pour valider la réservation.
+                        </p>
 
-        // RÉCUPÉRATION SÉCURISÉE : On prend le prix injecté par le serveur
-        const prixJournalier = parseFloat(document.getElementById('prixJournalierDb').value);
+                        <div class="space-y-2">
+                            <div
+                                class="border border-dashed border-base-300 rounded-2xl bg-base-200/60 p-4 flex flex-col items-center">
+                                <canvas id="signature-canvas"
+                                    class="w-full h-40 bg-base-100 rounded-xl shadow-inner"></canvas>
+                                <div
+                                    class="flex justify-between w-full max-w-[450px] mt-2 text-[11px] text-base-content/60">
+                                    <button type="button" class="btn btn-ghost btn-xs text-error"
+                                        onclick="clearSignature()">
+                                        Effacer la signature
+                                    </button>
+                                    <span class="italic flex items-center gap-1">
+                                        ✍️ Signez à l’intérieur du cadre
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-base-content/50">
+                                En signant, vous acceptez les conditions générales de location, les règles d’utilisation
+                                du véhicule et la politique d’assurance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        const dateDebutStr = urlParams.get('dateDebut') || new Date().toISOString().split('T')[0];
-        const dateFinStr = urlParams.get('dateFin') || new Date(Date.now() + 172800000).toISOString().split('T')[0];
+            <!-- COLONNE DROITE : RÉCAP -->
+            <aside class="lg:col-span-1">
+                <div class="card bg-base-100 shadow-xl border border-primary/40 relative overflow-hidden">
+                    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary to-secondary"></div>
 
-        const d1 = new Date(dateDebutStr);
-        const d2 = new Date(dateFinStr);
-        const diffDays = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) || 1;
+                    <div class="card-body space-y-4">
 
-        const totalLocation = prixJournalier * diffDays;
-        const commission = totalLocation * 0.10;
-        const totalFinal = totalLocation + commission;
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-bold">Récapitulatif</h2>
+                            <span class="badge badge-primary badge-outline text-xs">
+                                Contrat #<span th:text="${contratId}">-</span>
+                            </span>
+                        </div>
 
-        // Mise à jour visuelle
-        document.getElementById('montant-location-display').innerText = totalLocation.toFixed(2) + " €";
-        document.getElementById('commission-display').innerText = commission.toFixed(2) + " €";
-        document.getElementById('total-display').innerText = totalFinal.toFixed(2) + " €";
-        document.getElementById('montantTotal').value = totalFinal.toFixed(2);
-    });
+                        <div class="rounded-xl bg-base-200 p-3 text-xs space-y-1">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-semibold">Dates de location</span>
+                            </div>
+                            <div class="flex flex-col gap-1 mt-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-base-content/70">Début</span>
+                                    <span class="font-medium" id="date-debut-display">—</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-base-content/70">Fin</span>
+                                    <span class="font-medium" id="date-fin-display">—</span>
+                                </div>
+                            </div>
+                        </div>
 
-    // 2. Gestion de la signature
-    const canvas = document.getElementById('signature-canvas');
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
+                        <div class="divider my-1"></div>
 
-    function resizeCanvas() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
-    window.addEventListener('load', resizeCanvas);
-    canvas.addEventListener('mousedown', () => drawing = true);
-    window.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
-    canvas.addEventListener('mousemove', (e) => {
-        if (!drawing) return;
-        ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#1e293b';
-        const rect = canvas.getBoundingClientRect();
-        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-        ctx.stroke(); ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-    });
+                        <div class="space-y-1 text-sm">
+                            <div class="flex justify-between">
+                                <span>Location</span>
+                                <span id="montant-location-display" class="font-medium">En calcul...</span>
+                            </div>
+                            <div class="flex justify-between text-xs text-base-content/70">
+                                <span>Frais de service (10%)</span>
+                                <span id="commission-display">0.00 €</span>
+                            </div>
+                            <div class="flex justify-between text-xs text-base-content/70">
+                                <span>Frais fixes (2 €/jour)</span>
+                                <span id="commissionfix-display">0.00 €</span>
+                            </div>
+                        </div>
 
-    function clearSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+                        <div class="divider my-1"></div>
 
-    // 3. Envoi du contrat
-    async function validerReservation() {
-        const urlParams = new URLSearchParams(window.location.search);
-        let vId = document.getElementById('vehiculeId').value || urlParams.get('vehiculeId');
-        const lId = document.getElementById('loueurId').value;
-        const total = document.getElementById('montantTotal').value;
+                        <div class="flex justify-between items-baseline">
+                            <div class="flex flex-col">
+                                <span class="text-xs uppercase tracking-wide text-base-content/60">Total à payer</span>
+                                <span class="text-xl font-extrabold text-primary" id="total-display">0.00 €</span>
+                            </div>
+                            <span class="badge badge-soft badge-success badge-outline text-[11px]">
+                                Paiement sécurisé
+                            </span>
+                        </div>
 
-        // Récupération des dates de l'URL
-        let dateDebutSelectionnee = urlParams.get('dateDebut');
-        let dateFinSelectionnee = urlParams.get('dateFin');
+                        <!-- Champs cachés nécessaires -->
+                        <input type="hidden" id="vehiculeId" th:value="${vehiculeId}">
+                        <input type="hidden" id="loueurId" th:value="${session.userId}">
+                        <input type="hidden" id="montantTotal" value="0">
+                        <input type="hidden" id="prixJournalierDb" th:value="${vehicule.prixJournalier}">
 
-        if (!vId || !lId || !dateDebutSelectionnee || !dateFinSelectionnee) {
-            alert("Erreur : Dates ou informations manquantes.");
-            return;
-        }
+                        <button class="btn btn-primary w-full mt-4 gap-2" type="button" onclick="validerReservation()">
+                            <span>✅ Confirmer la location</span>
+                        </button>
 
-        // --- FIX : S'assurer que les dates ont le format LocalDateTime (T00:00:00) ---
-        if (!dateDebutSelectionnee.includes('T')) dateDebutSelectionnee += "T00:00:00";
-        if (!dateFinSelectionnee.includes('T')) dateFinSelectionnee += "T00:00:00";
+                        <button type="button" class="btn btn-ghost btn-sm w-full mt-1" onclick="window.history.back()">
+                            ◀ Modifier les dates
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
 
-        const payload = {
-            vehiculeId: parseInt(vId),
-            loueurId: parseInt(lId),
-            montantTotal: parseFloat(total),
-            statut: "EN_ATTENTE",
-            dateDebut: dateDebutSelectionnee,
-            dateFin: dateFinSelectionnee,
-            lieuPrise: "Agence EasyLoc",
-            lieuDepose: "Agence EasyLoc"
-        };
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
 
-        const response = await fetch('/contrats', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            // Prix journalier depuis le backend (sécurisé)
+            const prixJournalierInput = document.getElementById('prixJournalierDb');
+            const prixJournalier = prixJournalierInput ? parseFloat(prixJournalierInput.value) : 0;
+
+            const dateDebutStr = urlParams.get('dateDebut') || new Date().toISOString().split('T')[0];
+            const dateFinStr = urlParams.get('dateFin') || new Date(Date.now() + 172800000).toISOString().split('T')[0];
+
+            const d1 = new Date(dateDebutStr);
+            const d2 = new Date(dateFinStr);
+            const diffDays = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) || 1;
+
+            const totalLocation = prixJournalier * diffDays;
+            const commission = totalLocation * 0.10;
+            const commissionfix = 2 * diffDays;
+            const totalFinal = totalLocation + commission + commissionfix;
+
+            // Mise à jour visuelle des dates
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            document.getElementById('date-debut-display').innerText =
+                d1.toLocaleDateString('fr-FR', options);
+            document.getElementById('date-fin-display').innerText =
+                d2.toLocaleDateString('fr-FR', options);
+
+            // Mise à jour visuelle des montants
+            document.getElementById('montant-location-display').innerText = totalLocation.toFixed(2) + " €";
+            document.getElementById('commission-display').innerText = commission.toFixed(2) + " €";
+            document.getElementById('commissionfix-display').innerText = commissionfix.toFixed(2) + " €";
+            document.getElementById('total-display').innerText = totalFinal.toFixed(2) + " €";
+            document.getElementById('montantTotal').value = totalFinal.toFixed(2);
         });
 
-        if (response.ok) {
-            alert("Réservation réussie !");
-            window.location.href = "/dashboard-loueur";
-        } else {
-            const errorMsg = await response.text();
-            alert("Erreur lors de la réservation : " + errorMsg);
+        // Signature
+        const canvas = document.getElementById('signature-canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
         }
-    }
-</script>
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
+        if (canvas) {
+            canvas.addEventListener('mousedown', () => drawing = true);
+            window.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+            canvas.addEventListener('mousemove', (e) => {
+                if (!drawing) return;
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#1e293b';
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            });
+        }
+
+        function clearSignature() {
+            if (!canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Validation / envoi
+        async function validerReservation() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let vId = document.getElementById('vehiculeId').value || urlParams.get('vehiculeId');
+            const lId = document.getElementById('loueurId').value;
+            const total = document.getElementById('montantTotal').value;
+
+            let dateDebutSelectionnee = urlParams.get('dateDebut');
+            let dateFinSelectionnee = urlParams.get('dateFin');
+
+            if (!vId || !lId || !dateDebutSelectionnee || !dateFinSelectionnee) {
+                alert("Erreur : Dates ou informations manquantes.");
+                return;
+            }
+
+            if (!dateDebutSelectionnee.includes('T')) dateDebutSelectionnee += "T00:00:00";
+            if (!dateFinSelectionnee.includes('T')) dateFinSelectionnee += "T00:00:00";
+
+            const payload = {
+                vehiculeId: parseInt(vId),
+                loueurId: parseInt(lId),
+                montantTotal: parseFloat(total),
+                statut: "EN_ATTENTE",
+                dateDebut: dateDebutSelectionnee,
+                dateFin: dateFinSelectionnee,
+                lieuPrise: "Agence EasyLoc",
+                lieuDepose: "Agence EasyLoc"
+            };
+
+            const response = await fetch('/contrats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert("Réservation réussie !");
+                window.location.href = "/dashboard-loueur";
+            } else {
+                const errorMsg = await response.text();
+                alert("Erreur lors de la réservation : " + errorMsg);
+            }
+        }
+    </script>
 </body>
+
 </html>
