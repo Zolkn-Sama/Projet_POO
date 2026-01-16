@@ -196,9 +196,7 @@
                 </div>
             </section>
         </section>
-    </section>
-</main>
-
+  </main>
 <script th:inline="javascript">
     const CURRENT_LOUEUR_ID = /*[[${session.userId}]]*/ null;
 
@@ -284,34 +282,87 @@
             setText("loueur-verify-msg", "❌ " + e.message);
         }
     }
+        // Fonction pour charger les données réelles du serveur
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/loueurs/dashboard-data');
+                if (!response.ok) throw new Error("Accès non autorisé ou erreur serveur");
 
-    // -------------------------
-    // ✅ DASHBOARD DATA (ton code existant)
-    // -------------------------
-    async function loadDashboard() {
-        try {
-            const response = await fetch('/loueurs/dashboard-data');
-            if (!response.ok) throw new Error("Accès non autorisé");
+                const data = await response.json();
+                console.log("Données reçues :", data); // Pour debugger dans la console F12
 
-            const data = await response.json();
-            const loueur = data.profil;
+                const loueur = data.profil;
+                const contrats = data.contrats || [];
 
-            document.getElementById('loueur-nom-header').textContent = `${loueur.prenom} ${loueur.nom}`;
-            document.getElementById('loueur-email').textContent = loueur.email;
-            document.getElementById('loueur-ville').textContent = `${loueur.ville || 'Non renseigné'}, ${loueur.pays || ''}`;
-            document.getElementById('loueur-solde').textContent = `${loueur.solde.toFixed(2)} €`;
-            document.getElementById('stat-nb-locations').textContent = `${data.contrats.length} location${data.contrats.length > 1 ? 's' : ''}`;
+                // 1. Injection des données de profil avec sécurité (au cas où les champs sont nuls)
+                const prenom = loueur.prenom || "";
+                const nom = loueur.nom || "";
 
-            const ini = `${loueur.prenom.charAt(0)}${loueur.nom.charAt(0)}`.toUpperCase();
-            document.getElementById('avatar-initials').textContent = ini;
-            document.getElementById('profile-initials').textContent = ini;
+                document.getElementById('loueur-nom-header').textContent = `${prenom} ${nom}`.trim() || "Utilisateur";
+                document.getElementById('loueur-email').textContent = loueur.email || "Non renseigné";
+                document.getElementById('loueur-ville').textContent = loueur.ville || "Non renseignée";
+                document.getElementById('loueur-solde').textContent = `${(loueur.solde || 0).toFixed(2)} €`;
 
-            const tbody = document.getElementById('table-locations-body');
-            tbody.innerHTML = '';
+                // Stats
+                const nbLoc = data.stats ? data.stats.nbLocations : contrats.length;
+                document.getElementById('stat-nb-locations').textContent = `${nbLoc} location${nbLoc > 1 ? 's' : ''}`;
 
-            if (data.contrats.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-10 opacity-50 italic">Aucune location effectuée.</td></tr>';
-                return;
+                // Initiales
+                const ini = ((prenom.charAt(0) || "") + (nom.charAt(0) || "")).toUpperCase() || "??";
+                document.getElementById('avatar-initials').textContent = ini;
+                document.getElementById('profile-initials').textContent = ini;
+
+                // 2. Remplissage du tableau
+                const tbody = document.getElementById('table-locations-body');
+                tbody.innerHTML = '';
+
+                if (contrats.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-10 opacity-50 italic">Aucune location effectuée.</td></tr>';
+                    return;
+                }
+
+                contrats.forEach(c => {
+                    // Cette fonction extrait uniquement la partie YYYY-MM-DD
+                    // pour éviter les décalages d'heures ou de fuseaux horaires
+                    const formatIsoToFr = (isoString) => {
+                        if (!isoString || typeof isoString !== 'string') return "--/--/----";
+
+                        // On prend ce qu'il y a avant le 'T' : "2026-01-16"
+                        const datePart = isoString.split('T')[0];
+                        const parts = datePart.split('-'); // ["2026", "01", "16"]
+
+                        if (parts.length !== 3) return "Format Error";
+
+                        // On remet dans l'ordre français : "16/01/2026"
+                        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    };
+
+                    const d1 = formatIsoToFr(c.dateDebut);
+                    const d2 = formatIsoToFr(c.dateFin);
+
+                    let badgeColor = "badge-ghost";
+                    if (c.statut === "TERMINE" || c.statut === "VALIDE") badgeColor = "badge-success text-white";
+                    if (c.statut === "EN_COURS") badgeColor = "badge-info text-white";
+                    if (c.statut === "EN_ATTENTE") badgeColor = "badge-warning text-white";
+
+                    tbody.innerHTML += `
+        <tr>
+            <td><div class="font-bold">#${c.id}</div></td>
+            <td class="text-center font-medium opacity-90">
+                ${d1} — ${d2}
+            </td>
+            <td class="text-center">
+                <span class="badge badge-ghost badge-sm font-bold">● ${c.statut}</span>
+            </td>
+            <td class="text-right font-mono font-bold text-primary">
+                ${(c.montantTotal || 0).toFixed(2)} €
+            </td>
+        </tr>
+    `;
+                });
+            } catch (err) {
+                console.error("Erreur détaillée :", err);
+                document.getElementById('loueur-nom-header').textContent = "Erreur de chargement";
             }
 
             data.contrats.forEach(c => {
@@ -338,7 +389,7 @@
             document.getElementById('loueur-nom-header').textContent = "Erreur de chargement";
         }
 
-    document.addEventListener('DOMContentLoaded', loadDashboard);
-</script>
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
 </body>
 </html>
