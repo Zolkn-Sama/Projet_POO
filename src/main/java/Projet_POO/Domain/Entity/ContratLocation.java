@@ -3,6 +3,7 @@ package Projet_POO.Domain.Entity;
 import java.time.LocalDateTime;
 
 import Projet_POO.Domain.Enums.StatutContrat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -49,6 +50,7 @@ public class ContratLocation {
     }
 
     // ✅ PrixLocation attaché au contrat
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "prix_location_id")
     private PrixLocation prixLocation;

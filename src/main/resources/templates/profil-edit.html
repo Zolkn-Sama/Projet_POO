@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier Profil - LocAuto</title>
+
+    <!-- DaisyUI + Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+        * {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-base-200">
+
+    <!-- NAVBAR -->
+    <div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+        <div class="flex-1 px-4">
+            <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
+                <span class="text-primary text-2xl">🛠️</span>
+                <span>Modifier mon profil</span>
+            </a>
+        </div>
+        <div class="flex-none px-4">
+            <a th:href="@{/profil}" class="btn btn-ghost btn-sm">
+                ⬅ Retour au profil
+            </a>
+        </div>
+    </div>
+
+    <!-- CONTENU -->
+    <main class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-8">
+        <div class="card bg-base-100 shadow-xl border border-base-300 w-full max-w-lg">
+            <div class="card-body space-y-5">
+                <div class="text-center space-y-1">
+                    <h2 class="text-xl font-bold">Modifier mes informations</h2>
+                    <p class="text-xs text-base-content/60">
+                        Les champs nom et prénom ne sont pas modifiables.
+                    </p>
+                </div>
+
+                <form th:action="@{/profil/update}" th:object="${monUtilisateur}" method="post" class="space-y-4">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text text-xs">Nom</span>
+                            </label>
+                            <input type="text" th:field="*{nom}" readonly
+                                class="input input-bordered input-sm w-full bg-base-200/80 text-base-content/70" />
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text text-xs">Prénom</span>
+                            </label>
+                            <input type="text" th:field="*{prenom}" readonly
+                                class="input input-bordered input-sm w-full bg-base-200/80 text-base-content/70" />
+                        </div>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-xs">Téléphone</span>
+                        </label>
+                        <input type="text" th:field="*{telephone}" required placeholder="Ex : 06 12 34 56 78"
+                            class="input input-bordered input-sm w-full" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-xs">Rue</span>
+                        </label>
+                        <input type="text" th:field="*{rue}" placeholder="Numéro et nom de rue"
+                            class="input input-bordered input-sm w-full" />
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text text-xs">Ville</span>
+                            </label>
+                            <input type="text" th:field="*{ville}" placeholder="Ex : Paris"
+                                class="input input-bordered input-sm w-full" />
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text text-xs">Pays</span>
+                            </label>
+                            <input type="text" th:field="*{pays}" placeholder="Ex : France"
+                                class="input input-bordered input-sm w-full" />
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex flex-col gap-3">
+                        <button type="submit" class="btn btn-primary w-full">
+                            💾 Enregistrer les modifications
+                        </button>
+                        <a th:href="@{/profil}" class="btn btn-ghost btn-sm w-full">
+                            Annuler
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

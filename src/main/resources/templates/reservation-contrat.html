@@ -1,325 +1,186 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" data-theme="light">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finaliser ma réservation - EasyLoc</title>
-
-    <!-- DaisyUI + Tailwind -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
     <style>
-        * {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
+        * { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     </style>
 </head>
-
 <body class="min-h-screen bg-base-200">
 
-    <!-- NAVBAR -->
-    <div class="navbar bg-base-100 shadow-sm border-b border-base-300">
-        <div class="flex-1 px-4">
-            <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
-                <span class="text-primary text-2xl">🚗</span>
-                <span>EasyLoc</span>
-            </a>
-        </div>
-        <div class="flex-none px-4 text-xs text-base-content/60">
-            <span class="hidden sm:inline">Assistance 24/7</span>
-        </div>
+<div class="navbar bg-base-100 shadow-sm border-b border-base-300">
+    <div class="flex-1 px-4">
+        <a th:href="@{/}" class="btn btn-ghost normal-case text-xl font-bold gap-2">
+            <span class="text-primary text-2xl">🚗</span>
+            <span>EasyLoc</span>
+        </a>
     </div>
+</div>
 
-    <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+<main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+    <section class="card bg-base-100 shadow-md border border-base-300">
+        <div class="card-body py-4">
+            <h1 class="text-2xl md:text-3xl font-extrabold">Finaliser votre réservation</h1>
+            <p class="text-sm text-base-content/60">Vérifiez vos informations et signez le contrat électronique.</p>
+        </div>
+    </section>
 
-        <!-- Bandeau / Stepper -->
-        <section class="card bg-base-100 shadow-md border border-base-300">
-            <div class="card-body py-4">
-                <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-extrabold">
-                            Finaliser votre réservation
-                        </h1>
-                        <p class="text-sm text-base-content/60">
-                            Vérifiez vos informations, signez le contrat et confirmez la location.
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-2 text-xs">
-                        <div class="steps steps-horizontal hidden sm:inline-flex">
-                            <div class="step step-primary">Détails</div>
-                            <div class="step step-primary">Contrat</div>
-                        </div>
-                        <span class="badge badge-primary badge-outline">
-                            Étape 2 / 2
-                        </span>
+    <section class="grid gap-6 lg:grid-cols-3 items-start">
+        <section class="space-y-6 lg:col-span-2">
+            <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body">
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <span class="badge badge-primary badge-sm">1</span> Assurance Incluse
+                    </h2>
+                    <p class="text-xs text-base-content/60 italic">Assurance AZA standard activée par défaut.</p>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow-xl border border-base-300">
+                <div class="card-body space-y-4">
+                    <h2 class="text-lg font-bold flex items-center gap-2">
+                        <span class="badge badge-primary badge-sm">2</span> Signature électronique
+                    </h2>
+                    <div class="border border-dashed border-base-300 rounded-2xl bg-base-200/60 p-4 flex flex-col items-center">
+                        <canvas id="signature-canvas" class="w-full h-40 bg-base-100 rounded-xl shadow-inner cursor-crosshair"></canvas>
+                        <button type="button" class="btn btn-ghost btn-xs text-error mt-2" onclick="clearSignature()">Effacer la signature</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- GRILLE PRINCIPALE -->
-        <section class="grid gap-6 lg:grid-cols-3 items-start">
+        <aside class="lg:col-span-1">
+            <div class="card bg-base-100 shadow-xl border border-primary/40">
+                <div class="card-body space-y-4">
+                    <h2 class="text-lg font-bold">Récapitulatif</h2>
+                    <div class="divider my-0"></div>
 
-            <!-- COLONNE GAUCHE : assurance + signature -->
-            <section class="space-y-6 lg:col-span-2">
-
-                <!-- ASSURANCE -->
-                <div class="card bg-base-100 shadow-xl border border-base-300">
-                    <div class="card-body space-y-4">
-                        <h2 class="text-lg font-bold flex items-center gap-2">
-                            <span class="badge badge-primary badge-sm">1</span>
-                            Choisissez votre assurance
-                        </h2>
-                        <p class="text-xs text-base-content/60">
-                            Une assurance de base AZA est déjà incluse. Vous pourrez ajuster votre niveau de couverture
-                            plus tard avec l’agent si nécessaire.
-                        </p>
-
-                        <div class="grid gap-3">
-                            <!-- Assurance par défaut -->
-                            <label
-                                class="card border border-primary/40 bg-primary/5 cursor-pointer hover:border-primary transition-colors">
-                                <div class="card-body flex-row items-center gap-4">
-                                    <input type="radio" name="assurance" class="radio radio-primary" checked />
-                                    <div class="flex-1 space-y-1">
-                                        <p class="font-semibold text-sm">
-                                            Assurance AZA (Par défaut)
-                                        </p>
-                                        <p class="text-xs text-base-content/70">
-                                            Couverture standard : responsabilité civile, dommages au véhicule et
-                                            assistance.
-                                        </p>
-                                    </div>
-                                    <div class="flex flex-col items-end gap-1 text-right">
-                                        <span class="badge badge-success badge-sm">
-                                            Inclus
-                                        </span>
-                                        <span class="text-[11px] text-base-content/60">
-                                            0,00 € / jour
-                                        </span>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <!-- Exemple d’autre option (facultatif, statique pour l’instant) -->
-                            <label class="card border border-base-300 cursor-not-allowed opacity-60">
-                                <div class="card-body flex-row items-center gap-4">
-                                    <input type="radio" name="assurance" class="radio" disabled />
-                                    <div class="flex-1 space-y-1">
-                                        <p class="font-semibold text-sm">
-                                            Confort+ (bientôt disponible)
-                                        </p>
-                                        <p class="text-xs text-base-content/60">
-                                            Franchise réduite, bris de glace, véhicule de remplacement.
-                                        </p>
-                                    </div>
-                                    <div class="flex flex-col items-end gap-1 text-right">
-                                        <span class="badge badge-outline badge-sm">
-                                            Option
-                                        </span>
-                                        <span class="text-[11px] text-base-content/60">
-                                            À venir
-                                        </span>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Location</span>
+                        <span id="montant-location-display">En calcul...</span>
                     </div>
-                </div>
-
-                <!-- SIGNATURE -->
-                <div class="card bg-base-100 shadow-xl border border-base-300">
-                    <div class="card-body space-y-4">
-                        <h2 class="text-lg font-bold flex items-center gap-2">
-                            <span class="badge badge-primary badge-sm">2</span>
-                            Signature électronique du contrat
-                        </h2>
-                        <p class="text-xs text-base-content/60">
-                            Merci d’apposer votre signature électronique ci-dessous. Elle a la même valeur qu’une
-                            signature manuscrite et est nécessaire pour valider la réservation.
-                        </p>
-
-                        <div class="space-y-2">
-                            <div
-                                class="border border-dashed border-base-300 rounded-2xl bg-base-200/60 p-4 flex flex-col items-center">
-                                <canvas id="signature-canvas"
-                                    class="w-full h-40 bg-base-100 rounded-xl shadow-inner"></canvas>
-                                <div
-                                    class="flex justify-between w-full max-w-[450px] mt-2 text-[11px] text-base-content/60">
-                                    <button type="button" class="btn btn-ghost btn-xs text-error"
-                                        onclick="clearSignature()">
-                                        Effacer la signature
-                                    </button>
-                                    <span class="italic flex items-center gap-1">
-                                        ✍️ Signez à l’intérieur du cadre
-                                    </span>
-                                </div>
-                            </div>
-                            <p class="text-[10px] text-base-content/50">
-                                En signant, vous acceptez les conditions générales de location, les règles d’utilisation
-                                du véhicule et la politique d’assurance.
-                            </p>
-                        </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Frais service (10%)</span>
+                        <span id="commission-display">0.00 €</span>
                     </div>
-                </div>
-            </section>
 
-            <!-- COLONNE DROITE : récapitulatif -->
-            <aside class="space-y-4 lg:col-span-1">
+                    <div class="divider my-0"></div>
 
-                <!-- Récapitulatif -->
-                <div
-                    class="card bg-gradient-to-br from-primary/10 via-base-100 to-base-100 shadow-xl border border-primary/40">
-                    <div class="card-body space-y-4">
-                        <h2 class="text-lg font-bold flex items-center justify-between">
-                            Récapitulatif
-                            <span class="badge badge-primary badge-sm">Contrat</span>
-                        </h2>
-
-                        <!-- Infos véhicule + dates (placeholder / à lier avec Thymeleaf) -->
-                        <div class="space-y-2 text-sm">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-xl bg-base-200 flex items-center justify-center text-2xl">
-                                    🚗
-                                </div>
-                                <div>
-                                    <p class="font-semibold" th:text="${vehiculeNom} ?: 'Renault Clio ou similaire'">
-                                        Renault Clio ou similaire
-                                    </p>
-                                    <p class="text-[11px] text-base-content/60"
-                                        th:text="${vehiculeDetail} ?: 'Essence • Manuelle • 5 portes'">
-                                        Essence • Manuelle • 5 portes
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="divider my-2"></div>
-
-                            <div class="flex items-center justify-between text-xs">
-                                <div>
-                                    <div class="font-semibold text-[11px] uppercase text-base-content/60">
-                                        Début
-                                    </div>
-                                    <div th:text="${dateDebut} ?: '10/01/2026 - 10:00'">
-                                        10/01/2026 - 10:00
-                                    </div>
-                                </div>
-                                <div class="text-lg opacity-40">
-                                    →
-                                </div>
-                                <div class="text-right">
-                                    <div class="font-semibold text-[11px] uppercase text-base-content/60">
-                                        Fin
-                                    </div>
-                                    <div th:text="${dateFin} ?: '12/01/2026 - 18:00'">
-                                        12/01/2026 - 18:00
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Décomposition prix -->
-                        <div class="space-y-1 text-sm">
-                            <div class="flex justify-between">
-                                <span>Location</span>
-                                <span th:text="${montantLocation} ?: '90.00 €'">90.00 €</span>
-                            </div>
-                            <div class="flex justify-between text-xs text-base-content/70">
-                                <span>Commission plateforme (10%)</span>
-                                <span th:text="${commission} ?: '9.00 €'">9.00 €</span>
-                            </div>
-                            <div class="flex justify-between text-xs text-base-content/70">
-                                <span>Frais fixes (2 €/jour)</span>
-                                <span th:text="${fraisFixes} ?: '6.00 €'">6.00 €</span>
-                            </div>
-
-                            <div class="divider my-2"></div>
-
-                            <div class="flex justify-between items-baseline font-bold">
-                                <span>Total</span>
-                                <span class="text-xl" th:text="${total} ?: '105.00 €'">
-                                    105.00 €
-                                </span>
-                            </div>
-                            <p class="text-[11px] text-base-content/60">
-                                Taxes incluses. Le paiement sera débité uniquement après confirmation du contrat par la
-                                plateforme.
-                            </p>
-                        </div>
-
-                        <button class="btn btn-primary w-full mt-2" type="button" onclick="validerReservation()">
-                            ✅ Confirmer la location
-                        </button>
-
-                        <button class="btn btn-ghost btn-xs w-full mt-1" type="button">
-                            Retour aux détails de la réservation
-                        </button>
+                    <div class="flex justify-between items-baseline font-bold">
+                        <span>Total</span>
+                        <span class="text-xl text-primary" id="total-display">0.00 €</span>
                     </div>
+
+                    <input type="hidden" id="vehiculeId" th:value="${vehiculeId}">
+                    <input type="hidden" id="loueurId" th:value="${session.userId}">
+                    <input type="hidden" id="montantTotal" value="0">
+
+                    <button class="btn btn-primary w-full mt-4" type="button" onclick="validerReservation()">
+                        ✅ Confirmer la location
+                    </button>
                 </div>
+            </div>
+        </aside>
+    </section>
+</main>
 
-                <!-- Petit encart sécurité -->
-                <div class="card bg-base-100 shadow-md border border-base-300">
-                    <div class="card-body space-y-2 text-xs">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">🔒</span>
-                            <h3 class="font-semibold text-sm">Paiement sécurisé</h3>
-                        </div>
-                        <p class="text-base-content/60">
-                            Toutes les transactions sont chiffrées et sécurisées. Aucune information bancaire n’est
-                            stockée directement sur LocAuto.
-                        </p>
-                    </div>
-                </div>
-            </aside>
-        </section>
-    </main>
 
-    <script>
-        const canvas = document.getElementById('signature-canvas');
-        const ctx = canvas.getContext('2d');
-        let drawing = false;
+<input type="hidden" id="prixJournalierDb" th:value="${vehicule.prixJournalier}">
 
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // RÉCUPÉRATION SÉCURISÉE : On prend le prix injecté par le serveur
+        const prixJournalier = parseFloat(document.getElementById('prixJournalierDb').value);
+
+        const dateDebutStr = urlParams.get('dateDebut') || new Date().toISOString().split('T')[0];
+        const dateFinStr = urlParams.get('dateFin') || new Date(Date.now() + 172800000).toISOString().split('T')[0];
+
+        const d1 = new Date(dateDebutStr);
+        const d2 = new Date(dateFinStr);
+        const diffDays = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) || 1;
+
+        const totalLocation = prixJournalier * diffDays;
+        const commission = totalLocation * 0.10;
+        const totalFinal = totalLocation + commission;
+
+        // Mise à jour visuelle
+        document.getElementById('montant-location-display').innerText = totalLocation.toFixed(2) + " €";
+        document.getElementById('commission-display').innerText = commission.toFixed(2) + " €";
+        document.getElementById('total-display').innerText = totalFinal.toFixed(2) + " €";
+        document.getElementById('montantTotal').value = totalFinal.toFixed(2);
+    });
+
+    // 2. Gestion de la signature
+    const canvas = document.getElementById('signature-canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('load', resizeCanvas);
+    canvas.addEventListener('mousedown', () => drawing = true);
+    window.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', (e) => {
+        if (!drawing) return;
+        ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#1e293b';
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke(); ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    function clearSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    // 3. Envoi du contrat
+    async function validerReservation() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let vId = document.getElementById('vehiculeId').value || urlParams.get('vehiculeId');
+        const lId = document.getElementById('loueurId').value;
+        const total = document.getElementById('montantTotal').value;
+
+        if (!vId || !lId || total === "0") {
+            alert("Erreur : Informations de réservation incomplètes.");
+            return;
         }
-        window.addEventListener('load', resizeCanvas);
-        window.addEventListener('resize', resizeCanvas);
 
-        canvas.addEventListener('mousedown', () => drawing = true);
-        window.addEventListener('mouseup', () => {
-            drawing = false;
-            ctx.beginPath();
+        const now = new Date();
+        const payload = {
+            vehiculeId: parseInt(vId),
+            loueurId: parseInt(lId),
+            montantTotal: parseFloat(total),
+            statut: "EN_ATTENTE", //
+            dateDebut: now.toISOString().split('.')[0],
+            dateFin: new Date(now.getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString().split('.')[0],
+            lieuPrise: "Agence EasyLoc",
+            lieuDepose: "Agence EasyLoc"
+        };
+
+        const response = await fetch('/contrats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
-        canvas.addEventListener('mousemove', draw);
 
-        function draw(e) {
-            if (!drawing) return;
-            ctx.lineWidth = 2;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#1e293b';
-
-            const rect = canvas.getBoundingClientRect();
-            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        if (response.ok) {
+            const data = await response.json(); // Récupère le contrat créé
+            console.log("Succès :", data);
+            alert("Réservation réussie !");
+            window.location.href = "/dashboard-loueur"; // Assurez-vous que cette URL existe
+        } else {
+            // Si ça arrive ici, c'est le bloc "catch" du Controller qui a répondu
+            const errorMsg = await response.text();
+            console.error("Erreur du serveur :", errorMsg);
+            alert("Erreur lors de la réservation : " + errorMsg);
         }
-
-        function clearSignature() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-        }
-
-        function validerReservation() {
-            // TODO: envoyer la signature + valider côté backend
-            alert("Contrat signé électroniquement avec succès !");
-            window.location.href = "/profil-loueur";
-        }
-    </script>
-
+    }
+</script>
 </body>
-
 </html>

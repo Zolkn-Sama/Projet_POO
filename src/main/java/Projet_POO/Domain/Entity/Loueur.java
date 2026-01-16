@@ -1,5 +1,6 @@
 package Projet_POO.Domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -14,9 +15,11 @@ import java.util.List;
 public class Loueur extends Utilisateur {
 
     @Transient
+    @JsonIgnore
     private List<ContratLocation> locations = new ArrayList<>();
 
     @Transient
+    @JsonIgnore
     private List<Note> notesRecues = new ArrayList<>();
 
     public Loueur() {

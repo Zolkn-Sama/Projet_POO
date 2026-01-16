@@ -38,7 +38,7 @@ public abstract class Service {   // <-- abstract ici
         this.prix = prix;
     }
 
-    protected abstract Double CalculerPrix(Vehicule v);
+    protected abstract Double CalculerPrix(Vehicule vehicule);
 
     // Getters / setters
     public Long getId() { 
