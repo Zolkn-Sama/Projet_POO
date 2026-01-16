@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import Projet_POO.Domain.Entity.Agent;
 import Projet_POO.Domain.Entity.Conversation;
+import Projet_POO.Domain.Entity.Loueur;
 import Projet_POO.Service.ConversationService;
 
 @RestController
-@RequestMapping("/conversations")
+@RequestMapping("/api/conversations")
 public class ConversationController {
 
     private final ConversationService conversationService;
@@ -29,9 +31,19 @@ public class ConversationController {
         return conversationService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/ById/{id}")
     public Conversation getById(@PathVariable Long id) {
         return conversationService.findById(id);
+    }
+
+    @GetMapping("/ByLoueur/{loueur}")
+    public List<Conversation> getByLoueur(@PathVariable Loueur loueur) {
+        return conversationService.findByLoueur(loueur);
+    }
+
+    @GetMapping("/ByAgent/{agent}")
+    public List<Conversation> getByAgent(@PathVariable Agent agent) {
+        return conversationService.findByAgent(agent);
     }
 
     @PostMapping
@@ -49,4 +61,5 @@ public class ConversationController {
     public void delete(@PathVariable Long id) {
         conversationService.delete(id);
     }
+
 }

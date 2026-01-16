@@ -6,9 +6,12 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -24,9 +27,13 @@ public class Conversation {
 
     private LocalDateTime dateCreation;
 
-    private Long loueurId; // id du loueur auteur
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "loueur_id")
+    private Loueur loueur; // id du loueur auteur
 
-    private Long agentId; // id de l'agent 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id")
+    private Agent agent; // id de l'agent 
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
@@ -35,12 +42,12 @@ public class Conversation {
         this.dateCreation = LocalDateTime.now();
     }
 
-    public Conversation(String nom, Long loueurId, Long agentId) {
+    public Conversation(String nom, Loueur loueur, Agent agent) {
         this();
         this.nom = nom;
         this.dateCreation = LocalDateTime.now();
-        this.loueurId = loueurId;
-        this.agentId = agentId;
+        this.loueur = loueur;
+        this.agent = agent;
     }
 
     public Long getId() {
@@ -63,20 +70,25 @@ public class Conversation {
         return messages;
     }
 
-    public Long getLoueurId() {
-        return loueurId;
+    public Loueur getLoueur() {
+        return loueur;
     }
 
-    public void setLoueurId(Long loueurId) {
-        this.loueurId = loueurId;
+    public void setLoueur(Loueur loueur) {
+        this.loueur = loueur;
     }
 
-    public Long getAgentId() {
-        return agentId;
+    public Agent getAgent() {
+        return agent;
     }
 
-    public void setAgentId(Long agentId) {
-        this.agentId = agentId;
+    public void setAgent(Agent agent) {
+        this.agent = agent;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    
 }

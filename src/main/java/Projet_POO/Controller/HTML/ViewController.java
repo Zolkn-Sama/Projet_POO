@@ -1,11 +1,13 @@
 package Projet_POO.Controller.HTML;
 
-import Projet_POO.Domain.Entity.Vehicule;
-import Projet_POO.Service.VehiculeService;
-import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import Projet_POO.Domain.Entity.Vehicule;
+import Projet_POO.Service.VehiculeService;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -23,7 +25,13 @@ public class ViewController {
     }
 
     @GetMapping("/dashboard-agent")
-    public String dashboardAgent() {
+    public String dashboardAgent(HttpSession session, Model model) {
+            Object u = session.getAttribute("user");
+            if (u == null) {
+                return "redirect:/login";
+            }
+
+            session.setAttribute("roleActif", "AGENT");
         return "dashboard-agent"; // Retourne templates/dashboard-agent.html
     }
 

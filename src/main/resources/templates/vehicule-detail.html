@@ -22,9 +22,10 @@
                 <span>EasyLoc</span>
             </a>
         </div>
-        <div class="flex-none text-xs text-base-content/70">
-            <span class="hidden sm:inline">Besoin d’aide ? Contactez l’agent du véhicule.</span>
-        </div>
+        <a id="btn-contact-agent" href="/conversations/from-vehicule?agentId=...&vehiculeId=..."
+            class="btn btn-outline btn-sm w-full">
+            💬 Contacter l’agent
+        </a>
     </div>
 
     <main class="max-w-6xl mx-auto px-4 py-6 md:py-10">
@@ -329,9 +330,13 @@
                         const initiales = ((agent.prenom || 'A')[0] + (agent.nom || 'G')[0]).toUpperCase();
                         agentInitialsEl.textContent = initiales;
 
-                        // Lien contact (on peut passer un paramètre, à adapter selon ton routing)
-                        if (agent.id) {
-                            contactAgentBtn.href = `/conversation?with=${agent.id}`;
+                        // Lien contact : on passe agentId + vehiculeId
+                        if (agent.id && vehiculeId) {
+                            const params = new URLSearchParams({
+                                agentId: agent.id,
+                                vehiculeId: vehiculeId
+                            });
+                            contactAgentBtn.href = `/conversations/from-vehicule?` + params.toString();
                         }
                     } else {
                         agentNomEl.textContent = 'Agent EasyLoc';

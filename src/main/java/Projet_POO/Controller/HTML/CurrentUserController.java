@@ -17,4 +17,14 @@ public class CurrentUserController {
         }
         return null;
     }
+
+    @ModelAttribute("roleActif")
+    public String roleActif(HttpSession session) {
+        String role = (String) session.getAttribute("roleActif");
+        if (role == null) {
+            role = "LOUEUR"; // rôle par défaut partout
+            session.setAttribute("roleActif", role);
+        }
+        return role;
+    }
 }

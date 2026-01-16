@@ -67,17 +67,19 @@
                     <!-- Infos principales -->
                     <div class="flex-1 space-y-2 text-center md:text-left">
                         <h1 class="text-2xl font-extrabold">
-                            <span th:text="${monUtilisateur.prenom} + ' ' + ${monUtilisateur.nom}">Jean Dupont</span>
+                            <span th:text="${monUtilisateur.prenom} + ' ' + ${monUtilisateur.nom}">VISITEUR INCONNU
+                            </span>
                         </h1>
                         <p class="text-sm text-base-content/70">
-                            <span th:text="${monUtilisateur.email}">jean@test.com</span>
+                            <span th:text="${monUtilisateur.email}">visiteur@inconnu.com</span>
                         </p>
 
                         <div class="flex flex-wrap gap-2 justify-center md:justify-start pt-1">
-                            <span class="badge badge-primary badge-outline"> Agent </span>
-                            <span class="badge badge-primary badge-outline"> Loueur </span>
+                            <span class="badge badge-primary badge-outline" th:text="${roleActif}">
+                                VISITEUR
+                            </span>
                             <span class="badge badge-ghost badge-sm">
-                                ID #<span th:text="${monUtilisateur.id}">1</span>
+                                ID #<span th:text="${monUtilisateur.id}">-1</span>
                             </span>
                         </div>
                     </div>
@@ -110,11 +112,11 @@
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between gap-2">
                                 <span class="text-base-content/60">Date de naissance :</span>
-                                <span class="font-medium" th:text="${monUtilisateur.dateNaissance}">01/01/1990</span>
+                                <span class="font-medium" th:text="${monUtilisateur.dateNaissance}">**/**/****</span>
                             </div>
                             <div class="flex justify-between gap-2">
                                 <span class="text-base-content/60">Téléphone :</span>
-                                <span class="font-medium" th:text="${monUtilisateur.telephone}">06 12 34 56 78</span>
+                                <span class="font-medium" th:text="${monUtilisateur.telephone}">** ** ** ** **</span>
                             </div>
                         </div>
                     </div>
@@ -134,8 +136,8 @@
                             <div>
                                 <div class="text-base-content/60 text-xs">Ville / Pays</div>
                                 <div class="font-medium">
-                                    <span th:text="${monUtilisateur.ville}">Paris</span>,
-                                    <span th:text="${monUtilisateur.pays}">France</span>
+                                    <span th:text="${monUtilisateur.ville}">****</span>,
+                                    <span th:text="${monUtilisateur.pays}">****</span>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +158,7 @@
                             <div class="flex justify-between gap-2">
                                 <span class="text-base-content/60">Date d'obtention :</span>
                                 <span class="font-medium"
-                                    th:text="${monUtilisateur.dateObtentionPermis}">2020-05-20</span>
+                                    th:text="${monUtilisateur.dateObtentionPermis}">****-**-**</span>
                             </div>
                         </div>
                     </div>
@@ -172,7 +174,7 @@
                             <div class="flex justify-between items-center gap-2">
                                 <span class="text-base-content/60">Solde actuel</span>
                                 <span class="text-2xl font-black text-success">
-                                    <span th:text="${monUtilisateur.solde}">150.0</span> €
+                                    <span th:text="${monUtilisateur.solde}">--.--</span> €
                                 </span>
                             </div>
                             <p class="text-xs text-base-content/60">

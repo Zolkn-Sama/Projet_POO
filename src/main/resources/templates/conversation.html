@@ -59,11 +59,11 @@
                         <h2 class="card-title text-base">
                             Conversations
                         </h2>
-                        <button class="btn btn-xs btn-ghost" title="Nouvelle conversation"
+                        <a class="btn btn-xs btn-ghost" title="Nouvelle conversation"
                             th:href="@{/conversations/nouveau}">
                             ➕
                             <span class="hidden sm:inline">Nouveau</span>
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Champ de recherche de contacts/conversations -->
@@ -259,18 +259,26 @@
 
                 <!-- Barre de saisie du message -->
                 <div class="border-t border-base-300 bg-base-100" th:if="${activeConversation != null}">
-                    <form class="px-3 py-2 flex items-end gap-2"
+                    <form id="message-form" class="px-3 py-2 flex items-end gap-2"
                         th:action="@{/conversation/message(conversationId=${activeConversation.id})}" method="post">
 
                         <!-- CSRF si Spring Security -->
                         <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
                             th:value="${_csrf.token}" />
 
-                        <textarea name="contenu" rows="1"
-                            class="textarea textarea-bordered textarea-sm w-full resize-none"
-                            placeholder="Écrire un message…"
-                            oninput="this.style.height='auto';this.style.height=(this.scrollHeight)+'px';"
-                            required></textarea>
+                        <div class="flex-1 flex flex-col gap-1">
+                            <textarea id="message-input" name="contenu" rows="1"
+                                class="textarea textarea-bordered textarea-sm w-full resize-none"
+                                placeholder="Écrire un message (sans e-mail ni numéro de téléphone)…"
+                                oninput="this.style.height='auto';this.style.height=(this.scrollHeight)+'px';"
+                                required></textarea>
+
+                            <!-- message d'erreur côté front -->
+                            <p id="message-error" class="text-[11px] text-error hidden">
+                                Les adresses e-mail et numéros de téléphone ne sont pas autorisés dans la messagerie
+                                interne.
+                            </p>
+                        </div>
 
                         <button type="submit" class="btn btn-primary btn-sm px-4">
                             ➤
@@ -280,6 +288,45 @@
             </section>
         </div>
     </main>
+    <script>
+        (function () {
+            const form = document.getElementById('message-form');
+            if (!form) return;
+
+            const textarea = document.getElementById('message-input');
+            const errorEl = document.getElementById('message-error');
+
+            // Regex simple pour emails et numéros de téléphone
+            const emailRegex = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+            const phoneRegex = /(\+?\d[\d\s.\-]{8,}\d)/; // séquences de chiffres de type 06..., +33..., etc.
+
+            form.addEventListener('submit', function (e) {
+                const text = textarea.value || '';
+
+                if (emailRegex.test(text) || phoneRegex.test(text)) {
+                    e.preventDefault();
+                    if (errorEl) {
+                        errorEl.classList.remove('hidden');
+                    }
+                    textarea.classList.add('textarea-error');
+                } else {
+                    if (errorEl) {
+                        errorEl.classList.add('hidden');
+                    }
+                    textarea.classList.remove('textarea-error');
+                }
+            });
+
+            // On masque l'erreur dès que l'utilisateur retouche le texte
+            textarea.addEventListener('input', function () {
+                if (errorEl) {
+                    errorEl.classList.add('hidden');
+                }
+                textarea.classList.remove('textarea-error');
+            });
+        })();
+    </script>
+
 
 </body>
 

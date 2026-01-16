@@ -1,13 +1,16 @@
 package Projet_POO.Domain.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "loueur")
@@ -21,6 +24,10 @@ public class Loueur extends Utilisateur {
     @Transient
     @JsonIgnore
     private List<Note> notesRecues = new ArrayList<>();
+
+    @OneToMany(mappedBy = "loueur", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
+    private List<Conversation> conversations = new ArrayList<>();
 
     public Loueur() {
         super();

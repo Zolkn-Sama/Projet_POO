@@ -34,6 +34,8 @@ public class HomeController {
             model.addAttribute("isConnected", false);
         }
 
+        session.setAttribute("roleActif", "LOUEUR");
+
         return "home";
     }
 
