@@ -16,10 +16,11 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 rounded">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">🚗 LocationApp</a>
+        <a class="navbar-brand" href="/">🚗 EasyLoc</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link active" href="/historique">Historique</a></li>
+                <li class="nav-item"><a class="nav-link" href="/profil">Mon Profil</a></li>
+                <li class="nav-item"><a class="nav-link active" href="#">Historique</a></li>
             </ul>
         </div>
     </div>
@@ -31,14 +32,15 @@
 
         <div class="d-flex gap-2 align-items-center bg-white p-2 rounded shadow-sm">
             <label class="mb-0"><strong>ID Client :</strong></label>
-            <input type="number" id="currentUserId" class="form-control form-control-sm" style="width: 80px;" value="1">
+            <input type="number" id="currentUserId" class="form-control form-control-sm" style="width: 80px;"
+                   th:value="${userId}" placeholder="ID">
             <button class="btn btn-sm btn-primary" onclick="loadHistorique()">Charger</button>
         </div>
     </div>
 
     <div id="contrats-container" class="row g-4">
         <div class="col-12 text-center text-muted py-5">
-            Cliquez sur "Charger" pour voir vos contrats...
+            Chargement des données...
         </div>
     </div>
 </div>
@@ -109,72 +111,6 @@
     </div>
 </div>
 
-<script>
-    // Variable globale pour la modale Agent
-    let agentModalInstance;
-
-    // 1. Fonction appelée quand on clique sur le bouton "Agent"
-    function openAgentModal(agentId) {
-        if (!agentId) {
-            alert("Erreur : ID de l'agent introuvable.");
-            return;
-        }
-        document.getElementById('modalAgentId').value = agentId;
-
-        // Reset des champs
-        document.getElementById('scoreAgentAccueil').value = '5';
-        document.getElementById('scoreAgentDispo').value = '5';
-        document.getElementById('scoreAgentPro').value = '5';
-        document.getElementById('commentAgent').value = '';
-
-        // Ouvrir la modale Bootstrap
-        const el = document.getElementById('ratingAgentModal');
-        agentModalInstance = new bootstrap.Modal(el);
-        agentModalInstance.show();
-    }
-
-    // 2. Fonction appelée quand on clique sur "Envoyer"
-    async function submitAgentRating() {
-        const agId = document.getElementById('modalAgentId').value;
-        const comment = document.getElementById('commentAgent').value;
-
-        const valAccueil = document.getElementById('scoreAgentAccueil').value;
-        const valDispo = document.getElementById('scoreAgentDispo').value;
-        const valPro = document.getElementById('scoreAgentPro').value;
-
-        // Payload JSON
-        const payload = {
-            commentaire: comment,
-            criteres: [
-                { nom: "Accueil",         valeur: parseInt(valAccueil) },
-                { nom: "Disponibilité",   valeur: parseInt(valDispo) },
-                { nom: "Professionnalisme", valeur: parseInt(valPro) }
-            ]
-        };
-
-        console.log("Envoi note Agent:", payload);
-
-        try {
-            const resp = await fetch(`/api/notes-agent/${agId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (resp.ok) {
-                alert("✅ Merci ! L'agent a été noté.");
-                agentModalInstance.hide();
-            } else {
-                const err = await resp.text();
-                alert("❌ Erreur serveur : " + err);
-            }
-        } catch (e) {
-            console.error(e);
-            alert("❌ Erreur réseau.");
-        }
-    }
-</script>
-
 <div class="modal fade" id="ratingModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -233,10 +169,6 @@
                     <label class="form-label">Commentaire global</label>
                     <textarea id="commentVehicule" class="form-control" rows="2" placeholder="Ex: Voiture agréable mais un peu sale..."></textarea>
                 </div>
-
-                <div class="alert alert-light border small text-muted">
-                    ℹ️ Ces critères aideront les futurs locataires et l'agence.
-                </div>
             </div>
 
             <div class="modal-footer">
@@ -250,90 +182,103 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // ============================================================
-    // 1. CHARGER L'HISTORIQUE (VERSION RÉELLE AVEC FETCH)
-    // ============================================================
+    // Variables globales pour les instances de modal Bootstrap
+    let agentModalInstance;
+    let ratingModalInstance;
+
+    // --- 1. Ouverture des Modales ---
+    function openAgentModal(agentId) {
+        document.getElementById('modalAgentId').value = agentId;
+        // Reset des valeurs
+        document.getElementById('scoreAgentAccueil').value = '5';
+        document.getElementById('scoreAgentDispo').value = '5';
+        document.getElementById('scoreAgentPro').value = '5';
+        document.getElementById('commentAgent').value = '';
+
+        const el = document.getElementById('ratingAgentModal');
+        agentModalInstance = new bootstrap.Modal(el);
+        agentModalInstance.show();
+    }
+
+    function openModal(vehiculeId) {
+        document.getElementById('modalVehiculeId').value = vehiculeId;
+        // Reset des valeurs
+        document.getElementById('scoreProprete').value = '5';
+        document.getElementById('scoreConfort').value = '5';
+        document.getElementById('scoreEtat').value = '5';
+        document.getElementById('commentVehicule').value = '';
+
+        const el = document.getElementById('ratingModal');
+        ratingModalInstance = new bootstrap.Modal(el);
+        ratingModalInstance.show();
+    }
+
+    // --- 2. Chargement de l'Historique ---
     async function loadHistorique() {
         const container = document.getElementById('contrats-container');
-        // Récupérer l'ID de l'utilisateur depuis l'input
         const userId = document.getElementById('currentUserId').value;
 
-        // Afficher une animation de chargement (Spinner)
+        if(!userId) {
+            container.innerHTML = '<div class="alert alert-warning text-center">Aucun ID utilisateur fourni.</div>';
+            return;
+        }
+
         container.innerHTML = '<div class="text-center w-100"><div class="spinner-border text-primary"></div></div>';
 
         try {
-            console.log(`📡 Envoi de la requête vers: /contrats/loueur/${userId}`);
-
-            // 1. Appel réel au Backend Java (Spring Boot)
+            // Appel à l'API REST
             const response = await fetch(`/contrats/loueur/${userId}`);
 
-            // Vérifier si la requête a réussi (Code 200 OK)
-            if (!response.ok) {
-                throw new Error("Erreur HTTP: " + response.status);
-            }
+            if (!response.ok) throw new Error("Erreur HTTP: " + response.status);
 
-            // 2. Conversion de la réponse en JSON
-            // C'est ici que nous recevons 'agentIdPourNote' envoyé par le Service Java
             const contrats = await response.json();
-
-            console.log("✅ Données reçues du serveur:", contrats);
-
-            // 3. Affichage dynamique des contrats sur la page
             renderContrats(contrats);
 
         } catch (e) {
-            console.error("❌ Erreur lors du chargement:", e);
-            // Afficher un message d'erreur visible pour l'utilisateur
-            container.innerHTML = `
-            <div class="alert alert-danger w-100">
-                Impossible de charger l'historique. Vérifiez que le serveur est lancé.<br>
-                <small>Détail : ${e.message}</small>
-            </div>`;
+            console.error("Erreur:", e);
+            container.innerHTML = `<div class="alert alert-danger w-100">Erreur de chargement: ${e.message}</div>`;
         }
     }
-    // ============================================================
-    // 2. AFFICHER LES CARTES (Render)
-    // ============================================================
+
+    // --- 3. Affichage (Render) ---
     function renderContrats(contrats) {
         const container = document.getElementById('contrats-container');
         container.innerHTML = '';
 
-        if (contrats.length === 0) {
+        if (!contrats || contrats.length === 0) {
             container.innerHTML = '<div class="alert alert-info w-100 text-center">Aucun historique disponible.</div>';
             return;
         }
 
         contrats.forEach(c => {
             const isFinished = (c.statut === 'TERMINE' || c.statut === 'CLOTURE');
-
             let statusBadge = isFinished
                 ? '<span class="badge badge-termine">Terminée</span>'
-                : '<span class="badge badge-encours">En cours</span>';
+                : `<span class="badge badge-encours">${c.statut}</span>`;
 
-            let actionButton = '';
+            let buttons = '';
             if (isFinished) {
-                // ✅ Utilisation du nouveau champ envoyé par le backend
-                // Assurez-vous que le nom correspond exactement au getter Java (getAgentIdPourNote -> agentIdPourNote)
-                const agentId = c.agentIdPourNote;
+                // Adaptateur pour récupérer les IDs (Vérifie si ton JSON renvoie vehiculeId ou vehicule.id)
+                const vId = c.vehiculeId || (c.vehicule ? c.vehicule.id : null);
+                // Utilise agentIdPourNote comme dans ton code original
+                const aId = c.agentIdPourNote || (c.loueur ? c.loueur.id : null);
 
-                actionButton = `
-        <div class="d-flex gap-2 mt-3 w-100">
-            <button class="btn btn-outline-primary flex-fill"
-                    onclick="openModal(${c.vehiculeId})">
-                🚗 Véhicule
-            </button>
-
-            <button class="btn btn-outline-dark flex-fill"
-                    onclick="openAgentModal(${agentId})">
-                👤 Agent
-            </button>
-        </div>`;
+                buttons = `
+                <div class="d-flex gap-2 mt-3 w-100">
+                    <button class="btn btn-outline-primary flex-fill btn-sm" onclick="openModal(${vId})">
+                        🚗 Noter Véhicule
+                    </button>
+                    <button class="btn btn-outline-dark flex-fill btn-sm" onclick="openAgentModal(${aId})">
+                        👤 Noter Agent
+                    </button>
+                </div>`;
             }
 
-            const d1 = new Date(c.dateDebut).toLocaleDateString();
-            const d2 = new Date(c.dateFin).toLocaleDateString();
+            // Formatage dates
+            const d1 = new Date(c.dateDebut).toLocaleDateString('fr-FR');
+            const d2 = new Date(c.dateFin).toLocaleDateString('fr-FR');
 
-            const cardHtml = `
+            const html = `
                 <div class="col-md-6 col-lg-4">
                     <div class="card card-contrat h-100 shadow-sm">
                         <div class="card-body">
@@ -341,57 +286,67 @@
                                 <h5 class="card-title text-primary mb-0">Contrat #${c.id}</h5>
                                 ${statusBadge}
                             </div>
-
                             <ul class="list-unstyled mb-0 small">
-                                <li class="mb-1"><strong>🚗 Véhicule ID :</strong> ${c.vehiculeId}</li>
-                                <li class="mb-1"><strong>📅 Du :</strong> ${d1}</li>
-                                <li class="mb-1"><strong>📅 Au :</strong> ${d2}</li>
-                                <li class="mb-1"><strong>📍 Lieu :</strong> ${c.lieuPrise}</li>
-                                <li class="mt-2 pt-2 border-top"><strong>💰 Total :</strong> ${c.montantTotal} €</li>
+                                <li><strong>📅 Dates :</strong> ${d1} au ${d2}</li>
+                                <li><strong>📍 Lieu :</strong> ${c.lieuPrise || 'N/A'}</li>
+                                <li class="mt-2 pt-2 border-top"><strong>💰 Montant :</strong> ${c.montantTotal} €</li>
                             </ul>
-
-                            ${actionButton}
+                            ${buttons}
                         </div>
                     </div>
                 </div>
             `;
-            container.innerHTML += cardHtml;
+            container.innerHTML += html;
         });
     }
 
-    // ============================================================
-    // 3. GESTION DE LA MODALE
-    // ============================================================
-    let ratingModal;
+    // --- 4. Soumission Notations (RÉTABLISSEMENT COMPLET) ---
 
-    function openModal(vehiculeId) {
-        document.getElementById('modalVehiculeId').value = vehiculeId;
+    // ✅ Envoi Note AGENT (3 critères)
+    async function submitAgentRating() {
+        const agId = document.getElementById('modalAgentId').value;
+        const comment = document.getElementById('commentAgent').value;
+        const valAccueil = document.getElementById('scoreAgentAccueil').value;
+        const valDispo = document.getElementById('scoreAgentDispo').value;
+        const valPro = document.getElementById('scoreAgentPro').value;
 
-        // Réinitialiser le formulaire à chaque ouverture
-        document.getElementById('scoreProprete').value = '5';
-        document.getElementById('scoreConfort').value = '5';
-        document.getElementById('scoreEtat').value = '5';
-        document.getElementById('commentVehicule').value = '';
+        const payload = {
+            commentaire: comment,
+            criteres: [
+                { nom: "Accueil",         valeur: parseInt(valAccueil) },
+                { nom: "Disponibilité",   valeur: parseInt(valDispo) },
+                { nom: "Professionnalisme", valeur: parseInt(valPro) }
+            ]
+        };
 
-        const el = document.getElementById('ratingModal');
-        ratingModal = new bootstrap.Modal(el);
-        ratingModal.show();
+        console.log("Envoi note Agent:", payload);
+
+        try {
+            const resp = await fetch(`/api/notes-agent/${agId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (resp.ok) {
+                alert("✅ Merci ! L'agent a été noté.");
+                if(agentModalInstance) agentModalInstance.hide();
+            } else {
+                alert("❌ Erreur serveur : " + await resp.text());
+            }
+        } catch (e) {
+            alert("❌ Erreur réseau.");
+        }
     }
 
-    // ============================================================
-    // 4. ENVOYER LA NOTE (POST - VERSION MULTI-CRITÈRES)
-    // ============================================================
+    // ✅ Envoi Note VÉHICULE (3 critères)
     async function submitRating() {
         const vId = document.getElementById('modalVehiculeId').value;
         const comment = document.getElementById('commentVehicule').value;
-
-        // Récupérer les valeurs des trois critères
         const valProprete = document.getElementById('scoreProprete').value;
         const valConfort = document.getElementById('scoreConfort').value;
         const valEtat = document.getElementById('scoreEtat').value;
 
-        // 🟢 Construction de l'objet JSON (Payload)
-        // La structure correspond à l'entité Note (NoteVehicule) contenant une liste de NoteCritere
         const payload = {
             commentaire: comment,
             criteres: [
@@ -401,7 +356,7 @@
             ]
         };
 
-        console.log("Envoi du payload :", JSON.stringify(payload));
+        console.log("Envoi note Véhicule:", payload);
 
         try {
             const resp = await fetch(`/api/notes-vehicule/${vId}`, {
@@ -411,19 +366,26 @@
             });
 
             if (resp.ok) {
-                alert("✅ Merci ! Vos évaluations détaillées ont été enregistrées.");
-                ratingModal.hide();
+                alert("✅ Merci ! Évaluation véhicule enregistrée.");
+                if(ratingModalInstance) ratingModalInstance.hide();
             } else {
-                const errText = await resp.text();
-                // Affiche l'erreur si le véhicule n'existe pas ou si le serveur échoue
-                console.error("Erreur serveur:", errText);
-                alert("❌ Erreur lors de l'enregistrement. Vérifiez que l'ID du véhicule existe.");
+                alert("❌ Erreur : " + await resp.text());
             }
         } catch (e) {
-            console.error(e);
-            alert("❌ Erreur de connexion.");
+            alert("❌ Erreur connexion.");
         }
     }
+
+    // --- ✅ 5. AUTO-LOAD (Démarrage auto si ID présent) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('currentUserId');
+        // Si l'input a une valeur (injectée par Thymeleaf), on charge direct !
+        if (input && input.value) {
+            console.log("ID détecté, chargement automatique...");
+            loadHistorique();
+        }
+    });
+
 </script>
 
 </body>

@@ -59,9 +59,5 @@ public class ViewController {
         return "register"; // Affiche register.html
     }
 
-    @GetMapping("/historique")
-    public String historique() {
-        // Thymeleaf va chercher le fichier "src/main/resources/templates/historique.html"
-        return "historique";
-    }
+
 }
