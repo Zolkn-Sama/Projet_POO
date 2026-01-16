@@ -53,31 +53,39 @@ public class ContratLocationController {
         try {
             ContratLocation contrat = new ContratLocation();
             Long vehiculeId = Long.valueOf(data.get("vehiculeId").toString());
+            Long loueurId = Long.valueOf(data.get("loueurId").toString());
 
-            // 1. Récupération des dates
+            // 1. Parsing des dates
             LocalDateTime debut = LocalDateTime.parse(data.get("dateDebut").toString());
             LocalDateTime fin = LocalDateTime.parse(data.get("dateFin").toString());
-            long jours = java.time.Duration.between(debut, fin).toDays();
+
+            // 2. Calcul de la durée
+            long jours = java.time.temporal.ChronoUnit.DAYS.between(debut.toLocalDate(), fin.toLocalDate());
             if (jours <= 0) jours = 1;
 
-            // 2. RÉCUPÉRATION DU PRIX RÉEL (SÉCURITÉ)
-            // On récupère le véhicule via un service interne au lieu de croire le montant envoyé par le JS
+            // 3. Récupération du véhicule et calcul du prix
             Vehicule v = vehiculeService.findById(vehiculeId);
-            double prixReelTotal = v.getPrixJournalier() * jours;
-            double commission = prixReelTotal * 0.10;
-            double montantFinalHomologue = prixReelTotal + commission;
+            if (v == null) return ResponseEntity.status(404).body("Véhicule non trouvé");
 
-            // 3. Remplissage du contrat
-            contrat.setVehiculeId(vehiculeId);
-            contrat.setLoueurId(Long.valueOf(data.get("loueurId").toString()));
-            contrat.setDateDebut(debut);
-            contrat.setDateFin(fin);
-            contrat.setStatut(Projet_POO.Domain.Enums.StatutContrat.EN_ATTENTE);
-            contrat.setMontantTotal(montantFinalHomologue); // On utilise le montant calculé par le serveur
+            double prixTotalHT = v.getPrixJournalier();
+            double tauxCommission = 10.0; // 10%
 
-            // 4. PrixLocation
+            // 4. Création de l'objet PrixLocation
             Projet_POO.Domain.Entity.PrixLocation prixDetails = new Projet_POO.Domain.Entity.PrixLocation();
-            // Optionnel : remplir les détails de prixDetails ici
+            prixDetails.setPrixFix(prixTotalHT);
+            prixDetails.setPourcentage(tauxCommission);
+            prixDetails.recalculer();
+
+            double montantFinalTTC = prixDetails.getMontantTotal();
+
+            // 5. REMPLISSAGE DU CONTRAT (C'EST ICI QUE ÇA MANQUAIT)
+            contrat.setVehiculeId(vehiculeId);
+            contrat.setLoueurId(loueurId);
+            contrat.setDateDebut(debut);  // <--- IMPORTANT : pour enregistrer la date en base
+            contrat.setDateFin(fin);      // <--- IMPORTANT
+            contrat.setStatut(Projet_POO.Domain.Enums.StatutContrat.EN_ATTENTE);
+            contrat.setMontantTotal(montantFinalTTC);
+            contrat.setMontantAPayer(montantFinalTTC);
             contrat.setPrixLocation(prixDetails);
 
             ContratLocation saved = contratService.create(contrat);
