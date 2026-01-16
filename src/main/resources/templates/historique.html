@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon historique - EasyLoc</title>
 
-    <!-- Tailwind CSS + DaisyUI (mêmes CDN que la home) -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Tailwind + DaisyUI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
 
     <style>
         * {
@@ -18,90 +17,138 @@
     </style>
 </head>
 
-<body class="p-4">
+<body class="min-h-screen bg-gradient-to-b from-base-200 via-base-200 to-base-300">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 rounded">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">🚗 LocationApp</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" href="/historique">Historique</a></li>
+    <!-- NAVBAR -->
+    <div class="navbar bg-base-100 shadow-sm px-4 sticky top-0 z-30">
+        <div class="flex-1">
+            <a th:href="@{/}" href="/" class="btn btn-ghost text-xl font-bold gap-2">
+                <span class="text-2xl">🚗</span>
+                <span>EasyLoc</span>
+            </a>
+        </div>
+        <div class="flex-none gap-4 px-4 items-center">
+            <a th:href="@{/dashboard-agent}" class="btn btn-outline btn-sm">Espace Agent</a>
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                    <div id="avatar-initials"
+                        class="bg-primary text-primary-content rounded-full w-10 flex items-center display-flex justify-center font-bold"
+                        style="display: flex;">
+                        --</div>
+                </div>
+                <ul tabindex="0"
+                    class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                    <li><a class="dropdown-item" th:href="@{/profil}">Mon Profil</a></li>
+                    <li><a class="text-error font-semibold" onclick="logout()">Déconnexion</a></li>
                 </ul>
             </div>
         </div>
-    </nav>
-
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>📜 Mes Réservations</h2>
-
-            <div class="d-flex gap-2 align-items-center bg-white p-2 rounded shadow-sm">
-                <label class="mb-0"><strong>ID Client :</strong></label>
-                <input type="number" id="currentUserId" class="form-control form-control-sm" style="width: 80px;"
-                    value="1">
-                <button class="btn btn-sm btn-primary" onclick="loadHistorique()">Charger</button>
-            </div>
-        </div>
-
-        <div id="contrats-container" class="row g-4">
-            <div class="col-12 text-center text-muted py-5">
-                Cliquez sur "Charger" pour voir vos contrats...
-            </div>
-        </div>
     </div>
 
-    <div id="contrats-container" class="grid gap-6 md:grid-cols-2 xl:grid-cols-2">
-        <div class="col-span-full text-center text-base-content/50 py-10 text-sm">
-            Cliquez sur <span class="font-semibold">« Charger mon historique »</span>
-            pour afficher vos contrats.
-        </div>
-    </div>
+    <!-- CONTENU PRINCIPAL -->
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
 
-    </div>
-    </section>
+        <!-- HEADER / INTRO -->
+        <section class="hero bg-base-100 rounded-2xl shadow-xl border border-base-300">
+            <div class="hero-content flex-col lg:flex-row gap-8">
+                <div class="flex-1 space-y-4">
+                    <div class="space-y-2">
+                        <p class="text-xs uppercase tracking-[0.2em] font-semibold text-primary">
+                            Historique de réservations
+                        </p>
+                        <h1 class="text-3xl lg:text-4xl font-extrabold leading-tight">
+                            Retrouvez toutes vos locations
+                            <span class="text-primary">en un coup d’œil</span>
+                        </h1>
+                    </div>
 
-    <!-- COLONNE AIDE / CONSEILS -->
-    <aside class="space-y-4">
+                    <p class="text-sm text-base-content/70 max-w-xl">
+                        Votre historique se charge automatiquement dès que vous êtes connecté. Consultez vos anciens
+                        contrats, les montants payés et laissez des avis détaillés sur les véhicules et les agents.
+                    </p>
 
-        <div class="card bg-base-100 shadow-lg border border-base-300 rounded-2xl">
-            <div class="card-body space-y-3">
-                <h3 class="font-semibold text-sm flex items-center gap-2">
-                    <span class="text-info">ℹ️</span>
-                    Comment fonctionne l’historique ?
-                </h3>
-                <ul class="text-xs text-base-content/70 space-y-2">
-                    <li>• <span class="font-semibold">En cours</span> : contrats dont la période de location
-                        n’est
-                        pas encore terminée.</li>
-                    <li>• <span class="font-semibold">Terminée</span> : vous pouvez noter le véhicule et
-                        l’agent.</li>
-                    <li>• Les montants affichés sont les <span class="font-semibold">totaux payés</span> pour
-                        chaque
-                        contrat.</li>
-                </ul>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <div class="badge badge-primary gap-1">
+                            ⭐ Avis détaillés
+                        </div>
+                        <div class="badge badge-secondary gap-1">
+                            🧾 Suivi des contrats
+                        </div>
+                        <div class="badge badge-outline gap-1">
+                            🔐 Espace sécurisé
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
+        </section>
 
-        <div
-            class="card bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 shadow-lg border border-base-300 rounded-2xl">
-            <div class="card-body space-y-3 text-xs">
-                <h3 class="font-semibold text-sm flex items-center gap-2">
-                    <span class="text-warning">⭐</span>
-                    Conseils pour vos avis
-                </h3>
-                <p class="text-base-content/70">
-                    Soyez précis sur la propreté, le confort et l’état mécanique du véhicule. Pour l’agent,
-                    mentionnez l’accueil, la réactivité et le professionnalisme.
-                </p>
-                <p class="text-base-content/60">
-                    Des avis complets <span class="font-semibold">valorisent les bons loueurs</span> et
-                    améliorent la plateforme pour tous.
-                </p>
-            </div>
-        </div>
+        <!-- CONTENU PRINCIPAL : LISTE DES CONTRATS + AIDE -->
+        <section class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] items-start">
 
-    </aside>
-    </section>
+            <!-- LISTE DES CONTRATS -->
+            <section class="card bg-base-100/90 backdrop-blur-sm shadow-xl border border-base-300 rounded-2xl">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-primary text-xl">🗂</span>
+                            <div>
+                                <h2 class="font-bold text-lg">Mes contrats</h2>
+                                <p class="text-xs text-base-content/60">
+                                    Contrats passés et en cours, du plus récent au plus ancien.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="contrats-container" class="grid gap-6 lg:grid-cols-1 xl:grid-cols-2">
+                        <div class="col-span-full text-center text-base-content/50 py-10 text-sm">
+                            Chargement automatique de votre historique en cours...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COLONNE AIDE / CONSEILS -->
+            <aside class="space-y-4">
+
+                <div class="card bg-base-100 shadow-lg border border-base-300 rounded-2xl">
+                    <div class="card-body space-y-3">
+                        <h3 class="font-semibold text-sm flex items-center gap-2">
+                            <span class="text-info">ℹ️</span>
+                            Comment fonctionne l’historique ?
+                        </h3>
+                        <ul class="text-xs text-base-content/70 space-y-2">
+                            <li>• <span class="font-semibold">En cours</span> : contrats dont la période de location
+                                n’est pas terminée.</li>
+                            <li>• <span class="font-semibold">Terminée</span> : vous pouvez noter le véhicule et
+                                l’agent.</li>
+                            <li>• Les montants affichés sont les <span class="font-semibold">totaux payés</span> pour
+                                chaque contrat.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div
+                    class="card bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 shadow-lg border border-base-300 rounded-2xl">
+                    <div class="card-body space-y-3 text-xs">
+                        <h3 class="font-semibold text-sm flex items-center gap-2">
+                            <span class="text-warning">⭐</span>
+                            Conseils pour vos avis
+                        </h3>
+                        <p class="text-base-content/70">
+                            Soyez précis sur la propreté, le confort et l’état mécanique du véhicule. Pour l’agent,
+                            mentionnez l’accueil, la réactivité et le professionnalisme.
+                        </p>
+                        <p class="text-base-content/60">
+                            Des avis complets <span class="font-semibold">valorisent les bons loueurs</span> et
+                            améliorent la plateforme pour tous.
+                        </p>
+                    </div>
+                </div>
+
+            </aside>
+        </section>
     </main>
 
     <!-- MODALE NOTE VEHICULE -->
@@ -126,156 +173,71 @@
                     </p>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary" onclick="submitAgentRating()">Envoyer</button>
+                <div class="grid grid-cols-1 gap-3">
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Propreté</span>
+                        </div>
+                        <select id="scoreProprete" class="select select-sm select-bordered">
+                            <option value="5">⭐⭐⭐⭐⭐ (Parfait)</option>
+                            <option value="4">⭐⭐⭐⭐ (Très propre)</option>
+                            <option value="3">⭐⭐⭐ (Correct)</option>
+                            <option value="2">⭐⭐ (Sale)</option>
+                            <option value="1">⭐ (Inacceptable)</option>
+                        </select>
+                    </label>
+
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Confort</span>
+                        </div>
+                        <select id="scoreConfort" class="select select-sm select-bordered">
+                            <option value="5">⭐⭐⭐⭐⭐ (Confortable)</option>
+                            <option value="4">⭐⭐⭐⭐ (Bien)</option>
+                            <option value="3">⭐⭐⭐ (Moyen)</option>
+                            <option value="2">⭐⭐ (Inconfortable)</option>
+                            <option value="1">⭐ (Horrible)</option>
+                        </select>
+                    </label>
+
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">État mécanique</span>
+                        </div>
+                        <select id="scoreEtat" class="select select-sm select-bordered">
+                            <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                            <option value="4">⭐⭐⭐⭐ (Bon)</option>
+                            <option value="3">⭐⭐⭐ (Bruits mineurs)</option>
+                            <option value="2">⭐⭐ (Problèmes)</option>
+                            <option value="1">⭐ (Dangereux)</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="divider my-2"></div>
+
+                <label class="form-control">
+                    <div class="label">
+                        <span class="label-text">Commentaire global</span>
+                    </div>
+                    <textarea id="commentVehicule" class="textarea textarea-bordered text-sm" rows="3"
+                        placeholder="Ex: Voiture agréable mais un peu sale..."></textarea>
+                </label>
+
+                <div class="alert alert-info text-xs mt-1">
+                    ℹ️ Ces critères aideront les futurs locataires et l'agence à améliorer le service.
                 </div>
             </div>
+
+            <div class="modal-action">
+                <form method="dialog">
+                    <button type="submit" class="btn btn-ghost btn-sm">Annuler</button>
+                </form>
+                <button type="button" class="btn btn-success btn-sm" onclick="submitRating()">
+                    Envoyer
+                </button>
+            </div>
         </div>
-        </div>
-
-        <script>
-            // Variable globale pour la modale Agent
-            let agentModalInstance;
-
-            // 1. Fonction appelée quand on clique sur le bouton "Agent"
-            function openAgentModal(agentId) {
-                if (!agentId) {
-                    alert("Erreur : ID de l'agent introuvable.");
-                    return;
-                }
-                document.getElementById('modalAgentId').value = agentId;
-
-                // Reset des champs
-                document.getElementById('scoreAgentAccueil').value = '5';
-                document.getElementById('scoreAgentDispo').value = '5';
-                document.getElementById('scoreAgentPro').value = '5';
-                document.getElementById('commentAgent').value = '';
-
-                // Ouvrir la modale Bootstrap
-                const el = document.getElementById('ratingAgentModal');
-                agentModalInstance = new bootstrap.Modal(el);
-                agentModalInstance.show();
-            }
-
-            // 2. Fonction appelée quand on clique sur "Envoyer"
-            async function submitAgentRating() {
-                const agId = document.getElementById('modalAgentId').value;
-                const comment = document.getElementById('commentAgent').value;
-
-                const valAccueil = document.getElementById('scoreAgentAccueil').value;
-                const valDispo = document.getElementById('scoreAgentDispo').value;
-                const valPro = document.getElementById('scoreAgentPro').value;
-
-                // Payload JSON
-                const payload = {
-                    commentaire: comment,
-                    criteres: [
-                        { nom: "Accueil", valeur: parseInt(valAccueil) },
-                        { nom: "Disponibilité", valeur: parseInt(valDispo) },
-                        { nom: "Professionnalisme", valeur: parseInt(valPro) }
-                    ]
-                };
-
-                console.log("Envoi note Agent:", payload);
-
-                try {
-                    const resp = await fetch(`/api/notes-agent/${agId}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (resp.ok) {
-                        alert("✅ Merci ! L'agent a été noté.");
-                        agentModalInstance.hide();
-                    } else {
-                        const err = await resp.text();
-                        alert("❌ Erreur serveur : " + err);
-                    }
-                } catch (e) {
-                    console.error(e);
-                    alert("❌ Erreur réseau.");
-                }
-            }
-        </script>
-
-        <div class="modal fade" id="ratingModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">⭐ Noter la location</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <input type="hidden" id="modalVehiculeId">
-
-                        <h6 class="text-primary fw-bold mb-3">🚗 Détails de l'évaluation</h6>
-
-                        <div class="mb-3 row align-items-center">
-                            <label class="col-sm-4 col-form-label">Propreté</label>
-                            <div class="col-sm-8">
-                                <select id="scoreProprete" class="form-select form-select-sm">
-                                    <option value="5">⭐⭐⭐⭐⭐ (Parfait)</option>
-                                    <option value="4">⭐⭐⭐⭐ (Très propre)</option>
-                                    <option value="3">⭐⭐⭐ (Correct)</option>
-                                    <option value="2">⭐⭐ (Sale)</option>
-                                    <option value="1">⭐ (Inacceptable)</option>
-                                </select>
-                                </label>
-
-                                <label class="form-control w-full">
-                                    <div class="label">
-                                        <span class="label-text">Confort</span>
-                                    </div>
-                                    <select id="scoreConfort" class="select select-sm select-bordered">
-                                        <option value="5">⭐⭐⭐⭐⭐ (Confortable)</option>
-                                        <option value="4">⭐⭐⭐⭐ (Bien)</option>
-                                        <option value="3">⭐⭐⭐ (Moyen)</option>
-                                        <option value="2">⭐⭐ (Inconfortable)</option>
-                                        <option value="1">⭐ (Horrible)</option>
-                                    </select>
-                                </label>
-
-                                <label class="form-control w-full">
-                                    <div class="label">
-                                        <span class="label-text">État mécanique</span>
-                                    </div>
-                                    <select id="scoreEtat" class="select select-sm select-bordered">
-                                        <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
-                                        <option value="4">⭐⭐⭐⭐ (Bon)</option>
-                                        <option value="3">⭐⭐⭐ (Bruits mineurs)</option>
-                                        <option value="2">⭐⭐ (Problèmes)</option>
-                                        <option value="1">⭐ (Dangereux)</option>
-                                    </select>
-                                </label>
-                            </div>
-
-                            <div class="divider my-2"></div>
-
-                            <label class="form-control">
-                                <div class="label">
-                                    <span class="label-text">Commentaire global</span>
-                                </div>
-                                <textarea id="commentVehicule" class="textarea textarea-bordered text-sm" rows="3"
-                                    placeholder="Ex: Voiture agréable mais un peu sale..."></textarea>
-                            </label>
-
-                            <div class="alert alert-info text-xs mt-1">
-                                ℹ️ Ces critères aideront les futurs locataires et l'agence à améliorer le service.
-                            </div>
-                        </div>
-
-                        <div class="modal-action">
-                            <form method="dialog">
-                                <button type="submit" class="btn btn-ghost btn-sm">Annuler</button>
-                            </form>
-                            <button type="button" class="btn btn-success btn-sm" onclick="submitRating()">
-                                Envoyer
-                            </button>
-                        </div>
-                    </div>
     </dialog>
 
     <!-- MODALE NOTE AGENT -->
@@ -359,113 +321,109 @@
                 </button>
             </div>
         </div>
-        </div>
-        </div>
+    </dialog>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Injection de l'ID utilisateur courant pour le JS -->
+    <script th:inline="javascript">
+        const CURRENT_USER_ID = /*[[${currentUser != null ? currentUser.id : null}]]*/ null;
+    </script>
 
-        <script>
-            // ============================================================
-            // 1. CHARGER L'HISTORIQUE (VERSION RÉELLE AVEC FETCH)
-            // ============================================================
-            async function loadHistorique() {
-                const container = document.getElementById('contrats-container');
-                // Récupérer l'ID de l'utilisateur depuis l'input
-                const userId = document.getElementById('currentUserId').value;
+    <script>
+        // ============================
+        // RENDER DES CONTRATS
+        // ============================
+        function renderContrats(contrats) {
+            const container = document.getElementById('contrats-container');
+            const countBadge = document.getElementById('contrats-count');
 
-                // Afficher une animation de chargement (Spinner)
-                container.innerHTML = '<div class="text-center w-100"><div class="spinner-border text-primary"></div></div>';
+            container.innerHTML = '';
 
-                try {
-                    console.log(`📡 Envoi de la requête vers: /contrats/loueur/${userId}`);
-
-                    // 1. Appel réel au Backend Java (Spring Boot)
-                    const response = await fetch(`/contrats/loueur/${userId}`);
-
-                    // Vérifier si la requête a réussi (Code 200 OK)
-                    if (!response.ok) {
-                        throw new Error("Erreur HTTP: " + response.status);
-                    }
-
-                    // 2. Conversion de la réponse en JSON
-                    // C'est ici que nous recevons 'agentIdPourNote' envoyé par le Service Java
-                    const contrats = await response.json();
-
-                    console.log("✅ Données reçues du serveur:", contrats);
-
-                    // 3. Affichage dynamique des contrats sur la page
-                    renderContrats(contrats);
-
-                } catch (e) {
-                    console.error("❌ Erreur lors du chargement:", e);
-                    // Afficher un message d'erreur visible pour l'utilisateur
-                    container.innerHTML = `
-            <div class="alert alert-danger w-100">
-                Impossible de charger l'historique. Vérifiez que le serveur est lancé.<br>
-                <small>Détail : ${e.message}</small>
-            </div>`;
+            if (!Array.isArray(contrats) || contrats.length === 0) {
+                container.innerHTML = `
+                <div class="col-span-full alert alert-info shadow-sm text-sm">
+                    Aucun historique disponible pour cet utilisateur.
+                </div>
+            `;
+                if (countBadge) {
+                    countBadge.textContent = "0 contrat";
+                    countBadge.classList.remove('hidden');
                 }
+                return;
             }
-            // ============================================================
-            // 2. AFFICHER LES CARTES (Render)
-            // ============================================================
-            function renderContrats(contrats) {
-                const container = document.getElementById('contrats-container');
-                container.innerHTML = '';
 
-                if (contrats.length === 0) {
-                    container.innerHTML = '<div class="alert alert-info w-100 text-center">Aucun historique disponible.</div>';
-                    return;
+            contrats.forEach(c => {
+                const isFinished = (c.statut === 'TERMINE' || c.statut === 'CLOTURE');
+
+                const statusBadge = isFinished
+                    ? '<div class="badge badge-success badge-outline text-[11px]">Terminée</div>'
+                    : '<div class="badge badge-warning badge-outline text-[11px]">En cours</div>';
+
+                const borderClass = isFinished
+                    ? 'border-l-4 border-l-success/70'
+                    : 'border-l-4 border-l-warning/70';
+
+                let actionButtons = '';
+                if (isFinished) {
+                    const agentId = c.agentIdPourNote;
+
+                    actionButtons = `
+                    <div class="mt-4 flex gap-2">
+                        <button class="btn btn-xs btn-outline btn-primary flex-1 rounded-full"
+                                type="button"
+                                onclick="openModal(${c.vehiculeId})">
+                            🚗 Noter le véhicule
+                        </button>
+                        <button class="btn btn-xs btn-outline btn-neutral flex-1 rounded-full"
+                                type="button"
+                                onclick="openAgentModal(${agentId ?? 'null'})">
+                            👤 Noter l'agent
+                        </button>
+                    </div>
+                `;
                 }
 
-                contrats.forEach(c => {
-                    const isFinished = (c.statut === 'TERMINE' || c.statut === 'CLOTURE');
+                const d1 = c.dateDebut ? new Date(c.dateDebut).toLocaleDateString('fr-FR') : '-';
+                const d2 = c.dateFin ? new Date(c.dateFin).toLocaleDateString('fr-FR') : '-';
+                const lieu = c.lieuPrise || '-';
 
-                    let statusBadge = isFinished
-                        ? '<span class="badge badge-termine">Terminée</span>'
-                        : '<span class="badge badge-encours">En cours</span>';
-
-                    let actionButton = '';
-                    if (isFinished) {
-                        // ✅ Utilisation du nouveau champ envoyé par le backend
-                        // Assurez-vous que le nom correspond exactement au getter Java (getAgentIdPourNote -> agentIdPourNote)
-                        const agentId = c.agentIdPourNote;
-
-                        actionButton = `
-        <div class="d-flex gap-2 mt-3 w-100">
-            <button class="btn btn-outline-primary flex-fill"
-                    onclick="openModal(${c.vehiculeId})">
-                🚗 Véhicule
-            </button>
-
-            <button class="btn btn-outline-dark flex-fill"
-                    onclick="openAgentModal(${agentId})">
-                👤 Agent
-            </button>
-        </div>`;
-                    }
-
-                    const d1 = new Date(c.dateDebut).toLocaleDateString();
-                    const d2 = new Date(c.dateFin).toLocaleDateString();
-
-                    const cardHtml = `
-                <div class="col-md-6 col-lg-4">
-                    <div class="card card-contrat h-100 shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <h5 class="card-title text-primary mb-0">Contrat #${c.id}</h5>
-                                ${statusBadge}
+                const cardHtml = `
+                <article class="card bg-base-100 shadow-md hover:shadow-xl border border-base-300 rounded-2xl transition-all duration-150 ${borderClass}">
+                    <div class="card-body p-6 space-y-4">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <h3 class="font-semibold text-lg text-base-content flex items-center gap-2">
+                                    <span class="text-primary text-xl">📄</span>
+                                    Contrat #${c.id}
+                                </h3>
+                                <p class="text-[11px] text-base-content/60">
+                                    Véhicule ID : <span class="font-medium">${c.vehiculeId}</span>
+                                </p>
                             </div>
+                            ${statusBadge}
+                        </div>
 
-                            <ul class="list-unstyled mb-0 small">
-                                <li class="mb-1"><strong>🚗 Véhicule ID :</strong> ${c.vehiculeId}</li>
-                                <li class="mb-1"><strong>📅 Du :</strong> ${d1}</li>
-                                <li class="mb-1"><strong>📅 Au :</strong> ${d2}</li>
-                                <li class="mb-1"><strong>📍 Lieu :</strong> ${c.lieuPrise}</li>
-                                <li class="mt-2 pt-2 border-top"><strong>💰 Total :</strong> ${c.montantTotal} €</li>
-                            </ul>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <span class="text-xs text-base-content/60">Du</span><br>
+                                <span class="font-medium">${d1}</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-base-content/60">Au</span><br>
+                                <span class="font-medium">${d2}</span>
+                            </div>
+                            <div class="col-span-2">
+                                <span class="text-xs text-base-content/60">Lieu</span><br>
+                                <span class="font-medium">${lieu}</span>
+                            </div>
+                        </div>
 
-                            ${actionButton}
+                        <div class="flex justify-between items-center pt-3 border-t border-dashed border-base-300">
+                            <span class="text-[11px] uppercase tracking-wide text-base-content/60">
+                                Montant total
+                            </span>
+                            <span class="text-xl font-bold text-primary">
+                                ${c.montantTotal} €
+                            </span>
                         </div>
 
                         ${actionButtons}
@@ -473,94 +431,234 @@
                 </article>
             `;
 
-                    container.insertAdjacentHTML('beforeend', cardHtml);
-                });
-            }
+                container.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
 
-            // ============================
-            // 1. HISTORIQUE - FETCH
-            // ============================
-            async function loadHistorique() {
-                const container = document.getElementById('contrats-container');
-                const countBadge = document.getElementById('contrats-count');
+        // ============================
+        // FETCH HISTORIQUE
+        // ============================
+        async function loadHistorique() {
+            const container = document.getElementById('contrats-container');
+            const countBadge = document.getElementById('contrats-count');
 
-                if (CURRENT_USER_ID === null) {
-                    container.innerHTML = `
+            if (CURRENT_USER_ID === null) {
+                container.innerHTML = `
                 <div class="col-span-full alert alert-warning shadow-sm text-sm">
                     Connectez-vous pour afficher automatiquement votre historique de réservations.
                 </div>
             `;
-                    container.innerHTML += cardHtml;
-                });
+                if (countBadge) countBadge.classList.add('hidden');
+                return;
             }
 
-            // ============================================================
-            // 3. GESTION DE LA MODALE
-            // ============================================================
-            let ratingModal;
+            container.innerHTML = `
+            <div class="col-span-full flex flex-col items-center justify-center py-8">
+                <span class="loading loading-spinner loading-md text-primary mb-2"></span>
+                <p class="text-sm text-base-content/60">Chargement de vos contrats...</p>
+            </div>
+        `;
+            if (countBadge) countBadge.classList.add('hidden');
 
-            function openModal(vehiculeId) {
-                document.getElementById('modalVehiculeId').value = vehiculeId;
+            try {
+                console.log(`📡 Envoi de la requête vers: /contrats/loueur/${CURRENT_USER_ID}`);
 
-                // Réinitialiser le formulaire à chaque ouverture
-                document.getElementById('scoreProprete').value = '5';
-                document.getElementById('scoreConfort').value = '5';
-                document.getElementById('scoreEtat').value = '5';
-                document.getElementById('commentVehicule').value = '';
+                const response = await fetch(`/contrats/loueur/${encodeURIComponent(CURRENT_USER_ID)}`);
 
-                const el = document.getElementById('ratingModal');
-                ratingModal = new bootstrap.Modal(el);
-                ratingModal.show();
-            }
-
-            // ============================================================
-            // 4. ENVOYER LA NOTE (POST - VERSION MULTI-CRITÈRES)
-            // ============================================================
-            async function submitRating() {
-                const vId = document.getElementById('modalVehiculeId').value;
-                const comment = document.getElementById('commentVehicule').value;
-
-                // Récupérer les valeurs des trois critères
-                const valProprete = document.getElementById('scoreProprete').value;
-                const valConfort = document.getElementById('scoreConfort').value;
-                const valEtat = document.getElementById('scoreEtat').value;
-
-                // 🟢 Construction de l'objet JSON (Payload)
-                // La structure correspond à l'entité Note (NoteVehicule) contenant une liste de NoteCritere
-                const payload = {
-                    commentaire: comment,
-                    criteres: [
-                        { nom: "Propreté", valeur: parseInt(valProprete) },
-                        { nom: "Confort", valeur: parseInt(valConfort) },
-                        { nom: "État Mécanique", valeur: parseInt(valEtat) }
-                    ]
-                };
-
-                console.log("Envoi du payload :", JSON.stringify(payload));
-
-                try {
-                    const resp = await fetch(`/api/notes-vehicule/${encodeURIComponent(vId)}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (resp.ok) {
-                        alert("✅ Merci ! Vos évaluations détaillées ont été enregistrées.");
-                        ratingModal.hide();
-                    } else {
-                        const errText = await resp.text();
-                        // Affiche l'erreur si le véhicule n'existe pas ou si le serveur échoue
-                        console.error("Erreur serveur:", errText);
-                        alert("❌ Erreur lors de l'enregistrement. Vérifiez que l'ID du véhicule existe.");
-                    }
-                } catch (e) {
-                    console.error(e);
-                    alert("❌ Erreur de connexion.");
+                if (!response.ok) {
+                    throw new Error("Erreur HTTP: " + response.status);
                 }
-            }
-        </script>
 
+                const contrats = await response.json();
+                console.log("✅ Données reçues du serveur:", contrats);
+
+                renderContrats(contrats);
+
+                if (countBadge) {
+                    countBadge.textContent =
+                        contrats.length + (contrats.length > 1 ? " contrats" : " contrat");
+                    countBadge.classList.remove('hidden');
+                }
+
+            } catch (e) {
+                console.error("❌ Erreur lors du chargement:", e);
+                container.innerHTML = `
+                <div class="col-span-full alert alert-error shadow-sm">
+                    <span>
+                        Impossible de charger l'historique. Vérifiez que le serveur est lancé.<br>
+                        <span class="text-xs opacity-70">Détail : ${e.message}</span>
+                    </span>
+                </div>
+            `;
+                if (countBadge) countBadge.classList.add('hidden');
+            }
+        }
+
+        // ============================
+        // MODALE VEHICULE
+        // ============================
+        function openModal(vehiculeId) {
+            if (!vehiculeId && vehiculeId !== 0) {
+                alert("Erreur : ID du véhicule introuvable.");
+                return;
+            }
+
+            document.getElementById('modalVehiculeId').value = vehiculeId;
+
+            document.getElementById('scoreProprete').value = '5';
+            document.getElementById('scoreConfort').value = '5';
+            document.getElementById('scoreEtat').value = '5';
+            document.getElementById('commentVehicule').value = '';
+
+            const dialog = document.getElementById('ratingModal');
+            if (dialog && typeof dialog.showModal === 'function') {
+                dialog.showModal();
+            } else {
+                console.warn("L'élément <dialog> n'est pas supporté par ce navigateur.");
+            }
+        }
+
+        async function submitRating() {
+            const vId = document.getElementById('modalVehiculeId').value;
+            const comment = document.getElementById('commentVehicule').value;
+
+            const valProprete = document.getElementById('scoreProprete').value;
+            const valConfort = document.getElementById('scoreConfort').value;
+            const valEtat = document.getElementById('scoreEtat').value;
+
+            const payload = {
+                commentaire: comment,
+                criteres: [
+                    { nom: "Propreté", valeur: parseInt(valProprete, 10) },
+                    { nom: "Confort", valeur: parseInt(valConfort, 10) },
+                    { nom: "État Mécanique", valeur: parseInt(valEtat, 10) }
+                ]
+            };
+
+            console.log("Envoi du payload note véhicule :", JSON.stringify(payload));
+
+            try {
+                const resp = await fetch(`/api/notes-vehicule/${encodeURIComponent(vId)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (resp.ok) {
+                    alert("✅ Merci ! Vos évaluations détaillées ont été enregistrées.");
+                    const dialog = document.getElementById('ratingModal');
+                    if (dialog) dialog.close();
+                } else {
+                    const errText = await resp.text();
+                    console.error("Erreur serveur:", errText);
+                    alert("❌ Erreur lors de l'enregistrement. Vérifiez que l'ID du véhicule existe.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("❌ Erreur de connexion.");
+            }
+        }
+
+        // ============================
+        // MODALE AGENT
+        // ============================
+        function openAgentModal(agentId) {
+            if (!agentId && agentId !== 0) {
+                alert("Erreur : ID de l'agent introuvable.");
+                return;
+            }
+
+            document.getElementById('modalAgentId').value = agentId;
+            document.getElementById('scoreAgentAccueil').value = '5';
+            document.getElementById('scoreAgentDispo').value = '5';
+            document.getElementById('scoreAgentPro').value = '5';
+            document.getElementById('commentAgent').value = '';
+
+            const dialog = document.getElementById('ratingAgentModal');
+            if (dialog && typeof dialog.showModal === 'function') {
+                dialog.showModal();
+            } else {
+                console.warn("L'élément <dialog> n'est pas supporté par ce navigateur.");
+            }
+        }
+
+        async function submitAgentRating() {
+            const agId = document.getElementById('modalAgentId').value;
+            const comment = document.getElementById('commentAgent').value;
+
+            const valAccueil = document.getElementById('scoreAgentAccueil').value;
+            const valDispo = document.getElementById('scoreAgentDispo').value;
+            const valPro = document.getElementById('scoreAgentPro').value;
+
+            const payload = {
+                commentaire: comment,
+                criteres: [
+                    { nom: "Accueil", valeur: parseInt(valAccueil, 10) },
+                    { nom: "Disponibilité", valeur: parseInt(valDispo, 10) },
+                    { nom: "Professionnalisme", valeur: parseInt(valPro, 10) }
+                ]
+            };
+
+            console.log("Envoi note Agent:", payload);
+
+            try {
+                const resp = await fetch(`/api/notes-agent/${encodeURIComponent(agId)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (resp.ok) {
+                    alert("✅ Merci ! L'agent a été noté.");
+                    const dialog = document.getElementById('ratingAgentModal');
+                    if (dialog) dialog.close();
+                } else {
+                    const err = await resp.text();
+                    console.error("Erreur serveur:", err);
+                    alert("❌ Erreur serveur : " + err);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("❌ Erreur réseau.");
+            }
+        }
+
+        async function UserInit() {
+            const response = await fetch('/loueurs/dashboard-data');
+            if (!response.ok) throw new Error("Accès non autorisé ou erreur serveur");
+
+            const data = await response.json();
+            console.log("Données reçues :", data); // Pour debugger dans la console F12
+
+            const loueur = data.profil;
+
+            // 1. Injection des données de profil avec sécurité (au cas où les champs sont nuls)
+            const prenom = loueur.prenom || "";
+            const nom = loueur.nom || "";
+
+            const ini = ((prenom.charAt(0) || "") + (nom.charAt(0) || "")).toUpperCase() || "??";
+            document.getElementById('avatar-initials').textContent = ini;
+
+
+        }
+
+        // ============================
+        // LOGOUT
+        // ============================
+        function logout() {
+            fetch('/api/auth/logout', { method: 'POST' })
+                .then(() => window.location.reload())
+                .catch(err => console.error("Erreur déconnexion:", err));
+        }
+
+        // ============================
+        // AUTO-CHARGEMENT
+        // ============================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHistorique();
+            UserInit()
+        });
+    </script>
 
 </body>
 
