@@ -1,6 +1,7 @@
 package Projet_POO.Service.implementation;
 
 import java.util.UUID;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -68,8 +69,14 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
 
     @Override
     public void verifierEtCrediter(Long filleulId) {
-        ParrainageLoueur p = parrainageRepo.findByFilleulId(filleulId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Parrainage loueur introuvable"));
+
+        List<ParrainageLoueur> list = parrainageRepo.findAllByFilleul_Id(filleulId);
+        if (list == null || list.isEmpty()) return;
+
+        ParrainageLoueur p = list.stream()
+                .filter(x -> !x.isRecompenseVersee())
+                .findFirst()
+                .orElse(list.get(0));
 
         if (p.isRecompenseVersee()) return;
 
@@ -84,4 +91,5 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
         p.setStatut(StatutParrainage.RECOMPENSE_VERSEE);
         parrainageRepo.save(p);
     }
+
 }
