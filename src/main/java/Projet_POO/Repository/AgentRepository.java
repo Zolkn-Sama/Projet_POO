@@ -11,7 +11,7 @@ import Projet_POO.Domain.Entity.Agent;
 @Repository
 public interface AgentRepository extends JpaRepository<Agent, Long> {
     List<Agent> findAll();
-    Optional<Agent> findById(Long id);
-    Optional<Agent> findByEmail(String email);
+    Optional<Agent> findByUtilisateurId(Long utilisateurId);
+    Optional<Agent> findByUtilisateurEmail(String email);
 }
 

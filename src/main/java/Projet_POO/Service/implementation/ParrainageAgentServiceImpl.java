@@ -103,7 +103,7 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
         if (!aUnContratTermine) return;
 
         Agent parrain = p.getParrain();
-        parrain.setSolde(parrain.getSolde() + p.getMontantRecompense());
+        parrain.getUtilisateur().setSolde(parrain.getUtilisateur().getSolde() + p.getMontantRecompense());
         agentRepo.save(parrain);
 
         p.setRecompenseVersee(true);

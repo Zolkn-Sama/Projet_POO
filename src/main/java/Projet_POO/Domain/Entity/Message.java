@@ -22,12 +22,14 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long utilisateurId;
-
     private LocalDateTime dateMessage;
 
     @Column(length = 2000)
     private String contenu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur auteur;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id")
@@ -38,15 +40,22 @@ public class Message {
         this.dateMessage = LocalDateTime.now();
     }
 
-    public Message(Long utilisateurId, String contenu) {
+    public Message(String contenu) {
         this();
-        this.utilisateurId = utilisateurId;
         this.contenu = contenu;
         this.dateMessage = LocalDateTime.now();
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Utilisateur getAuteur() {
+        return auteur;
+    }
+
+    public void setAuteur(Utilisateur auteur) {
+        this.auteur = auteur;
     }
 
     public String getContenu() {
@@ -69,11 +78,4 @@ public class Message {
         return dateMessage;
     }
 
-    public Long getUtilisateurId() {
-        return utilisateurId;
-    }
-
-    public void setUtilisateurId(Long utilisateurId) {
-        this.utilisateurId = utilisateurId;
-    }
 }

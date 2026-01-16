@@ -1,6 +1,5 @@
 package Projet_POO.Domain.Entity;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +7,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "loueur")
+public class Loueur {
 
-public class Loueur extends Utilisateur {
+    @Id
+    private Long id; // même id que Utilisateur
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur utilisateur;
+
 
     @Transient
     @JsonIgnore
@@ -30,29 +42,36 @@ public class Loueur extends Utilisateur {
     private List<Conversation> conversations = new ArrayList<>();
 
     public Loueur() {
-        super();
     }
 
-    public Loueur(Long id,
-            String nom,
-            String prenom,
-            String password,
-            String email,
-            String telephone,
-            String rue,
-            String ville,
-            String pays,
-            LocalDate dateNaissance,
-            String numeroPermis,
-            LocalDate dateObtentionPermis,
-                  double solde) {
+    public Loueur(long id) {
+        this.id = utilisateur.getId();
+    }
 
-        super(id, nom, prenom, password, email,
-                telephone, rue, ville, pays,
-                dateNaissance, numeroPermis, dateObtentionPermis, solde);
+    public Loueur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+        this.id = utilisateur.getId();
     }
 
     // --------- MÉTHODES MÉTIER ---------
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
 
     public void ajouterLocation(ContratLocation contrat) {
         if (contrat != null)
@@ -67,16 +86,14 @@ public class Loueur extends Utilisateur {
         if (p == null)
             return;
 
-        this.setNom(p.getNom());
-        this.setPrenom(p.getPrenom());
-        this.setEmail(p.getEmail());
-        this.setTelephone(p.getTelephone());
-        this.setRue(p.getRue());
-        this.setVille(p.getVille());
-        this.setPays(p.getPays());
-        this.setDateNaissance(p.getDateNaissance());
-        this.setNumeroPermis(p.getNumeroPermis());
-        this.setDateObtentionPermis(p.getDateObtentionPermis());
+        this.getUtilisateur().setNom(p.getNom());
+        this.getUtilisateur().setPrenom(p.getPrenom());
+        this.getUtilisateur().setEmail(p.getEmail());
+        this.getUtilisateur().setTelephone(p.getTelephone());
+        this.getUtilisateur().setLocalisationUtilisateur(p.getLocalisationUtilisateur());
+        this.getUtilisateur().setDateNaissance(p.getDateNaissance());
+        this.getUtilisateur().setNumeroPermis(p.getNumeroPermis());
+        this.getUtilisateur().setDateObtentionPermis(p.getDateObtentionPermis());
     }
 
     public void noterAgent(Agent a, Note note) {
@@ -98,11 +115,10 @@ public class Loueur extends Utilisateur {
     public String toString() {
         return "Loueur{" +
                 "id=" + getId() +
-                ", nom='" + getNom() + '\'' +
-                ", prenom='" + getPrenom() + '\'' +
-                ", email='" + getEmail() + '\'' +
+                ", nom='" + getUtilisateur().getNom() + '\'' +
+                ", prenom='" + getUtilisateur().getPrenom() + '\'' +
+                ", email='" + getUtilisateur().getEmail() + '\'' +
                 '}';
     }
-
 
 }

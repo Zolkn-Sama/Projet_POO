@@ -77,7 +77,7 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
         if (!aContratTermine) return;
 
         Loueur parrain = p.getParrain();
-        parrain.setSolde(parrain.getSolde() + p.getMontantRecompense());
+        parrain.getUtilisateur().setSolde(parrain.getUtilisateur().getSolde() + p.getMontantRecompense());
         loueurRepo.save(parrain);
 
         p.setRecompenseVersee(true);

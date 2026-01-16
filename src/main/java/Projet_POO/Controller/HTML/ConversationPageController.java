@@ -56,8 +56,8 @@ public class ConversationPageController {
             return "redirect:/login";
         }
 
-        Agent agent = agentService.findById(agentId);
-        Loueur loueur = loueurService.findById(loueurId);
+        Agent agent = agentService.findByUtilisateurId(agentId);
+        Loueur loueur = loueurService.findByUtilisateurId(loueurId);
 
         Conversation conversation = new Conversation();
         conversation.setAgent(agent);
@@ -76,7 +76,7 @@ public class ConversationPageController {
             return "redirect:/login";
         }
 
-        Agent agent = agentService.findById(currentUser.getId());
+        Agent agent = agentService.findByUtilisateurId(currentUser.getId());
 
         List<Conversation> conversations = conversationService.findByAgent(agent);
 
@@ -94,7 +94,7 @@ public class ConversationPageController {
             return "redirect:/login";
         }
 
-        Loueur loueur = loueurService.findById(currentUser.getId());
+        Loueur loueur = loueurService.findByUtilisateurId(currentUser.getId());
 
         List<Conversation> conversations = conversationService.findByLoueur(loueur);
 
@@ -116,12 +116,9 @@ public class ConversationPageController {
             return "redirect:/login";
         }
 
-        // On considère qu'ici l'utilisateur agit comme LOU EUR
-        session.setAttribute("roleActif", "LOUEUR");
+        Agent agent = agentService.findByUtilisateurId(currentUser.getId());
 
-        Agent agent = agentService.findById(agentId);
-
-        Loueur loueur = loueurService.findById(currentUser.getId());
+        Loueur loueur = loueurService.findByUtilisateurId(currentUser.getId());
 
         Conversation conv = conversationService.findOrCreateBetween(agent, loueur);
 

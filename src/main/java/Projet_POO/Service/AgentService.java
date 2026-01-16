@@ -8,11 +8,13 @@ public interface AgentService {
 
     List<Agent> findAll();
 
-    Agent findById(Long id);
+    Agent findByUtilisateurId(Long id);
 
-    Agent findByEmail(String email);
+    Agent findByUtilisateurEmail(String email);
 
     Agent create(Agent agent);
+
+    Agent create(long id);
 
     Agent update(Long id, Agent agent);
 

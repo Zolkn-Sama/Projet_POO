@@ -1,14 +1,15 @@
 package Projet_POO.Controller.HTML;
 
-import Projet_POO.Domain.Entity.Utilisateur;
-import Projet_POO.Service.UtilisateurService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import Projet_POO.Domain.Entity.Utilisateur;
+import Projet_POO.Service.UtilisateurService;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ProfilController {
@@ -26,7 +27,7 @@ public class ProfilController {
         if (userId == null || role == null) { return "redirect:/login"; }
 
         try {
-            Utilisateur user = utilisateurService.recupererUtilisateurParIdEtRole(userId, role);
+            Utilisateur user = utilisateurService.findById(userId);
             model.addAttribute("monUtilisateur", user);
             model.addAttribute("roleAffichage", role);
 
@@ -52,7 +53,7 @@ public class ProfilController {
         if (userId == null) { return "redirect:/login"; }
 
         // 获取当前数据填入表单
-        Utilisateur user = utilisateurService.recupererUtilisateurParIdEtRole(userId, role);
+        Utilisateur user = utilisateurService.findById(userId);
         model.addAttribute("monUtilisateur", user);
 
         return "profil-edit"; // 需要创建一个新的 HTML 文件
@@ -65,7 +66,7 @@ public class ProfilController {
         String role = (String) session.getAttribute("userRole");
 
 
-        utilisateurService.mettreAJourInfos(userId, role, formUser);
+        utilisateurService.update(userId, formUser);
 
 
         return "redirect:/profil";

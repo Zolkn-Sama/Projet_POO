@@ -2,7 +2,6 @@ package Projet_POO.Service.implementation;
 
 import java.util.List;
 
-import Projet_POO.Repository.VehiculeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +11,7 @@ import Projet_POO.Domain.Entity.Loueur;
 import Projet_POO.Domain.Entity.PrixLocation;
 import Projet_POO.Repository.ContratLocationRepository;
 import Projet_POO.Repository.LoueurRepository;
+import Projet_POO.Repository.VehiculeRepository;
 import Projet_POO.Service.ContratLocationService;
 
 @Service
@@ -68,9 +68,9 @@ public class ContratLocationServiceImpl implements ContratLocationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loueur introuvable"));
 
         double total = contrat.getMontantTotal();
-        double utilise = Math.min(loueur.getSolde(), total);
+        double utilise = Math.min(loueur.getUtilisateur().getSolde(), total);
 
-        loueur.setSolde(loueur.getSolde() - utilise);
+        loueur.getUtilisateur().setSolde(loueur.getUtilisateur().getSolde() - utilise);
         loueurRepo.save(loueur);
 
         contrat.setMontantPayeParSolde(utilise);

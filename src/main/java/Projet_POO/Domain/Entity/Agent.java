@@ -1,6 +1,5 @@
 package Projet_POO.Domain.Entity;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +8,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "agent")
-public class Agent extends Utilisateur {
+public class Agent {
+
+    @Id
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur utilisateur;
 
     private boolean estProfessionnel;
 
@@ -37,34 +49,40 @@ public class Agent extends Utilisateur {
     private List<Note> notesRecues = new ArrayList<>();
 
     public Agent() {
-        super();
     }
 
-    public Agent(Long id,
-                 String nom,
-                 String prenom,
-                 String password,
-                 String email,
-                 String telephone,
-                 String rue,
-                 String ville,
-                 String pays,
-                 LocalDate dateNaissance,
-                 String numeroPermis,
-                 LocalDate dateObtentionPermis,
-                 boolean estProfessionnel,
-                 ConditionsAgent conditions,
-                 double solde) {
+    public Agent(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+        this.id = utilisateur.getId();
+    }
 
-        super(id, nom, prenom, password, email,
-                telephone, rue, ville, pays,
-                dateNaissance, numeroPermis, dateObtentionPermis, solde);
-
+    public Agent(Utilisateur utilisateur,
+                boolean estProfessionnel,
+                ConditionsAgent conditions) {
+        this.utilisateur = utilisateur;
+        this.id = utilisateur.getId();
         this.estProfessionnel = estProfessionnel;
         this.conditions = conditions;
     }
 
     // ----- getters / setters -----
+
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
 
     public boolean isEstProfessionnel() {
         return estProfessionnel;
@@ -124,14 +142,17 @@ public class Agent extends Utilisateur {
         return new HistoriqueVehicule(v, v.getContrats());
     }
 
+
+    
     @Override
     public String toString() {
         return "Agent{" +
                 "id=" + getId() +
-                ", nom='" + getNom() + '\'' +
-                ", prenom='" + getPrenom() + '\'' +
-                ", email='" + getEmail() + '\'' +
+                ", nom='" + getUtilisateur().getNom() + '\'' +
+                ", prenom='" + getUtilisateur().getPrenom() + '\'' +
+                ", email='" + getUtilisateur().getEmail() + '\'' +
                 ", estProfessionnel=" + estProfessionnel +
                 '}';
     }
+
 }

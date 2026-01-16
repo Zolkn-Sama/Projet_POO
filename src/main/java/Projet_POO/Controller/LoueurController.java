@@ -3,7 +3,6 @@ package Projet_POO.Controller;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import Projet_POO.Domain.Entity.Loueur;
-import Projet_POO.Service.LoueurService;
 import Projet_POO.Domain.Entity.ContratLocation;
+import Projet_POO.Domain.Entity.Loueur;
 import Projet_POO.Service.ContratLocationService;
+import Projet_POO.Service.LoueurService;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/loueurs")
@@ -38,18 +39,23 @@ public class LoueurController {
     }
 
     @GetMapping("/ById/{id}")
-    public Loueur getById(@PathVariable Long id) {
-        return loueurService.findById(id);
+    public Loueur findByUtilisateurId(@PathVariable Long id) {
+        return loueurService.findByUtilisateurId(id);
     }
 
     @GetMapping("/ByEmail/{email}")
-    public Loueur getByEmail(@PathVariable String email) {
-        return loueurService.findByEmail(email);
+    public Loueur findByUtilisateurEmail(@PathVariable String email) {
+        return loueurService.findByUtilisateurEmail(email);
     }
 
-    @PostMapping
+    @PostMapping("/ByLoueur/{loueur}")
     public Loueur create(@RequestBody Loueur loueur) {
         return loueurService.create(loueur);
+    }
+
+    @PostMapping("/ById")
+    public Loueur create(@RequestParam long id) {
+        return loueurService.create(id);
     }
 
     @PutMapping("/{id}")
@@ -67,7 +73,7 @@ public class LoueurController {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("Non connecté");
 
-        Loueur loueur = loueurService.findById(userId);
+        Loueur loueur = loueurService.findByUtilisateurId(userId);
         List<ContratLocation> sesContrats = contratLocationService.findByLoueur(userId);
 
         // 1. Calcul des stats
@@ -79,11 +85,11 @@ public class LoueurController {
 
         // 2. Simplification du profil
         Map<String, Object> profilSimple = Map.of(
-                "nom", loueur.getNom(),
-                "prenom", loueur.getPrenom(),
-                "email", loueur.getEmail(),
-                "solde", loueur.getSolde(),
-                "ville", loueur.getVille() != null ? loueur.getVille() : "Non renseignée"
+                "nom", loueur.getUtilisateur().getNom(),
+                "prenom", loueur.getUtilisateur().getPrenom(),
+                "email", loueur.getUtilisateur().getEmail(),
+                "solde", loueur.getUtilisateur().getSolde(),
+                "ville", loueur.getUtilisateur().getLocalisationUtilisateur().getVille() != null ? loueur.getUtilisateur().getLocalisationUtilisateur().getVille() : "Non renseignée"
         );
 
         // 3. Simplification des contrats pour stopper la récursion

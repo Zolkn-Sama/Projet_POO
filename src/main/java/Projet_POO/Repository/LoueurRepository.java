@@ -11,6 +11,6 @@ import Projet_POO.Domain.Entity.Loueur;
 @Repository
 public interface LoueurRepository extends JpaRepository<Loueur, Long> {
     List<Loueur> findAll();
-    Optional<Loueur> findById(Long id);
-    Optional<Loueur> findByEmail(String email);
+    Optional<Loueur> findByUtilisateurId(Long utilisateurId);
+    Optional<Loueur> findByUtilisateurEmail(String email);
 }

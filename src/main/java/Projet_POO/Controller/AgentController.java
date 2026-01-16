@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import Projet_POO.Domain.Entity.Agent;
@@ -30,18 +31,23 @@ public class AgentController {
     }
 
     @GetMapping("/ById/{id}")
-    public Agent getById(@PathVariable Long id) {
-        return agentService.findById(id);
+    public Agent findByUtilisateurId(@PathVariable Long id) {
+        return agentService.findByUtilisateurId(id);
     }
 
     @GetMapping("/ByEmail/{email}")
-    public Agent getByEmail(@PathVariable String email) {
-        return agentService.findByEmail(email);
+    public Agent findByUtilisateurEmail(@PathVariable String email) {
+        return agentService.findByUtilisateurEmail(email);
     }
 
-    @PostMapping
+    @PostMapping("/ByUtilisateur/{agent}")
     public Agent create(@RequestBody Agent agent) {
         return agentService.create(agent);
+    }
+
+    @PostMapping("/ById")
+    public Agent create(@RequestParam long id) {
+        return agentService.create(id);
     }
 
     @PutMapping("/{id}")

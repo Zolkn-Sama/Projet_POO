@@ -7,16 +7,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import Projet_POO.Domain.Entity.Agent;
+import Projet_POO.Domain.Entity.Utilisateur;
 import Projet_POO.Repository.AgentRepository;
+import Projet_POO.Repository.UtilisateurRepository;
 import Projet_POO.Service.AgentService;
 
 @Service
 public class AgentServiceImpl implements AgentService {
 
     private final AgentRepository agentRepository;
+    private final UtilisateurRepository utilisateurRepository;
 
-    public AgentServiceImpl(AgentRepository agentRepository) {
+    public AgentServiceImpl(AgentRepository agentRepository, UtilisateurRepository utilisateurRepository) {
         this.agentRepository = agentRepository;
+        this.utilisateurRepository = utilisateurRepository;
     }
 
     @Override
@@ -25,14 +29,14 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public Agent findById(Long id) {
-        return agentRepository.findById(id)
+    public Agent findByUtilisateurId(Long id) {
+        return agentRepository.findByUtilisateurId(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agent non trouvé"));
     }
 
     @Override
-    public Agent findByEmail(String email) {
-        return agentRepository.findByEmail(email)
+    public Agent findByUtilisateurEmail(String email) {
+        return agentRepository.findByUtilisateurEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agent non trouvé"));
     }
 
@@ -43,17 +47,33 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
+    public Agent create(long id) {
+        Utilisateur utilisateur = utilisateurRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable pour id = " + id));
+
+        if (agentRepository.findById(id).isPresent()) {
+            throw new IllegalStateException("Cet utilisateur est déjà agent (id = " + id + ")");
+        }
+
+            Agent agent = new Agent();
+            agent.setUtilisateur(utilisateur);
+            agent.setId(utilisateur.getId());
+
+        return agentRepository.save(agent);
+    }
+
+    @Override
     public Agent update(Long id, Agent agent) {
         Agent existing = agentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agent non trouvé"));
 
         // Champs hérités de Utilisateur
-        existing.setNom(agent.getNom());
-        existing.setPrenom(agent.getPrenom());
-        existing.setEmail(agent.getEmail());
-        existing.setPassword(agent.getPassword());
-        existing.setTelephone(agent.getTelephone());
-        existing.setDateNaissance(agent.getDateNaissance());
+        existing.getUtilisateur().setNom(agent.getUtilisateur().getNom());
+        existing.getUtilisateur().setPrenom(agent.getUtilisateur().getPrenom());
+        existing.getUtilisateur().setEmail(agent.getUtilisateur().getEmail());
+        existing.getUtilisateur().setPassword(agent.getUtilisateur().getPassword());
+        existing.getUtilisateur().setTelephone(agent.getUtilisateur().getTelephone());
+        existing.getUtilisateur().setDateNaissance(agent.getUtilisateur().getDateNaissance());
 
 
         return agentRepository.save(existing);

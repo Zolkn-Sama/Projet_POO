@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import Projet_POO.Domain.Entity.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import Projet_POO.Domain.Entity.AchatService;
 import Projet_POO.Domain.Entity.Agent;
+import Projet_POO.Domain.Entity.Service;
 import Projet_POO.Domain.Enums.StatutAchatService;
 import Projet_POO.Repository.AchatServiceRepository;
 import Projet_POO.Repository.AgentRepository;
@@ -55,12 +55,12 @@ public class AchatServiceServiceImpl implements AchatServiceService {
         }
 
         // 4) calcul solde utilisé
-        double solde = agent.getSolde();
+        double solde = agent.getUtilisateur().getSolde();
         double payeParSolde = Math.min(solde, prix);
         double restant = prix - payeParSolde;
 
         // 5) débiter solde (seulement ce qu'on utilise)
-        agent.setSolde(solde - payeParSolde);
+        agent.getUtilisateur().setSolde(solde - payeParSolde);
         agentRepo.save(agent);
 
         // 6) créer achat

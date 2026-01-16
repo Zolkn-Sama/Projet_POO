@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Projet_POO.Domain.DTO.LoginRequest;
 import Projet_POO.Domain.Entity.Agent;
+import Projet_POO.Domain.Entity.Localisation;
 import Projet_POO.Domain.Entity.Loueur;
 import Projet_POO.Domain.Entity.Utilisateur;
 import Projet_POO.Service.AuthService;
@@ -31,7 +32,7 @@ public class AuthController {
 
         if (user != null) {
             // On détermine le rôle pour la redirection
-            String role = (user instanceof Agent) ? "AGENT" : "LOUEUR";
+            String role = (user.getRole().equals("Agent")) ? "AGENT" : "LOUEUR";
 
             // Stockage en session
             session.setAttribute("userId", user.getId());
@@ -44,7 +45,7 @@ public class AuthController {
             return ResponseEntity.ok(Map.of(
                     "role", role,
                     "name", user.getPrenom(),
-                    "redirect", (user instanceof Agent) ? "/dashboard-agent" : "/"
+                    "redirect", (user.getRole().equals("Agent")) ? "/dashboard-agent" : "/"
             ));
         }
 
@@ -82,30 +83,28 @@ public class AuthController {
 
             if ("AGENT".equals(role)) {
                 Agent agent = new Agent();
-                agent.setEmail(email);
-                agent.setPassword(password);
-                agent.setNom(nom);
-                agent.setPrenom(prenom);
+                agent.getUtilisateur().setEmail(email);
+                agent.getUtilisateur().setPassword(password);
+                agent.getUtilisateur().setNom(nom);
+                agent.getUtilisateur().setPrenom(prenom);
 
                 // Initialisation des champs obligatoires (Classe Utilisateur)
-                agent.setTelephone("");
-                agent.setVille("");
-                agent.setPays("");
-                agent.setSolde(0.0); // ACTIVÉ : Puisque c'est dans Utilisateur, l'Agent en a besoin aussi
+                agent.getUtilisateur().setTelephone("");
+                agent.getUtilisateur().setLocalisationUtilisateur(new Localisation());
+                agent.getUtilisateur().setSolde(0.0); // ACTIVÉ : Puisque c'est dans Utilisateur, l'Agent en a besoin aussi
 
                 authService.inscrireAgent(agent);
             } else {
                 Loueur loueur = new Loueur();
-                loueur.setEmail(email);
-                loueur.setPassword(password);
-                loueur.setNom(nom);
-                loueur.setPrenom(prenom);
+                loueur.getUtilisateur().setEmail(email);
+                loueur.getUtilisateur().setPassword(password);
+                loueur.getUtilisateur().setNom(nom);
+                loueur.getUtilisateur().setPrenom(prenom);
 
                 // Initialisation des champs obligatoires (Classe Utilisateur)
-                loueur.setTelephone("");
-                loueur.setVille("");
-                loueur.setPays("");
-                loueur.setSolde(0.0); // FIX : Évite l'erreur "Field 'solde' doesn't have a default value"
+                loueur.getUtilisateur().setTelephone("");
+                loueur.getUtilisateur().setLocalisationUtilisateur(new Localisation());
+                loueur.getUtilisateur().setSolde(0.0); // FIX : Évite l'erreur "Field 'solde' doesn't have a default value"
 
                 authService.inscrireLoueur(loueur);
             }

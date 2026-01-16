@@ -3,12 +3,18 @@ package Projet_POO.Domain.Entity;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
-@MappedSuperclass
+@Entity
+@Table(name = "utilisateur")
 public class Utilisateur {
 
     @Id
@@ -17,20 +23,26 @@ public class Utilisateur {
 
     private String nom;
     private String prenom;
-
-    @JsonIgnore
     private String password;
 
-
+    @Column(unique = true, nullable = false)
     private String email;
     private String telephone;
-    private String rue;
-    private String ville;
-    private String pays;
+    private Localisation localisationUtilisateur;
     private LocalDate dateNaissance;
     private String numeroPermis;
     private LocalDate dateObtentionPermis;
     private double solde;
+
+    private String role;
+
+    @OneToOne(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Agent agent;
+
+    @OneToOne(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Loueur loueur;
 
     // --------- CONSTRUCTEURS ---------
 
@@ -42,13 +54,13 @@ public class Utilisateur {
                        String password,
                        String email,
                        String telephone,
-                       String rue,
-                       String ville,
-                       String pays,
+                       Localisation localisationUtilisateur,
                        LocalDate dateNaissance,
                        String numeroPermis,
                        LocalDate dateObtentionPermis,
-                       double solde) {
+                       double solde,
+                       String role
+                       ) {
 
         this.id = id;
         this.nom = nom;
@@ -56,13 +68,12 @@ public class Utilisateur {
         this.password = password;
         this.email = email;
         this.telephone = telephone;
-        this.rue = rue;
-        this.ville = ville;
-        this.pays = pays;
+        this.localisationUtilisateur = localisationUtilisateur;
         this.dateNaissance = dateNaissance;
         this.numeroPermis = numeroPermis;
         this.dateObtentionPermis = dateObtentionPermis;
         this.solde = solde;
+        this.role = role;
     }
 
     // --------- GETTERS / SETTERS ---------
@@ -85,15 +96,6 @@ public class Utilisateur {
     public String getTelephone() { return telephone; }
     public void setTelephone(String telephone) { this.telephone = telephone; }
 
-    public String getRue() { return rue; }
-    public void setRue(String rue) { this.rue = rue; }
-
-    public String getVille() { return ville; }
-    public void setVille(String ville) { this.ville = ville; }
-
-    public String getPays() { return pays; }
-    public void setPays(String pays) { this.pays = pays; }
-
     public LocalDate getDateNaissance() { return dateNaissance; }
     public void setDateNaissance(LocalDate dateNaissance) {
         this.dateNaissance = dateNaissance;
@@ -114,6 +116,39 @@ public class Utilisateur {
     public double getSolde() { return solde; }
     public void setSolde(double solde) { this.solde = solde; }
 
+    public Localisation getLocalisationUtilisateur() {
+        return localisationUtilisateur;
+    }
+
+    public void setLocalisationUtilisateur(Localisation localisationUtilisateur) {
+        this.localisationUtilisateur = localisationUtilisateur;
+    }
+
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
+    }
+    
+    public Loueur getLoueur() {
+        return loueur;
+    }
+
+    public void setLoueur(Loueur loueur) {
+        this.loueur = loueur;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+
     @Override
     public String toString() {
         return "Utilisateur{" +
@@ -123,4 +158,6 @@ public class Utilisateur {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+
 }

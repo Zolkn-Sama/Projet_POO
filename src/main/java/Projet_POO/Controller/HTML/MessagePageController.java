@@ -48,7 +48,7 @@ public class MessagePageController {
 
         Message msg = new Message();
         msg.setContenu(contenu);
-        msg.setUtilisateurId(currentUser.getId());
+        msg.setAuteur(currentUser);
         msg.setConversation(conv);
 
         messageService.create(conversationId, msg);

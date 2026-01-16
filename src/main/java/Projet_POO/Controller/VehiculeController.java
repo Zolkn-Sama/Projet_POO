@@ -1,9 +1,9 @@
 package Projet_POO.Controller;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Projet_POO.Domain.Entity.Agent;
 import Projet_POO.Domain.Entity.CaracteristiquesVehicule;
+import Projet_POO.Domain.Entity.Disponibilite;
 import Projet_POO.Domain.Entity.Localisation;
 import Projet_POO.Domain.Entity.Loueur;
 import Projet_POO.Domain.Entity.TypeVehicule;
 import Projet_POO.Domain.Entity.Vehicule;
-import Projet_POO.Domain.Entity.Disponibilite;
 import Projet_POO.Repository.AgentRepository;
 import Projet_POO.Repository.LoueurRepository;
 import Projet_POO.Service.VehiculeService;
@@ -131,14 +131,14 @@ public class VehiculeController {
                                 "INSERT INTO agent (id, nom, prenom, email, password, telephone, ville, pays, solde, est_professionnel) " +
                                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
                         .setParameter(1, loueur.getId())
-                        .setParameter(2, loueur.getNom())
-                        .setParameter(3, loueur.getPrenom())
-                        .setParameter(4, loueur.getEmail())
-                        .setParameter(5, loueur.getPassword())
-                        .setParameter(6, loueur.getTelephone())
-                        .setParameter(7, loueur.getVille())
-                        .setParameter(8, loueur.getPays())
-                        .setParameter(9, loueur.getSolde())
+                        .setParameter(2, loueur.getUtilisateur().getNom())
+                        .setParameter(3, loueur.getUtilisateur().getPrenom())
+                        .setParameter(4, loueur.getUtilisateur().getEmail())
+                        .setParameter(5, loueur.getUtilisateur().getPassword())
+                        .setParameter(6, loueur.getUtilisateur().getTelephone())
+                        .setParameter(7, loueur.getUtilisateur().getLocalisationUtilisateur().getVille())
+                        .setParameter(8, loueur.getUtilisateur().getLocalisationUtilisateur().getPays())
+                        .setParameter(9, loueur.getUtilisateur().getSolde())
                         .setParameter(10, false)
                         .executeUpdate();
 
