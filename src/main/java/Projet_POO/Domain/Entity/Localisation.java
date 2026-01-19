@@ -36,7 +36,7 @@ public class Localisation {
     public void setPays(String pays) { this.pays = pays; }
 
     public void setAdresse(String adresse) {
-        this.rue = adresse; // On considère que l'adresse saisie va dans le champ 'rue'
+        this.rue = adresse; 
     }
 
 
@@ -46,3 +46,4 @@ public class Localisation {
         return rue + ", " + codePostal + " " + ville + " (" + pays + ")";
     }
 }
+
