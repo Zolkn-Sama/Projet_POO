@@ -8,10 +8,10 @@ import jakarta.persistence.*;
 @PrimaryKeyJoinColumn(name = "id") // Lien vers la clé primaire de la table parente 'note'
 public class NoteAgent extends Note {
 
-    // 🟢 CHANGEMENT : Relation objet au lieu d'un simple ID (Long)
+    // Relation objet au lieu d'un simple ID 
     @ManyToOne
     @JoinColumn(name = "agent_id", nullable = false)
-    @JsonIgnore // ⚠️ IMPORTANT : Empêche la boucle infinie dans le JSON (Swagger)
+    @JsonIgnore // Empêche la boucle infinie dans le JSON 
     private Agent agent;
 
     public NoteAgent() {
