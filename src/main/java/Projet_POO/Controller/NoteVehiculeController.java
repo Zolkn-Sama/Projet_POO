@@ -15,28 +15,21 @@ public class NoteVehiculeController {
     @Autowired
     private NoteVehiculeService noteVehiculeService;
 
-    /**
-     * Enregistre une nouvelle évaluation pour un véhicule spécifique.
-     * URL : POST /api/notes-vehicule/{vehiculeId}
-     */
+    // Enregistre une nouvelle évaluation pour un véhicule spécifique.
+
     @PostMapping("/{vehiculeId}") // 🟢 L'ID du véhicule est dans l'URL
     @ResponseStatus(HttpStatus.CREATED)
     public NoteVehicule create(@PathVariable Long vehiculeId, @RequestBody NoteVehicule note) {
         return noteVehiculeService.creer(note, vehiculeId);
     }
 
-    /**
-     * Liste toutes les évaluations de tous les véhicules.
-     */
+    // Liste toutes les évaluations de tous les véhicules.
     @GetMapping
     public List<NoteVehicule> getAll() {
         return noteVehiculeService.toutes();
     }
 
-    /**
-     * Récupère les notes d'un véhicule spécifique.
-     * URL : GET /api/notes-vehicule/vehicule/{vehiculeId}
-     */
+    //Récupère les notes d'un véhicule spécifique.
     @GetMapping("/vehicule/{vehiculeId}")
     public List<NoteVehicule> getByVehicule(@PathVariable Long vehiculeId) {
         return noteVehiculeService.parVehicule(vehiculeId);
