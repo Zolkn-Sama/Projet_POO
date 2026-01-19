@@ -11,13 +11,12 @@ import java.util.List;
 @RequestMapping("/notes")
 public class NoteController {
 
-    // On injecte l'interface NoteService
+    // l'interface NoteService
     @Autowired
     private NoteService noteService;
 
     @PostMapping
     public Note create(@RequestBody Note note) {
-        // Appelle la logique métier de l'implémentation
         return noteService.creer(note);
     }
 
