@@ -38,7 +38,7 @@ public class AssuranceServiceImpl implements AssuranceService {
 
     @Override
     public Assurance create(Assurance assurance) {
-        // Comme il n'y a pas de setId(), on empêche les créations avec un id fourni
+        // il n y a pas de setId() on empêche les créations avec un id fourni
         if (assurance.getId() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "L'id doit être null pour créer une assurance");
         }
@@ -50,14 +50,9 @@ public class AssuranceServiceImpl implements AssuranceService {
         Assurance existing = assuranceRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Assurance non trouvée"));
 
-        // Champs simples
+        
         existing.setNom(assurance.getNom());
         existing.setEstParDefaut(assurance.isEstParDefaut());
-
-        // ⚠️ IMPORTANT: on ne remplace PAS couvertures/conditions ici
-        // car tu as des relations OneToMany avec orphanRemoval.
-        // Ces listes se gèrent généralement via leurs propres endpoints/services
-        // (CouvertureAssuranceService, ConditionAssuranceService).
 
         return assuranceRepository.save(existing);
     }
