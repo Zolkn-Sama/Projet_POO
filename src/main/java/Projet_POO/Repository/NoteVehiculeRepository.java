@@ -8,6 +8,5 @@ import java.util.List;
 @Repository
 public interface NoteVehiculeRepository extends JpaRepository<NoteVehicule, Long> {
 
-    // 🟢 Recherche automatique : Spring Data cherche dans l'objet 'vehicule' puis son champ 'id'
     List<NoteVehicule> findByVehiculeId(Long vehiculeId);
 }
