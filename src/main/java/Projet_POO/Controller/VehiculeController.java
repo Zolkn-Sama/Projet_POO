@@ -74,7 +74,7 @@ public class VehiculeController {
             Vehicule vehicule = vehiculeService.findById(id);
             if (vehicule == null) return ResponseEntity.notFound().build();
 
-            // 2. Extraire et mettre à jour les données (similaire à ta méthode addVehicule)
+            // 2. Extraire et mettre à jour les données 
             Map<String, Object> caracMap = (Map<String, Object>) data.get("caracteristiques");
             Map<String, Object> locMap = (Map<String, Object>) data.get("localisation");
 
@@ -173,7 +173,7 @@ public class VehiculeController {
             vehicule.setTypeVehicule(type);
             vehicule.setAgent(agent);
 
-            // --- AJOUT DES DISPONIBILITÉS ---
+            // disponibilité 
             String debutStr = (String) data.get("dispoDebut");
             String finStr = (String) data.get("dispoFin");
 
