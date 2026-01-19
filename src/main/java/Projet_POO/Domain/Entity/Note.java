@@ -63,7 +63,7 @@ public abstract class Note {
 
     public void ajouterCritere(NoteCritere critere) {
         if (critere == null) return;
-        critere.setNote(this);          // ✅ lien inverse obligatoire
+        critere.setNote(this);          // lien inverse 
         criteres.add(critere);
     }
 
@@ -95,7 +95,7 @@ public abstract class Note {
         this.criteres.clear();
         if (criteres == null) return;
         for (NoteCritere c : criteres) {
-            this.ajouterCritere(c); // remet le lien note_id
+            this.ajouterCritere(c); 
         }
     }
 
@@ -103,3 +103,4 @@ public abstract class Note {
         this.id = id;
     }
 }
+
