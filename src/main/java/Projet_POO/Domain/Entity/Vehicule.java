@@ -34,19 +34,19 @@ public class Vehicule {
 
     private double prixJournalier;
 
-    @ManyToOne // SANS CascadeType.REMOVE ou ALL ici !
+    @ManyToOne 
     @JoinColumn(name = "agent_id")
-    private Agent agent; // Manquant pour setAgent
+    private Agent agent; 
 
     // compositions / associations
-    @ManyToOne(cascade = CascadeType.ALL) // AJOUTEZ CECI
+    @ManyToOne(cascade = CascadeType.ALL) 
     @JoinColumn(name = "type_vehicule_id")
     private TypeVehicule typeVehicule;
 
     @Transient
     private SystemePropulsion systemePropulsion;
 
-    @ManyToOne(cascade = CascadeType.ALL) // Ajoutez cascade = CascadeType.ALL ici
+    @ManyToOne(cascade = CascadeType.ALL) 
     @JoinColumn(name = "caracteristiques_id")
     private CaracteristiquesVehicule caracteristiques;
 
@@ -62,11 +62,11 @@ public class Vehicule {
     @CollectionTable(name = "vehicule_disponibilites", joinColumns = @JoinColumn(name = "vehicule_id"))
     private List<Disponibilite> disponibilites = new ArrayList<>();
 
-    // Ajoutez ce champ pour que findByVilleDisponibilite fonctionne
     private String villeDisponibilite;
 
     @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
-    private List<NoteVehicule> notes = new ArrayList<>(); // Utilise NoteVehicule au lieu de Note
+    // Utilise NoteVehicule au lieu de Note
+    private List<NoteVehicule> notes = new ArrayList<>(); 
 
     @Transient
     private List<ContratLocation> contrats = new ArrayList<>();
@@ -86,7 +86,7 @@ public class Vehicule {
         this.typeVehicule = typeVehicule;
     }
 
-    // --- Getters / Setters ---
+    // Getters / Setters 
     public Long getId() {
         return id;
     }
@@ -192,7 +192,7 @@ public class Vehicule {
     public double getNoteMoyenne() {
         if (notes == null || notes.isEmpty()) return 0.0;
         double somme = 0.0;
-        for (NoteVehicule n : notes) { // Utilise NoteVehicule ici
+        for (NoteVehicule n : notes) { 
             somme += n.noteGlobale();
         }
         return somme / notes.size();
@@ -202,7 +202,7 @@ public class Vehicule {
         if (debut == null || fin == null || !debut.isBefore(fin))
             return false;
 
-        // dispo si au moins une période couvre totalement [debut, fin]
+        // dispo si au moins une période couvre totalement du debut a la finn 
         for (Disponibilite p : disponibilites) {
             if (p != null && p.getDebut() != null && p.getFin() != null) {
                 boolean couvre = !debut.isBefore(p.getDebut()) && !fin.isAfter(p.getFin());
@@ -223,5 +223,6 @@ public class Vehicule {
                 ", typeVehicule='" + typeVehicule + '\'' +
                 '}';
     }
+
 
 }
