@@ -75,11 +75,11 @@ public class ParrainageAgentServiceImpl implements ParrainageAgentService {
     @Override
     public void verifierEtCrediter(Long filleulId) {
 
-        // ✅ récupère tous les parrainages liés à ce filleul
+        // récupère les parrainages liés à ce filleul
         List<ParrainageAgent> list = parrainageRepo.findAllByFilleul_Id(filleulId);
         if (list == null || list.isEmpty()) return;
 
-        // ✅ on prend le plus récent (ou celui qui n’est pas payé)
+        // on prend le plus récent 
         ParrainageAgent p = list.stream()
                 .filter(x -> !x.isRecompenseVersee())
                 .findFirst()
