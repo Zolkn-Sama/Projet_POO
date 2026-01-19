@@ -10,7 +10,6 @@ public interface AssuranceService {
 
     Assurance findById(Long id);
 
-    // optionnel si tu gardes findByNom au repo
     Assurance findByNom(String nom);
 
     Assurance create(Assurance assurance);
