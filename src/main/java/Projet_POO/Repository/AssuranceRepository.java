@@ -13,7 +13,6 @@ public interface AssuranceRepository extends JpaRepository<Assurance, Long> {
 
     List<Assurance> findAll();
     Optional<Assurance> findById(Long id);
-
-    // optionnel si tu veux rechercher par nom
+    // rechercher par nom
     Optional<Assurance> findByNom(String nom);
 }
