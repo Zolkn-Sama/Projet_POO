@@ -5,9 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import Projet_POO.Domain.Entity.NoteCritere;
 
-/**
- * Repository dédié à la gestion individuelle des critères de notation.
- */
+//Repositorypour la gestion individuelle des critères de notation.
+
 @Repository
 public interface NoteCritereRepository extends JpaRepository<NoteCritere, Long> {
 }
