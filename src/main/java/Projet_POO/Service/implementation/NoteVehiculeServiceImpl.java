@@ -3,7 +3,7 @@ package Projet_POO.Service.implementation;
 import java.util.List;
 
 import Projet_POO.Domain.Entity.Vehicule;
-import Projet_POO.Repository.VehiculeRepository; // Import du repo Vehicule
+import Projet_POO.Repository.VehiculeRepository; 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +15,7 @@ import Projet_POO.Service.NoteVehiculeService;
 public class NoteVehiculeServiceImpl implements NoteVehiculeService {
 
     private final NoteVehiculeRepository repo;
-    private final VehiculeRepository vehiculeRepo; // 🟢 Injection du Repository Vehicule
+    private final VehiculeRepository vehiculeRepo; 
 
     public NoteVehiculeServiceImpl(NoteVehiculeRepository repo, VehiculeRepository vehiculeRepo) {
         this.repo = repo;
@@ -46,11 +46,9 @@ public class NoteVehiculeServiceImpl implements NoteVehiculeService {
 
     @Override
     public List<NoteVehicule> parVehicule(Long vehiculeId) {
-        // Recherche via le repository
         List<NoteVehicule> notes = repo.findByVehiculeId(vehiculeId);
 
         if (notes.isEmpty()) {
-            // Optionnel : renvoyer une erreur 404
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucune note trouvée pour ce véhicule");
         }
         return notes;
