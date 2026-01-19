@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 @Table(name = "service_")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "service")
-public abstract class Service {   // <-- abstract ici
+public abstract class Service {   // abstract 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,16 +22,16 @@ public abstract class Service {   // <-- abstract ici
     private String nom;
     private double prix;
 
-    // Constructeur par défaut requis par JPA
+    // Constructeur 
     public Service() {}
 
-    // Constructeur pratique sans id (création normale)
+    // Constructeur 
     public Service(String nom, double prix) {
         this.nom = nom;
         this.prix = prix;
     }
 
-    // Constructeur utilisé par ServiceSignature(Long id, ...)
+    // Constructeur utilisé par ServiceSignature
     public Service(Long id, String nom, double prix) {
         this.id = id;
         this.nom = nom;
@@ -45,7 +45,7 @@ public abstract class Service {   // <-- abstract ici
         return id; 
     }
 
-    public void setId(Long id) {   // , mais souvent pratique côté service
+    public void setId(Long id) {  
         this.id = id;
     }
 
@@ -65,3 +65,4 @@ public abstract class Service {   // <-- abstract ici
         this.prix = prix; 
     }
 }
+
