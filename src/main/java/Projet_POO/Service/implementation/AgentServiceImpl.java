@@ -38,7 +38,7 @@ public class AgentServiceImpl implements AgentService {
 
     @Override
     public Agent create(Agent agent) {
-        agent.setId(null); // pour être sûr que ce soit bien une création
+        agent.setId(null); 
         return agentRepository.save(agent);
     }
 
@@ -47,7 +47,7 @@ public class AgentServiceImpl implements AgentService {
         Agent existing = agentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agent non trouvé"));
 
-        // Champs hérités de Utilisateur
+        // Champs herité de Utilisateur
         existing.setNom(agent.getNom());
         existing.setPrenom(agent.getPrenom());
         existing.setEmail(agent.getEmail());
