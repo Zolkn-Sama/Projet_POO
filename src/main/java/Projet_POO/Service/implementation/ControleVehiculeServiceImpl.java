@@ -19,7 +19,7 @@ import java.util.Map;
 public class ControleVehiculeServiceImpl implements ControleVehiculeService {
 
     private final ControleVehiculeRepository repo;
-    private final VehiculeRepository vehiculeRepo; // Injection du repo Vehicule
+    private final VehiculeRepository vehiculeRepo; 
 
     public ControleVehiculeServiceImpl(ControleVehiculeRepository repo, VehiculeRepository vehiculeRepo) {
         this.repo = repo;
@@ -32,7 +32,7 @@ public class ControleVehiculeServiceImpl implements ControleVehiculeService {
         Vehicule v = vehiculeRepo.findById(vehiculeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Véhicule introuvable avec l'ID : " + vehiculeId));
 
-        // 2. Vérifier s'il a déjà un dossier (Optionnel : règle métier pour éviter les doublons)
+        // 2. Vérifier s'il a déjà un dossier 
         if (repo.findByVehiculeId(vehiculeId).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Ce véhicule possède déjà un dossier technique.");
         }
@@ -46,7 +46,7 @@ public class ControleVehiculeServiceImpl implements ControleVehiculeService {
 
     @Override
     public List<String> genererAlertesPourVehicule(Long vehiculeId) {
-        // 1. Chercher le contrôle technique associé au véhicule (au lieu de chercher par ID du contrôle)
+        // 1. Chercher le contrôle technique associé au véhicule 
         ControleVehicule ct = repo.findByVehiculeId(vehiculeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucun dossier technique trouvé pour ce véhicule."));
 
@@ -54,12 +54,12 @@ public class ControleVehiculeServiceImpl implements ControleVehiculeService {
         Integer actuel = ct.getKilometrageActuel();
         Map<TypeEntretien, Integer> hist = ct.getKmDernierEntretien();
 
-        // Logique métier pour US.A.9 (Contrôle Technique)
+        // Logique métier Contrôle Technique
         if (ct.getDateCT() != null && ct.getDateCT().plusYears(2).isBefore(LocalDate.now())) {
             messages.add("ALERTE : Le contrôle technique est expiré pour ce véhicule.");
         }
 
-        // Logique métier pour US.A.11 (Maintenance par km)
+        // Logique métier pour Maintenance par km
         if (hist != null && actuel != null) {
             verifierSeuil(messages, TypeEntretien.PNEUS, hist, actuel, 40000);
             verifierSeuil(messages, TypeEntretien.VIDANGE, hist, actuel, 15000);
