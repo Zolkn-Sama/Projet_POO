@@ -47,7 +47,7 @@ public class LoueurServiceImpl implements LoueurService {
         Loueur existing = loueurRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loueur non trouvé"));
 
-        // Champs hérités de Utilisateur
+        // Champs herité de Utilisateur
         existing.setNom(loueur.getNom());
         existing.setPrenom(loueur.getPrenom());
         existing.setEmail(loueur.getEmail());
