@@ -19,7 +19,7 @@ public class NoteCritere {
     private Long id;
 
     private String nom;
-    private int valeur; // 1..5
+    private int valeur; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "note_id")
@@ -44,3 +44,4 @@ public class NoteCritere {
     public Note getNote() { return note; }
     public void setNote(Note note) { this.note = note; }
 }
+
