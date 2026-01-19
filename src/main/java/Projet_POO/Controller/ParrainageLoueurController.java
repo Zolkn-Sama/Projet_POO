@@ -25,7 +25,7 @@ public class ParrainageLoueurController {
         return service.utiliserCode(code, filleulId);
     }
 
-    // utile pour tester manuellement
+    // tester manuellement
     @PostMapping("/verifier/{filleulId}")
     public void verifier(@PathVariable Long filleulId) {
         service.verifierEtCrediter(filleulId);
