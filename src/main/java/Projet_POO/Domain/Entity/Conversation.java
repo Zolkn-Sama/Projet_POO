@@ -24,9 +24,9 @@ public class Conversation {
 
     private LocalDateTime dateCreation;
 
-    private Long loueurId; // id du loueur auteur
+    private Long loueurId;
 
-    private Long agentId; // id de l'agent 
+    private Long agentId; 
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
