@@ -45,7 +45,7 @@ public class ConditionAssuranceServiceImpl implements ConditionAssuranceService 
         Assurance assurance = assuranceRepo.findById(assuranceId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Assurance non trouvée"));
 
-        // sécurité : création (si un id est envoyé, on refuse)
+        // si un id est envoyé on refuse 
         if (condition.getId() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "L'id doit être null pour créer une condition");
         }
@@ -59,13 +59,9 @@ public class ConditionAssuranceServiceImpl implements ConditionAssuranceService 
         ConditionAssurance existing = conditionRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ConditionAssurance non trouvée"));
 
-        // Mise à jour des champs simples
         existing.setAgeMin(condition.getAgeMin());
         existing.setAnciennetePermisMinAnnees(condition.getAnciennetePermisMinAnnees());
         existing.setRestrictionsGeo(condition.getRestrictionsGeo());
-
-        // On ne change PAS l'assurance ici (sinon API ambiguë)
-        // Si tu veux permettre le changement d’assurance, on fera un endpoint dédié.
 
         return conditionRepo.save(existing);
     }
