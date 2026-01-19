@@ -39,11 +39,8 @@ public class ServiceDepotVehiculeServiceImpl implements ServiceDepotVehiculeServ
         ServiceDepotVehicule existing = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service dépôt véhicule non trouvé"));
 
-        // Champs hérités
         existing.setNom(serviceDepotVehicule.getNom());
         existing.setPrix(serviceDepotVehicule.getPrix());
-
-        // Champs spécifiques
         existing.setLocalisation(serviceDepotVehicule.getLocalisation());
         existing.setHoraires(serviceDepotVehicule.getHoraires());
 
