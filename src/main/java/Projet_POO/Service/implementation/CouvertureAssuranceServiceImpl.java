@@ -45,7 +45,7 @@ public class CouvertureAssuranceServiceImpl implements CouvertureAssuranceServic
         Assurance assurance = assuranceRepo.findById(assuranceId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Assurance non trouvée"));
 
-        // sécurité création : pas d'id envoyé
+        // pas d'id envoyé
         if (couverture.getId() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "L'id doit être null pour créer une couverture");
         }
@@ -62,8 +62,6 @@ public class CouvertureAssuranceServiceImpl implements CouvertureAssuranceServic
         existing.setLibelle(couverture.getLibelle());
         existing.setPlafond(couverture.getPlafond());
         existing.setFranchise(couverture.getFranchise());
-
-        // On ne change pas l'assurance ici (endpoint dédié si besoin)
         return couvertureRepo.save(existing);
     }
 
