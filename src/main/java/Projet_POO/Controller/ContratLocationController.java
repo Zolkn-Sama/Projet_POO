@@ -78,11 +78,11 @@ public class ContratLocationController {
 
             double montantFinalTTC = prixDetails.getMontantTotal();
 
-            // 5. REMPLISSAGE DU CONTRAT (C'EST ICI QUE ÇA MANQUAIT)
+            // 5. remplissage de contrat 
             contrat.setVehiculeId(vehiculeId);
             contrat.setLoueurId(loueurId);
-            contrat.setDateDebut(debut);  // <--- IMPORTANT : pour enregistrer la date en base
-            contrat.setDateFin(fin);      // <--- IMPORTANT
+            contrat.setDateDebut(debut); 
+            contrat.setDateFin(fin);     
             contrat.setStatut(Projet_POO.Domain.Enums.StatutContrat.EN_ATTENTE);
             contrat.setMontantTotal(montantFinalTTC);
             contrat.setMontantAPayer(montantFinalTTC);
