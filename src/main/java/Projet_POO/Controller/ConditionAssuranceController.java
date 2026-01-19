@@ -17,19 +17,18 @@ public class ConditionAssuranceController {
         this.conditionService = conditionService;
     }
 
-    // (Optionnel) toutes les conditions
+    // toutes les conditions
     @GetMapping
     public List<ConditionAssurance> getAll() {
         return conditionService.findAll();
     }
 
-    // (Optionnel) une condition par id
+    // une condition par id
     @GetMapping("/{id}")
     public ConditionAssurance getById(@PathVariable Long id) {
         return conditionService.findById(id);
     }
 
-    // tes endpoints existants (mais renommés proprement)
     @PostMapping("/assurance/{assuranceId}")
     public ConditionAssurance createForAssurance(@PathVariable Long assuranceId,
                                                  @RequestBody ConditionAssurance condition) {
@@ -41,7 +40,7 @@ public class ConditionAssuranceController {
         return conditionService.findByAssurance(assuranceId);
     }
 
-    // (Optionnel) update/delete par id
+    // update/delete par id
     @PutMapping("/{id}")
     public ConditionAssurance update(@PathVariable Long id, @RequestBody ConditionAssurance condition) {
         return conditionService.update(id, condition);
