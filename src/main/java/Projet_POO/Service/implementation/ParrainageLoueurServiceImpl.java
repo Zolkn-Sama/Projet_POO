@@ -39,7 +39,7 @@ public class ParrainageLoueurServiceImpl implements ParrainageLoueurService {
         ParrainageLoueur p = new ParrainageLoueur();
         p.setParrain(parrain);
         p.setCode(UUID.randomUUID().toString());
-        p.setMontantRecompense(10.0); // 💡 à adapter
+        p.setMontantRecompense(10.0); 
         p.setStatut(StatutParrainage.EN_ATTENTE);
 
         return parrainageRepo.save(p);
