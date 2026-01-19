@@ -22,25 +22,16 @@ public class ContratLocation {
 
     @Enumerated(EnumType.STRING)
     private StatutContrat statut;
-
-    // total final du contrat (figé)
     private double montantTotal;
-
-    // ✅ Trace paiement via solde
     private double montantPayeParSolde;
     private double montantAPayer;
-
-    // --- version simple: IDs ---
     private Long loueurId;
     private Long vehiculeId;
     private Long assuranceId;
 
-    // ✅ AJOUT : Un champ temporaire pour transporter l'ID de l'agent vers le frontend
-    // @Transient signifie que ce champ n'est PAS stocké dans la base de données
     @Transient
     private Long agentIdPourNote;
 
-    // ✅ AJOUT : Getter et Setter pour ce champ
     public Long getAgentIdPourNote() {
         return agentIdPourNote;
     }
@@ -49,7 +40,7 @@ public class ContratLocation {
         this.agentIdPourNote = agentIdPourNote;
     }
 
-    // ✅ PrixLocation attaché au contrat
+    // PrixLocation attaché au contrat
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "prix_location_id")
@@ -95,3 +86,4 @@ public class ContratLocation {
     public PrixLocation getPrixLocation() { return prixLocation; }
     public void setPrixLocation(PrixLocation prixLocation) { this.prixLocation = prixLocation; }
 }
+
