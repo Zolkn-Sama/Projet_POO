@@ -24,13 +24,13 @@ public class CouvertureAssuranceController {
         this.couvertureService = couvertureService;
     }
 
-    // optionnel : toutes les couvertures
+    // toutes les couvertures
     @GetMapping
     public List<CouvertureAssurance> getAll() {
         return couvertureService.findAll();
     }
 
-    // optionnel : une couverture par id
+    // une couverture par id
     @GetMapping("/{id}")
     public CouvertureAssurance getById(@PathVariable Long id) {
         return couvertureService.findById(id);
@@ -47,7 +47,7 @@ public class CouvertureAssuranceController {
         return couvertureService.findByAssurance(assuranceId);
     }
 
-    // optionnel : update/delete
+    // update/delete
     @PutMapping("/{id}")
     public CouvertureAssurance update(@PathVariable Long id, @RequestBody CouvertureAssurance couverture) {
         return couvertureService.update(id, couverture);
