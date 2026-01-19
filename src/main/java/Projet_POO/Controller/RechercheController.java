@@ -48,7 +48,7 @@ public class RechercheController {
                                             filtre.getLocalisation().getVille().equalsIgnoreCase(v.getLocalisationVehicule().getVille())))
                                 .filter(v -> filtre.getNoteMin() <= 0
                                                 || v.getNoteMoyenne() >= filtre.getNoteMin())
-                                // options (si tu as bien OptionVehicule en @Entity + ManyToMany)
+                        
                                 .filter(v -> filtre.getOptionsRequises() == null
                                                 || filtre.getOptionsRequises().isEmpty()
                                                 || v.getOptions().stream().map(OptionVehicule::getCode)
