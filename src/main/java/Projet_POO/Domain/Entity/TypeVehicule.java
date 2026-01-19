@@ -15,8 +15,8 @@ public class TypeVehicule {
     private Long id;
 
 
-    private String libelle;   // Voiture, Moto...
-    private String domaine;   // DomaineDeplacement en String (ok pour le moment)
+    private String libelle;   
+    private String domaine;   
 
     public TypeVehicule() {}
 
@@ -36,4 +36,5 @@ public class TypeVehicule {
     public void setDomaine(String domaine) { this.domaine = domaine; }
 
 }
+
 
