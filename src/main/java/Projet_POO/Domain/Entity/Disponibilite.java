@@ -10,7 +10,7 @@ public class Disponibilite {
     private LocalDateTime debut;
     private LocalDateTime fin;
 
-    // ✅ CONSTRUCTEUR VIDE OBLIGATOIRE POUR JPA
+    // constructeur
     public Disponibilite() {
     }
 
@@ -35,3 +35,4 @@ public class Disponibilite {
         this.fin = fin;
     }
 }
+
