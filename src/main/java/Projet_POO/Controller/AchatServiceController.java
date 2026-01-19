@@ -17,7 +17,7 @@ public class AchatServiceController {
         this.achatService = achatService;
     }
 
-    // Payer/acheter un service avec le solde (et empêche double achat)
+    // Payer/acheter un service avec le solde sans pouvoir achter 2 foisle meme service
     @PostMapping("/agents/{agentId}/services/{serviceId}/payer")
     public AchatService payer(@PathVariable Long agentId, @PathVariable Long serviceId) {
         return achatService.payerService(agentId, serviceId);
