@@ -2,8 +2,8 @@ package Projet_POO.Service.implementation;
 
 import java.util.List;
 
-import Projet_POO.Domain.Entity.Loueur; // Import de l'entité Loueur
-import Projet_POO.Repository.LoueurRepository; // Import du repo Loueur
+import Projet_POO.Domain.Entity.Loueur; 
+import Projet_POO.Repository.LoueurRepository; 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +15,7 @@ import Projet_POO.Service.NoteLoueurService;
 public class NoteLoueurServiceImpl implements NoteLoueurService {
 
     private final NoteLoueurRepository repo;
-    private final LoueurRepository loueurRepo; // 🟢 Injection du Repository Loueur
+    private final LoueurRepository loueurRepo; 
 
     public NoteLoueurServiceImpl(NoteLoueurRepository repo, LoueurRepository loueurRepo) {
         this.repo = repo;
