@@ -18,19 +18,19 @@ public class AuthService {
 
 
     public Utilisateur authentifier(String email, String password) {
-        // 1. On cherche d'abord dans les Loueurs
+        // 1. On cherche dans les Loueurs
         Optional<Loueur> loueur = loueurRepository.findByEmail(email);
         if (loueur.isPresent() && loueur.get().getPassword().equals(password)) {
             return loueur.get();
         }
 
-        // 2. Si non trouvé, on cherche dans les Agents
+        // 2. Si non trouvé on cherche dans les Agents
         Optional<Agent> agent = agentRepository.findByEmail(email);
         if (agent.isPresent() && agent.get().getPassword().equals(password)) {
             return agent.get();
         }
 
-        return null; // Identifiants invalides
+        return null; 
     }
 
 
