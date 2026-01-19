@@ -90,7 +90,6 @@ public class ContratLocationServiceImpl implements ContratLocationService {
         existing.setLieuDepose(contrat.getLieuDepose());
         existing.setStatut(contrat.getStatut());
 
-        // Si tu autorises update du prix:
         if (contrat.getPrixLocation() != null) {
             PrixLocation p = contrat.getPrixLocation();
             p.recalculer();
@@ -100,7 +99,6 @@ public class ContratLocationServiceImpl implements ContratLocationService {
             existing.setMontantTotal(contrat.getMontantTotal());
         }
 
-        // IDs liés
         existing.setLoueurId(contrat.getLoueurId());
         existing.setVehiculeId(contrat.getVehiculeId());
         existing.setAssuranceId(contrat.getAssuranceId());
@@ -122,7 +120,7 @@ public class ContratLocationServiceImpl implements ContratLocationService {
         // 1. Récupérer les contrats depuis la base de données
         List<ContratLocation> contrats = contratRepo.findByLoueurId(loueurId);
 
-        // 2. 🟢 Boucle magique : Remplir l'ID de l'agent pour chaque contrat
+        // 2. Remplir l'ID de l'agent pour chaque contrat
         for (ContratLocation c : contrats) {
             if (c.getVehiculeId() != null) {
                 // On utilise ta méthode personnalisée du Repository
@@ -133,7 +131,7 @@ public class ContratLocationServiceImpl implements ContratLocationService {
             }
         }
 
-        // 3. Retourner la liste enrichie (le JSON contiendra maintenant "agentIdPourNote")
+        // 3. Retourner la liste enrichie 
         return contrats;
     }
 }
