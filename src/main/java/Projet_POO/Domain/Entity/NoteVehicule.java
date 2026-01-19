@@ -10,7 +10,7 @@ public class NoteVehicule extends Note {
 
     @ManyToOne
     @JoinColumn(name = "vehicule_id", nullable = false)
-    @JsonIgnore // ⚠️ IMPORTANT : Empêche la boucle infinie dans le JSON (Swagger)
+    @JsonIgnore 
     private Vehicule vehicule;
 
     public NoteVehicule() {
