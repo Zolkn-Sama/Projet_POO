@@ -10,13 +10,13 @@ public class PrixLocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Partie fixe (ex: 2€ * nbJours) ou un fixe global (au choix)
+    // Partie fixe
     private double prixFix;
 
-    // Partie variable en % (ex: 10%)
+    // Partie variable en % 
     private double pourcentage;
 
-    // Total calculé et figé
+    // Total calculé 
     private double montantTotal;
 
     public PrixLocation() {}
