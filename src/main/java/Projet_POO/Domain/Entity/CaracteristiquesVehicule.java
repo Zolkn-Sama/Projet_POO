@@ -16,7 +16,6 @@ public class CaracteristiquesVehicule {
     private String categoriePermisRequise;
     private int nbPlaces;
 
-    // Obligatoire pour JPA + utile pour Jackson
     public CaracteristiquesVehicule() {
     }
 
@@ -79,4 +78,5 @@ public class CaracteristiquesVehicule {
         this.nbPlaces = nbPlaces;
     }
 }
+
 
