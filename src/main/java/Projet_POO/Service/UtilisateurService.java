@@ -19,13 +19,13 @@ public class UtilisateurService {
     @Autowired
     private LoueurRepository loueurRepository;
 
-    // Cette méthode retourne un Utilisateur (soit Agent, soit Loueur)
+    // Cette methode retourne un Utilisateur Agent ou loueur
     public Utilisateur recupererUtilisateurGlobal(String email) {
 
         // 1. Essayer de trouver dans la table Agent
         Optional<Agent> agentOpt = agentRepository.findByEmail(email);
         if (agentOpt.isPresent()) {
-            return agentOpt.get(); // Retourne l'objet Agent (qui est un Utilisateur)
+            return agentOpt.get(); 
         }
 
         // 2. Si ce n'est pas un Agent, essayer dans la table Loueur
@@ -37,20 +37,20 @@ public class UtilisateurService {
         // 3. Si aucun des deux, lancer une erreur
         throw new RuntimeException("Aucun utilisateur trouvé avec cet email : " + email);
     }
-    // --- NOUVELLE MÉTHODE POUR LE PROFIL  ---
+    
     public Utilisateur recupererUtilisateurParIdEtRole(Long id, String role) {
         if ("AGENT".equals(role)) {
             // Si c'est un agent, on cherche dans la table Agent
             return agentRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Agent non trouvé avec l'ID : " + id));
         } else {
-            // Sinon, on cherche dans la table Loueur
+            // Sinon on cherche dans la table Loueur
             return loueurRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Loueur non trouvé avec l'ID : " + id));
         }
     }
 
-    // --- Mise à jour des informations utilisateur  ---
+    // Mise à jour des informations utilisateur  
     public void mettreAJourInfos(Long id, String role, Utilisateur formUser) {
 
         Utilisateur userBdd = recupererUtilisateurParIdEtRole(id, role);
