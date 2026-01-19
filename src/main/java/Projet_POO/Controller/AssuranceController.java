@@ -27,7 +27,7 @@ public class AssuranceController {
         return assuranceService.findById(id);
     }
 
-    // optionnel si tu veux rechercher par nom sans conflit
+    // rechercher par nom 
     @GetMapping("/by-nom/{nom}")
     public Assurance getByNom(@PathVariable String nom) {
         return assuranceService.findByNom(nom);
