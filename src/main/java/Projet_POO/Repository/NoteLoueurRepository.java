@@ -8,6 +8,5 @@ import java.util.List;
 @Repository
 public interface NoteLoueurRepository extends JpaRepository<NoteLoueur, Long> {
 
-    // 🟢 Spring Data JPA va chercher dans l'objet 'loueur', puis son champ 'id'
     List<NoteLoueur> findByLoueurId(Long loueurId);
 }
