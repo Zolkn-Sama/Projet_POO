@@ -22,7 +22,7 @@ public class SystemePropulsion {
 
     private String energie;
 
-    public SystemePropulsion() {} // Requis par JPA
+    public SystemePropulsion() {} 
 
     public SystemePropulsion(TypePropulsion type, String energie) {
 
@@ -41,4 +41,5 @@ public class SystemePropulsion {
     public boolean estMotorise() {
         return type == TypePropulsion.MOTEUR;
     }
+
 }
