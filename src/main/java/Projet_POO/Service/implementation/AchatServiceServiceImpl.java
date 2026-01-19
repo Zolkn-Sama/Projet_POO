@@ -13,7 +13,7 @@ import Projet_POO.Domain.Entity.Agent;
 import Projet_POO.Domain.Enums.StatutAchatService;
 import Projet_POO.Repository.AchatServiceRepository;
 import Projet_POO.Repository.AgentRepository;
-import Projet_POO.Repository.ServiceRepository; // à créer si tu ne l'as pas
+import Projet_POO.Repository.ServiceRepository; 
 import Projet_POO.Service.AchatServiceService;
 
 @org.springframework.stereotype.Service
@@ -72,8 +72,8 @@ public class AchatServiceServiceImpl implements AchatServiceService {
         achat.setMontantPayeParSolde(payeParSolde);
         achat.setMontantRestant(restant);
 
-        // Si vous considérez qu’un paiement externe “réussit”, tu peux mettre PAYE même si restant > 0
-        // Sinon: restant > 0 => EN_ATTENTE (simulation CB)
+        // Si un paiement externe “réussit”, on met PAYE même si restant > 0
+        // Sinon: restant > 0 => EN_ATTENTE 
         achat.setStatut(restant == 0 ? StatutAchatService.PAYE : StatutAchatService.EN_ATTENTE);
 
         return achatRepo.save(achat);
