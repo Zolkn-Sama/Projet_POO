@@ -16,11 +16,11 @@ public class CaracteristiquesVehicule {
     private String categoriePermisRequise;
     private int nbPlaces;
 
-    // ✅ Obligatoire pour JPA + utile pour Jackson
+    // Obligatoire pour JPA + utile pour Jackson
     public CaracteristiquesVehicule() {
     }
 
-    // ✅ Constructeur pratique
+    // Constructeur 
     public CaracteristiquesVehicule(String marque, String modele, String couleur,
                                     String categoriePermisRequise, int nbPlaces) {
         this.marque = marque;
@@ -30,7 +30,7 @@ public class CaracteristiquesVehicule {
         this.nbPlaces = nbPlaces;
     }
 
-    // ✅ Getter/Setter standard : Jackson + outils + clarté
+    // Getter/Setter 
     public Long getId() {
         return id;
     }
@@ -79,3 +79,4 @@ public class CaracteristiquesVehicule {
         this.nbPlaces = nbPlaces;
     }
 }
+
