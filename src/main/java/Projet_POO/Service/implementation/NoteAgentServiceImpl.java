@@ -15,7 +15,7 @@ import Projet_POO.Service.NoteAgentService;
 public class NoteAgentServiceImpl implements NoteAgentService {
 
     private final NoteAgentRepository repo;
-    private final AgentRepository agentRepo; // 🟢 AJOUT : Injection nécessaire pour trouver l'agent
+    private final AgentRepository agentRepo; 
 
     // Injection par constructeur (Recommandé)
     public NoteAgentServiceImpl(NoteAgentRepository repo, AgentRepository agentRepo) {
@@ -24,7 +24,6 @@ public class NoteAgentServiceImpl implements NoteAgentService {
     }
 
     @Override
-    // 🟢 CHANGEMENT : On ajoute 'Long agentId' pour savoir qui est noté
     public NoteAgent creer(NoteAgent note, Long agentId) {
 
         // 1. Rechercher l'agent en base de données
@@ -48,10 +47,9 @@ public class NoteAgentServiceImpl implements NoteAgentService {
 
     @Override
     public List<NoteAgent> parAgent(Long agentId) {
-        // Recherche par ID d'agent (Spring Data JPA gère la liaison automatiquement)
+        // Recherche par ID d'agent 
         List<NoteAgent> notes = repo.findByAgentId(agentId);
 
-        // Optionnel : Vous pouvez retirer cette exception si vous préférez renvoyer une liste vide []
         if (notes.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucune note trouvée pour cet agent");
         }
