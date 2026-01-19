@@ -40,8 +40,6 @@ public class VehiculeServiceImpl implements VehiculeService {
 
     @Override
     public Vehicule create(Vehicule vehicule) {
-        // Si ton id est auto-généré, tu peux forcer à null pour être sûr
-        // vehicule.setId(null);
         return vehiculeRepository.save(vehicule);
     }
 
@@ -51,7 +49,6 @@ public class VehiculeServiceImpl implements VehiculeService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Véhicule non trouvé"));
 
-        // Exemple si tu as ces propriétés :
         existing.setImmatriculation(vehicule.getImmatriculation());
         existing.setLocalisationVehicule(vehicule.getLocalisationVehicule());
         existing.setDeposeDifferenteAutorisee(vehicule.isDeposeDifferenteAutorisee());
