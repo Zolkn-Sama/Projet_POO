@@ -45,7 +45,7 @@ public class Loueur extends Utilisateur {
                 dateNaissance, numeroPermis, dateObtentionPermis, solde);
     }
 
-    // --------- MÉTHODES MÉTIER ---------
+    // methodes
 
     public void ajouterLocation(ContratLocation contrat) {
         if (contrat != null)
@@ -99,3 +99,4 @@ public class Loueur extends Utilisateur {
 
 
 }
+
