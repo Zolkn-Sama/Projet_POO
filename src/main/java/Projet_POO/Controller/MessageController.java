@@ -25,7 +25,7 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    // GET /api/messages?conversationId=...
+    // GET messages, conversation 
     @GetMapping
     public List<Message> getByConversation(@RequestParam Long conversationId) {
         return messageService.findByConversationId(conversationId);
@@ -36,7 +36,7 @@ public class MessageController {
         return messageService.findById(id);
     }
 
-    // POST /api/messages?conversationId=...
+    // POST messages, conversationId...
     @PostMapping
     public Message create(@RequestParam Long conversationId,
                           @RequestBody Message message) {
