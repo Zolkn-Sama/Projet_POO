@@ -11,7 +11,6 @@ public class ControleVehicule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🟢 AJOUT : Liaison avec l'entité Vehicule
     // @OneToOne indique qu'un véhicule possède une seule fiche de contrôle technique active
     @OneToOne
     @JoinColumn(name = "vehicule_id", unique = true)
@@ -28,7 +27,7 @@ public class ControleVehicule {
 
     public ControleVehicule() {}
 
-    // Getters et Setters
+    // Getters / Setters
     public Vehicule getVehicule() { return vehicule; }
     public void setVehicule(Vehicule vehicule) { this.vehicule = vehicule; }
 
