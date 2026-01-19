@@ -16,19 +16,18 @@ public class CaracteristiquesController {
         this.caracteristiquesService = caracteristiquesService;
     }
 
-    // Récupérer toutes les caractéristiques existantes
+    // recuperer toutes les caractéristiques existantes
     @GetMapping
     public List<CaracteristiquesVehicule> listerToutes() {
         return caracteristiquesService.findAll();
     }
 
-    // Rechercher par marque (ex: /caracteristiques/recherche?marque=Toyota)
+    // Rechercher par marque
     @GetMapping("/recherche")
     public List<CaracteristiquesVehicule> parMarque(@RequestParam String marque) {
         return caracteristiquesService.findByMarque(marque);
     }
 
-    // Ajouter un nouveau set de caractéristiques
     @PostMapping
     public CaracteristiquesVehicule ajouter(@RequestBody CaracteristiquesVehicule carac) {
         return caracteristiquesService.sauvegarder(carac);
