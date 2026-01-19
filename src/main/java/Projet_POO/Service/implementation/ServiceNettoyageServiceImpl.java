@@ -39,11 +39,9 @@ public class ServiceNettoyageServiceImpl implements ServiceNettoyageService {
         ServiceNettoyage existing = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service nettoyage non trouvé"));
 
-        // champs hérités
         existing.setNom(serviceNettoyage.getNom());
         existing.setPrix(serviceNettoyage.getPrix());
 
-        // champ spécifique
         existing.setTypeService(serviceNettoyage.getTypeService());
 
         return repository.save(existing);
