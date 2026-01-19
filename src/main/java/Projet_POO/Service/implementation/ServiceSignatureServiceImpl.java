@@ -33,7 +33,6 @@ public class ServiceSignatureServiceImpl implements ServiceSignatureService {
 
     @Override
     public ServiceSignature create(ServiceSignature serviceSignature) {
-        // JPA gère l'id tout seul
         return repository.save(serviceSignature);
     }
 
@@ -44,11 +43,11 @@ public class ServiceSignatureServiceImpl implements ServiceSignatureService {
                         HttpStatus.NOT_FOUND, "Service signature non trouvé"
                 ));
 
-        // Champs hérités de ServiceOptionnel
+        // Champs herité de ServiceOptionnel
         existing.setNom(serviceSignature.getNom());
         existing.setPrix(serviceSignature.getPrix());
 
-        // Champ spécifique
+        // Champ specifique
         existing.setSignature(serviceSignature.getSignature());
 
         return repository.save(existing);
