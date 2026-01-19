@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CatalogueRepository extends JpaRepository<Vehicule, Long> {
-    // Le nom ici DOIT être CatalogueRepository
+    
 }
