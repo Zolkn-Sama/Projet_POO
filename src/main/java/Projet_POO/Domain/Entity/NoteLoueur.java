@@ -8,10 +8,10 @@ import jakarta.persistence.*;
 @PrimaryKeyJoinColumn(name = "id") // Lien vers la clé primaire de la table parente 'note'
 public class NoteLoueur extends Note {
 
-    // 🟢 CHANGEMENT : Relation directe vers l'entité Loueur
+    // Relation directe vers l'entité Loueur
     @ManyToOne
     @JoinColumn(name = "loueur_id", nullable = false)
-    @JsonIgnore // ⚠️ Empêche la récursion infinie dans le JSON
+    @JsonIgnore 
     private Loueur loueur;
 
     public NoteLoueur() {
@@ -23,7 +23,7 @@ public class NoteLoueur extends Note {
         this.loueur = loueur;
     }
 
-    // Getters et Setters typés avec Loueur
+    // Getters et Setters 
     public Loueur getLoueur() {
         return loueur;
     }
