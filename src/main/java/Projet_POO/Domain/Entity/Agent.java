@@ -54,7 +54,7 @@ public class Agent extends Utilisateur {
         this.conditions = conditions;
     }
 
-    // ----- getters / setters -----
+    // getters / setters 
 
     public boolean isEstProfessionnel() {
         return estProfessionnel;
@@ -85,7 +85,7 @@ public class Agent extends Utilisateur {
         return new ArrayList<>(notesRecues);
     }
 
-    // ----- méthodes métier importantes -----
+    // méthodes métier
 
     public void ajouterVehicule(Vehicule v) {
         if (v != null && !vehicules.contains(v)) {
@@ -99,7 +99,7 @@ public class Agent extends Utilisateur {
         }
     }
 
-    /** Méthode appelée par Loueur.noterAgent */
+
     public void ajouterNote(Note note) {
         if (note != null) {
             notesRecues.add(note);
@@ -110,7 +110,6 @@ public class Agent extends Utilisateur {
         if (v == null || !vehicules.contains(v)) {
             return null;
         }
-        // Attention: v.getContrats() doit exister dans Vehicule (version d’hier OK)
         return new HistoriqueVehicule(v, v.getContrats());
     }
 
@@ -125,3 +124,4 @@ public class Agent extends Utilisateur {
                 '}';
     }
 }
+
