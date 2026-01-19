@@ -39,11 +39,10 @@ public class ServiceDeverrouillageMobileServiceImpl implements ServiceDeverrouil
         ServiceDeverrouillageMobile existing = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service déverrouillage mobile non trouvé"));
 
-        // Champs hérités
+
         existing.setNom(serviceDeverrouillageMobile.getNom());
         existing.setPrix(serviceDeverrouillageMobile.getPrix());
-
-        // Champ spécifique
+        
         existing.setFournisseur(serviceDeverrouillageMobile.getFournisseur());
 
         return repository.save(existing);
